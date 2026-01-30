@@ -1,0 +1,35 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Projects</title>
+    <style>
+      body{ margin:0; font-family:system-ui; padding:24px; }
+      a{ color:inherit; text-decoration:none; }
+      .top{ display:flex; justify-content:space-between; align-items:baseline; gap:12px; }
+      .grid{ margin-top:18px; display:grid; grid-template-columns:repeat(12,1fr); gap:14px; }
+      .card{
+        border:1px solid rgba(0,0,0,.12); border-radius:16px; padding:16px; min-height:140px;
+        transition: transform 160ms ease, box-shadow 160ms ease;
+      }
+      .card:hover{ transform: translateY(-4px); box-shadow: 0 10px 30px rgba(0,0,0,.10); }
+      .w8{ grid-column: span 8; } .w4{ grid-column: span 4; } .w6{ grid-column: span 6; }
+      @media(max-width:900px){ .w8,.w6,.w4{ grid-column:span 12; } }
+      .thumb{ height:90px; border-radius:12px; background:rgba(0,0,0,.06); margin-bottom:10px; }
+      .k{ opacity:.7; font-size:14px; }
+    </style>
+  </head>
+  <body>
+    <div class="top">
+      <h1 style="margin:0;">Projects</h1>
+      <a href="/">← Back to scene</a>
+    </div>
+
+    <div class="grid">
+      <a class="card w8" href="#"><div class="thumb"></div><div style="font-weight:800;">Project 1</div><div class="k">Short hook</div></a>
+      <a class="card w4" href="#"><div class="thumb"></div><div style="font-weight:800;">Project 2</div><div class="k">Short hook</div></a>
+      <a class="card w6" href="#"><div class="thumb"></div><div style="font-weight:800;">Project 3</div><div class="k">Short hook</div></a>
+      <a class="card w6" href="#"><div class="thumb"></div><div style="font-weight:800;">Project 4</div><div class="k">Short hook</div></a>
+    </div>
+  </body>
+</html>

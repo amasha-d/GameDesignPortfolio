@@ -1,0 +1,762 @@
+---
+const NAME = "Amasha Das";
+const ROLE = "Game Designer / Visual Designer";
+---
+
+<html lang="en">
+
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>{NAME}</title>
+
+	<style>
+		:root {
+			--bg: #fffcf4;
+			--maxW: 1100px;
+			--topPad: 64px;
+			/* space for your fixed topbar */
+			--stageRatio: 16 / 10;
+			/* CHANGE to match your artboard ratio */
+
+		}
+
+		html,
+		body {
+			height: 100%;
+			width: 100%;
+			margin: 0;
+			overflow-x: hidden;
+		}
+
+		body {
+			margin: 0;
+			background: var(--bg);
+			overflow: hidden;
+			/* no scroll on home */
+			font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+			background-color: #fffcf4;
+			background-image: url("/img/obj/floral-bg.png");
+			/* your static image */
+			background-repeat: repeat;
+			/* tile-friendly */
+			background-size: 800px auto;
+			/* control density */
+			background-position: center;
+		}
+
+		/* Topbar */
+		.topbar {
+			position: fixed;
+			top: 16px;
+			left: 16px;
+			right: 16px;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			pointer-events: none;
+			z-index: 10;
+		}
+
+		.brand {
+			pointer-events: auto;
+			display: flex;
+			gap: 10px;
+			align-items: center;
+		}
+
+		.logo {
+			width: 40px;
+			height: 40px;
+			border-radius: 12px;
+			background: #111;
+		}
+
+		.hint {
+			pointer-events: auto;
+			opacity: .7;
+			font-size: 14px;
+		}
+
+		/* Page wrapper */
+		.wrap {
+			height: 100vh;
+			padding: var(--topPad) 16px 16px;
+			display: grid;
+			place-items: center;
+			box-sizing: border-box;
+		}
+
+		/* Stage scales responsively */
+		.stage {
+			position: relative;
+			width: 80%;
+			height: 100%;
+		}
+
+
+
+		/* Independent wobble (different speeds via CSS vars) */
+		.wobble {
+			animation: wobble var(--wTime, 3.6s) ease-in-out infinite;
+		}
+
+		@keyframes wobble {
+
+			0%,
+			100% {
+				transform: translate(0, 0) rotate(0deg);
+			}
+
+			35% {
+				transform: translate(0.2%, -0.3%) rotate(var(--wRot, 0.6deg));
+			}
+
+			70% {
+				transform: translate(-0.2%, 0.2%) rotate(calc(var(--wRot, 0.6deg) * -0.8));
+			}
+		}
+
+		.obj {
+			position: absolute;
+			display: block;
+			z-index: 10;
+			cursor: pointer;
+		}
+
+		.obj .normal {
+			position: relative;
+			height: auto;
+			display: block;
+			width: clamp(120px, 18vw, 260px);
+			transition: opacity 120ms ease;
+		}
+
+		.obj img {
+			position: absolute;
+			inset: 0;
+			width: 100%;
+			height: auto;
+			display: block;
+			pointer-events: none;
+		}
+
+		.obj .hover {
+			opacity: 0;
+			/* transform: scale(1.001); */
+			/* tiny pop */
+			transition: opacity 120ms ease, transform 120ms ease;
+		}
+
+		.obj:hover .hover,
+		.obj:focus-visible .hover {
+			opacity: 1;
+			/*transform: scale(1.03);*/
+		}
+
+		.obj:hover .normal,
+		.obj:focus-visible .normal {
+			opacity: 0;
+		}
+
+
+		/* Reduce motion accessibility */
+		@media (prefers-reduced-motion: reduce) {
+
+			.bgVideo,
+			.wobble {
+				animation: none !important;
+			}
+		}
+
+		@media (max-width: 480px) {
+			:root {
+				--topPad: 64px;
+			}
+		}
+
+		/* Modal (contact) */
+		dialog {
+			border: none;
+			border-radius: 16px;
+			padding: 18px;
+			width: 80%;
+		}
+
+		dialog::backdrop {
+			background: rgba(0, 0, 0, .35);
+		}
+
+		.modalTop {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			gap: 12px;
+		}
+
+		.x {
+			border: none;
+			background: transparent;
+			cursor: pointer;
+			font-size: 22px;
+		}
+
+		.fixed-you {
+			position: fixed;
+			right: 18px;
+			bottom: 18px;
+			width: min(480px, 42vw);
+			/* responsive size */
+			z-index: 50;
+			/* above video + objects */
+			display: block;
+			cursor: pointer;
+			animation: youFloat 1s ease-in-out infinite;
+			transform-origin: 80% 80%;
+		}
+
+		.fixed-you img {
+			width: 100%;
+			height: auto;
+			display: block;
+			transform: translateX(12%) translateY(6%);
+		}
+
+		@keyframes youFloat {
+
+			0%,
+			100% {
+				transform: translate(0, 0) rotate(0deg);
+			}
+
+			50% {
+				transform: translate(-2px, -3px) rotate(-0.4deg);
+			}
+		}
+
+		/* Keep it from covering too much on tiny screens */
+		@media (max-width: 480px) {
+			.fixed-you {
+				width: min(240px, 100vw);
+				right: 12px;
+				bottom: 12px;
+			}
+		}
+
+		@media (max-width: 1920px) {
+
+			/* Positioning (PERCENT based = responsive) */
+			/* Replace these with your real object locations */
+			.projects {
+				left: 37%;
+				top: 10%;
+
+			}
+
+			.resume {
+				left: 70%;
+				top: 36%;
+
+			}
+
+			.coffee {
+				left: 7%;
+				Bottom: 6%;
+
+			}
+
+			.work {
+				left: 30%;
+				bottom: 10%;
+
+			}
+
+			.connect {
+				left: 80%;
+				top: 10%;
+
+			}
+
+			.art {
+				left: 10%;
+				top: 40%;
+
+			}
+
+
+			.wip {
+				left: 2%;
+				top: 8%;
+
+			}
+
+			.projects .normal {
+				width: 500px;
+			}
+
+			.resume .normal {
+				width: 220px;
+			}
+
+			.work .normal {
+				width: 300px;
+			}
+
+			.coffee .normal {
+				width: 180px;
+			}
+
+			.wip .normal {
+				width: 160px;
+			}
+
+			.art .normal {
+				width: 240px;
+			}
+
+			.connect .normal {
+				width: 160px;
+			}
+		}
+
+		@media (max-width: 1024px) {
+
+			/* Positioning (PERCENT based = responsive) */
+			/* Replace these with your real object locations */
+			.projects {
+				left: 37%;
+				top: 10%;
+
+			}
+
+			.resume {
+				left: 60%;
+				top: 40%;
+
+			}
+
+			.coffee {
+				left: 7%;
+				Bottom: 6%;
+
+			}
+
+			.work {
+				left: 30%;
+				bottom: 10%;
+
+			}
+
+			.connect {
+				left: 90%;
+				top: 5%;
+
+			}
+
+			.art {
+				left: 5%;
+				top: 40%;
+
+			}
+
+
+			.wip {
+				left: 2%;
+				top: 8%;
+
+			}
+
+			.projects .normal {
+				width: 95%;
+			}
+
+			.resume .normal {
+				width: 100%;
+			}
+
+			.work .normal {
+				width: 70%;
+			}
+
+			.coffee .normal {
+				width: 180px;
+			}
+
+			.wip .normal {
+				width: 30%;
+			}
+
+			.art .normal {
+				width: 240px;
+			}
+
+			.connect .normal {
+				width: 100px;
+			}
+		}
+
+
+		@media (max-width: 640px) {
+			.wrap {
+
+				/* no side padding */
+				display: block;
+				/* stop grid centering */
+			}
+
+			.stage {
+				width: 100%;
+				/* full screen width */
+				height: 100%;
+				margin: 0;
+				/* no centering */
+				border-radius: 0;
+				/* edge-to-edge */
+			}
+
+			.projects {
+				left: 37%;
+				top: 20%;
+
+			}
+
+			.resume {
+				left: 70%;
+				top: 48%;
+
+			}
+
+			.coffee {
+				left: 7%;
+				Bottom: 6%;
+
+			}
+
+			.work {
+				left: 28%;
+				bottom: 25%;
+
+			}
+
+			.connect {
+				left: 80%;
+				top: 5%;
+
+			}
+
+			/* .art {
+				left: 10%;
+				top: 45%;
+
+			} */
+
+
+			.wip {
+				left: 8%;
+				top: 10%;
+
+			}
+
+			/* MOBILE POSITIONS (stacked, not cluttered) */
+			/* .obj .normal {
+				width: 180px;
+			} */
+
+			.wip .normal {
+				width: 20vw;
+			}
+
+
+			.projects .normal {
+				width: 60VW;
+			}
+
+			.connect .normal {
+				width: 20vw;
+			}
+
+			.art .normal {
+
+				width: 40vw;
+			}
+
+			.resume .normal {
+				width: 30vw;
+			}
+
+			.work .normal {
+				width: 40vw;
+			}
+
+			.coffee .normal {
+				width: 30vw;
+			}
+		}
+
+		.modal {
+			border: none;
+			padding: 0;
+			background: transparent;
+		}
+
+		.modal::backdrop {
+			background: rgba(20, 20, 20, 0.35);
+			backdrop-filter: blur(2px);
+		}
+
+		.modalCard {
+			width: min(960px, calc(100vw - 24px));
+			height: min(78vh, 740px);
+			margin: auto;
+			background: #fffcf4;
+			border-radius: 18px;
+			box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
+			overflow: hidden;
+			display: grid;
+			grid-template-rows: auto 1fr;
+		}
+
+		.modalHeader {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 12px;
+			padding: 12px 14px;
+			border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+		}
+
+		.modalTitle {
+			font-weight: 700;
+		}
+
+		.modalActions {
+			display: flex;
+			gap: 8px;
+			align-items: center;
+		}
+
+		button.obj {
+			appearance: none;
+			-webkit-appearance: none;
+			border: 0;
+			padding: 0;
+			margin: 0;
+			background: transparent;
+			font: inherit;
+			color: inherit;
+			line-height: 0;
+		}
+
+		.btn {
+			border: 1px solid rgba(0, 0, 0, 0.18);
+			background: #fff;
+			padding: 8px 10px;
+			border-radius: 12px;
+			font-size: 13px;
+			text-decoration: none;
+			color: #111;
+			display: inline-flex;
+			align-items: center;
+			gap: 6px;
+			cursor: pointer;
+		}
+
+		.btnSecondary {
+			background: #fffcf4;
+		}
+
+		.btnGhost {
+			background: transparent;
+			border: 0;
+			font-size: 16px;
+			padding: 6px 10px;
+		}
+
+		.modalBody {
+			height: 100%;
+		}
+
+		.pdfFrame {
+			width: 100%;
+			height: 100%;
+			border: 0;
+			background: #fff;
+		}
+
+		@media (min-width: 1024px) {
+			.modalCard {
+				width: 78vw;
+				/* ← THIS is the key change */
+				max-width: 1400px;
+				/* safety cap for ultra-wide screens */
+				height: 86vh;
+				border-radius: 22px;
+			}
+		}
+
+		@media (min-width: 900px) {
+			.modalCard {
+				width: min(1200px, calc(100vw - 80px));
+				height: min(88vh, 920px);
+				border-radius: 22px;
+			}
+
+			.modalHeader {
+				padding: 14px 18px;
+			}
+
+			.modalTitle {
+				font-size: 18px;
+			}
+
+			.btn {
+				padding: 10px 12px;
+				font-size: 14px;
+				border-radius: 14px;
+			}
+		}
+
+		/* Phone tweaks */
+		@media (max-width: 640px) {
+			.modalCard {
+				width: calc(100vw - 16px);
+				height: 82vh;
+				border-radius: 16px;
+			}
+
+			.modalActions {
+				flex-wrap: wrap;
+				justify-content: flex-end;
+			}
+		}
+	</style>
+</head>
+
+<body>
+	<div class="topbar">
+		<div class="brand">
+			<div class="logo" aria-label="Logo (placeholder)"></div>
+			<div>
+				<div style="font-weight:800; line-height:1;">{NAME}</div>
+				<div style="opacity:.7; font-size:14px;">{ROLE}</div>
+			</div>
+		</div>
+		<div class="hint">Click an object ✦</div>
+	</div>
+
+	<main class="wrap">
+		<section class="stage" aria-label="Interactive desk scene">
+
+
+			<!-- Projects -->
+			<a class="obj projects wobble" href="/projects" aria-label="Projects">
+				<img class="normal" src="/img/obj/Projects.png" alt="" />
+				<img class="hover" src="/img/obj/Projects-hover.png" alt="" />
+			</a>
+
+			<!-- Resume -->
+			<button class="obj resume wobble" type="button" aria-label="Open Resume" data-open-resume
+				style="--wTime:4.4s; --wRot:0.5deg;">
+				<img class="normal" src="/img/obj/Resume.png" alt="" />
+				<img class="hover" src="/img/obj/Resume-hover.png" alt="" />
+			</button>
+
+			<!-- Work -->
+			<a class="obj work wobble" style="--wTime:4.8s; --wRot:0.4deg;" href="/work" aria-label="Work">
+				<img class="normal" src="/img/obj/Work.png" alt="" />
+				<img class="hover" src="/img/obj/Work-hover.png" alt="" />
+			</a>
+
+			<!-- Coffee -->
+			<a class="obj coffee wobble" style="--wTime:3.2s; --wRot:0.8deg;" href="#" aria-label="Buy me a coffee">
+				<img class="normal" src="/img/obj/Coffee.png" alt="" />
+				<img class="hover" src="/img/obj/Coffee-hover.png" alt="" />
+			</a>
+
+			<!-- WIP -->
+			<a class="obj wip wobble" style="--wTime:4.8s; --wRot:0.4deg;" href="/work" aria-label="WIP">
+				<img class="normal" src="/img/obj/WIP.png" alt="" />
+				<img class="hover" src="/img/obj/WIP-hover.png" alt="" />
+			</a>
+
+			<!-- Art -->
+			<a class="obj art wobble" style="--wTime:4.8s; --wRot:0.4deg;" href="/art" aria-label="Art">
+				<img class="normal" src="/img/obj/Art.png" alt="" />
+				<img class="hover" src="/img/obj/Art-hover.png" alt="" />
+			</a>
+			<!-- Contact Open Modal -->
+			<a class="obj connect wobble" style="--wTime:4.4s; --wRot:0.5deg;" aria-label="Open Contact"
+				data-open-contact>
+				<img class="normal" src="/img/obj/Contactme.png" alt="" />
+				<img class="hover" src="/img/obj/Contactme-hover.png" alt="" />
+			</a>
+
+
+		</section>
+		<a class="fixed-you" href="/about" aria-label="About Me">
+			<img src="/img/obj/About.png" alt="Amasha" />
+		</a>
+
+		<dialog id="contactDialog" aria-label="Contact">
+			<div class="modalTop">
+				<div style="font-weight:800;">Connect</div>
+				<button class="x" type="button" aria-label="Close" data-close-contact>✕</button>
+			</div>
+
+			<p style="margin:10px 0 6px;">
+				Email: <a href="mailto:YOUR_EMAIL_HERE">YOUR_EMAIL_HERE</a>
+			</p>
+			<div>
+				<a href="YOUR_LINKEDIN_URL">LinkedIn</a> ·
+				<a href="YOUR_INSTAGRAM_URL">Instagram</a>
+			</div>
+		</dialog>
+		<dialog class="modal" id="resumeModal" aria-label="Resume viewer">
+			<div class="modalCard">
+				<header class="modalHeader">
+					<div class="modalTitle">Resume</div>
+
+					<div class="modalActions">
+						<a class="btn" href="/files/Amasha_Das_Resume.pdf" download>Download PDF</a>
+						<a class="btn btnSecondary" href="/files/Amasha_Das_Europass.pdf" target="_blank"
+							rel="noreferrer">
+							Europass CV
+						</a>
+						<button class="btn btnGhost" type="button" data-close-resume aria-label="Close">✕</button>
+					</div>
+				</header>
+
+				<div class="modalBody">
+					<iframe class="pdfFrame" src="/files/Amasha_Das_Resume.pdf#zoom=page-width"
+						title="Amasha Das Resume"></iframe>
+				</div>
+			</div>
+		</dialog>
+
+
+		<script>
+			const dlg = document.getElementById("contactDialog");
+			document.querySelector("[data-open-contact]")?.addEventListener("click", () => dlg.showModal());
+			document.querySelector("[data-close-contact]")?.addEventListener("click", () => dlg.close());
+			const resumeModal = document.getElementById("resumeModal");
+			const openBtn = document.querySelector("[data-open-resume]");
+			const closeBtn = document.querySelector("[data-close-resume]");
+
+			if (openBtn && resumeModal) {
+				openBtn.addEventListener("click", () => resumeModal.showModal());
+			}
+
+			if (closeBtn && resumeModal) {
+				closeBtn.addEventListener("click", () => resumeModal.close());
+			}
+
+			// Close when clicking outside the card
+			resumeModal?.addEventListener("click", (e) => {
+				const card = resumeModal.querySelector(".modalCard");
+				if (card && !card.contains(e.target)) resumeModal.close();
+			});
+		</script>
+	</main>
+</body>
+
+</html>
