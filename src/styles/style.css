@@ -23,7 +23,7 @@
 			/* no scroll on home */
 			font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
 			background-color: #fffcf4;
-			background-image: url("/img/obj/floral-bg.png");
+			background-image: url("../img/obj/floral-bg.png");
 			/* your static image */
 			background-repeat: repeat;
 			/* tile-friendly */

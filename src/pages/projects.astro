@@ -1,19 +1,19 @@
 ---
 const projects = [
-  { id: 1, title: "Kitty Kitty Bang Bang", image: "/img/projects/Project1.png", description: `A fast-paced action game featuring feline chaos and explosive fun.`, behance: "https://www.behance.net/project1" },
-  { id: 2, title: "Hotel Espir", image: "/img/projects/Project2.png", description: `Narrative horror experience using sound as the primary puzzle mechanic.`, behance: "https://www.behance.net/project2" },
-  { id: 3, title: "Uphill Both Ways", image: "/img/projects/Project4.png", description: `A comedic climbing game where childhood memories turn into ridiculous obstacles.`, behance: "https://www.behance.net/project3" },
-  { id: 4, title: "Bloom & Burrow", image: "/img/projects/Project3.png", description: `A cozy forest-revival game about restoring an ecosystem.`, behance: "https://www.behance.net/project4" },
-  { id: 5, title: "Whisper Protocol", image: "/img/projects/Project1.png", description: `Stealth-based espionage game where communication is your greatest weapon.`, behance: "https://www.behance.net/project5" },
-  { id: 6, title: "Chromatic Shift", image: "/img/projects/Project2.png", description: `Puzzle platformer where color transformation unlocks new pathways.`, behance: "https://www.behance.net/project6" },
-  { id: 7, title: "Midnight Recipe", image: "/img/projects/Project4.png", description: `Cozy cooking adventure set in a magical midnight cafe.`, behance: "https://www.behance.net/project7" },
-  { id: 8, title: "Void Echo", image: "/img/projects/Project3.png", description: `Minimalist exploration game about discovering beauty in emptiness.`, behance: "https://www.behance.net/project8" },
-  { id: 9, title: "Cascade Factory", image: "/img/projects/Project1.png", description: `Time-management puzzle where you construct increasingly complex machines.`, behance: "https://www.behance.net/project9" },
-  { id: 10, title: "Ember Heart", image: "/img/projects/Project2.png", description: `Narrative-driven adventure about rekindling lost connections.`, behance: "https://www.behance.net/project10" },
-  { id: 11, title: "Neon Drift", image: "/img/projects/Project4.png", description: `Synthwave racing game with dynamic soundtrack integration.`, behance: "https://www.behance.net/project11" },
-  { id: 12, title: "Wildroot Studios", image: "/img/projects/Project3.png", description: `Creative sandbox for building and exploring procedural worlds.`, behance: "https://www.behance.net/project12" },
-  { id: 13, title: "Phantom Frames", image: "/img/projects/Project1.png", description: `Stop-motion inspired puzzle game about building animated scenes.`, behance: "https://www.behance.net/project13" },
-  { id: 14, title: "Echo Legacy", image: "/img/projects/Project2.png", description: `Generational story game where choices ripple through time.`, behance: "https://www.behance.net/project14" },
+  { id: 1, title: "Kitty Kitty Bang Bang", image: "../img/projects/Project1.png", description: `A fast-paced action game featuring feline chaos and explosive fun.`, behance: "https://www.behance.net/project1" },
+  { id: 2, title: "Hotel Espir", image: "../img/projects/Project2.png", description: `Narrative horror experience using sound as the primary puzzle mechanic.`, behance: "https://www.behance.net/project2" },
+  { id: 3, title: "Uphill Both Ways", image: "../img/projects/Project4.png", description: `A comedic climbing game where childhood memories turn into ridiculous obstacles.`, behance: "https://www.behance.net/project3" },
+  { id: 4, title: "Bloom & Burrow", image: "../img/projects/Project3.png", description: `A cozy forest-revival game about restoring an ecosystem.`, behance: "https://www.behance.net/project4" },
+  { id: 5, title: "Whisper Protocol", image: "../img/projects/Project1.png", description: `Stealth-based espionage game where communication is your greatest weapon.`, behance: "https://www.behance.net/project5" },
+  { id: 6, title: "Chromatic Shift", image: "../img/projects/Project2.png", description: `Puzzle platformer where color transformation unlocks new pathways.`, behance: "https://www.behance.net/project6" },
+  { id: 7, title: "Midnight Recipe", image: "../img/projects/Project4.png", description: `Cozy cooking adventure set in a magical midnight cafe.`, behance: "https://www.behance.net/project7" },
+  { id: 8, title: "Void Echo", image: "../img/projects/Project3.png", description: `Minimalist exploration game about discovering beauty in emptiness.`, behance: "https://www.behance.net/project8" },
+  { id: 9, title: "Cascade Factory", image: "../img/projects/Project1.png", description: `Time-management puzzle where you construct increasingly complex machines.`, behance: "https://www.behance.net/project9" },
+  { id: 10, title: "Ember Heart", image: "../img/projects/Project2.png", description: `Narrative-driven adventure about rekindling lost connections.`, behance: "https://www.behance.net/project10" },
+  { id: 11, title: "Neon Drift", image: "../img/projects/Project4.png", description: `Synthwave racing game with dynamic soundtrack integration.`, behance: "https://www.behance.net/project11" },
+  { id: 12, title: "Wildroot Studios", image: "../img/projects/Project3.png", description: `Creative sandbox for building and exploring procedural worlds.`, behance: "https://www.behance.net/project12" },
+  { id: 13, title: "Phantom Frames", image: "../img/projects/Project1.png", description: `Stop-motion inspired puzzle game about building animated scenes.`, behance: "https://www.behance.net/project13" },
+  { id: 14, title: "Echo Legacy", image: "../img/projects/Project2.png", description: `Generational story game where choices ripple through time.`, behance: "https://www.behance.net/project14" },
 ];
 ---
 
@@ -27,7 +27,7 @@ const projects = [
 </head>
 
 <body>
-  <a href="/" class="back-btn" aria-label="Go back" onclick="if(history.length>1){event.preventDefault();history.back();}">
+  <a href="../" class="back-btn" aria-label="Go back" onclick="if(history.length>1){event.preventDefault();history.back();}">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
       <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
     </svg>
@@ -51,11 +51,11 @@ const projects = [
         ))}
       </div>
       <button id="prevPageBtn" class="edge-btn edge-btn-left" type="button" aria-label="Previous page">
-        <img src="/img/obj/Next.png" alt="" class="edge-icon edge-icon-prev" />
+        <img src="../img/obj/Next.png" alt="" class="edge-icon edge-icon-prev" />
       </button>
       <p class="page-chip"><span id="currentPage">1</span> / <span id="totalPages">{projects.length}</span></p>
       <button id="nextPageBtn" class="edge-btn edge-btn-right" type="button" aria-label="Next page">
-        <img src="/img/obj/Next.png" alt="" class="edge-icon" />
+        <img src="../img/obj/Next.png" alt="" class="edge-icon" />
       </button>
     </section>
   </main>
@@ -225,7 +225,7 @@ const projects = [
     width: min(92vw, calc(100dvh * 1.6));
     height: 100dvh;
     max-height: 100dvh;
-    background-image: url("/img/obj/Projectbook.png");
+    background-image: url("../img/obj/Projectbook.png");
     background-size: auto 100%;
     background-position: center;
     background-repeat: no-repeat;
@@ -245,7 +245,7 @@ const projects = [
 
   .project-page {
     background-color: #f7f1e4;
-    background-image: linear-gradient(rgba(239, 241, 232, 0.5), rgba(227, 235, 160, 0.2)), url("/img/obj/bookBkg.png");
+    background-image: linear-gradient(rgba(239, 241, 232, 0.5), rgba(227, 235, 160, 0.2)), url("../img/obj/bookBkg.png");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -415,7 +415,7 @@ const projects = [
       width: min(96vw, calc(100svh * 1.6));
       height: 100svh;
       max-height: 100svh;
-      background-image: url("/img/obj/Projectbooksmall.png");
+      background-image: url("../img/obj/Projectbooksmall.png");
       background-size: auto 100%;
       background-position: center;
       background-repeat: no-repeat;
@@ -451,3 +451,4 @@ const projects = [
     }
   }
 </style>
+
