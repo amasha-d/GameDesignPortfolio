@@ -1,33 +1,608 @@
+<!doctype html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Work XP</title>
+    <title>Work — Roadmap</title>
     <style>
-      body{ margin:0; font-family:system-ui; padding:24px; }
-      .top{ display:flex; justify-content:space-between; align-items:center; gap:12px; }
-      .btn{ padding:10px 14px; border-radius:12px; border:1px solid rgba(0,0,0,.18); text-decoration:none; }
-      .timeline{ margin-top:18px; display:grid; gap:14px; }
-      .item{ border-left:3px solid rgba(0,0,0,.2); padding-left:14px; }
-      .role{ font-weight:800; }
-      .meta{ opacity:.7; font-size:14px; margin-top:2px; }
+        :root {
+            --nav-width: 320px;
+            --bg1: #222;
+            --bg2: #444;
+            --font: #fff;
+            --muted: #ddd;
+            --accent: #22a7f0;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            font-family: "Roboto Slab", serif;
+            color: var(--font);
+        }
+
+        body {
+            background: linear-gradient(to bottom, var(--bg1), var(--bg2));
+        }
+
+        .wrapper {
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Nav */
+        .nav__wrapper {
+            position: fixed;
+            height: 100%;
+            left: 0;
+            top: 0;
+            padding: 30px;
+            display: flex;
+            flex-flow: column nowrap;
+            justify-content: flex-end;
+            width: var(--nav-width);
+        }
+
+        .nav {
+            list-style: none;
+            margin: 0;
+            padding: 0 0 100px 30px;
+        }
+
+        .nav li {
+            position: relative;
+            margin-bottom: 1em;
+            transition: all 0.3s ease-out;
+        }
+
+        .nav li:after {
+            content: "";
+            display: block;
+            border-left: 2px solid var(--font);
+            border-top: 2px solid var(--font);
+            height: 250px;
+            width: 20px;
+            position: absolute;
+            left: -30px;
+            top: 15px;
+            opacity: 0.15;
+        }
+
+        .nav a {
+            display: block;
+            color: var(--font);
+            text-decoration: none;
+            padding: 0;
+            transition: all 0.15s ease-out;
+        }
+
+        .nav a:hover {
+            padding-left: 1em;
+        }
+
+        .nav__counter {
+            font-size: 24px;
+            display: block;
+        }
+
+        .nav__title {
+            font-size: 32px;
+            font-weight: 300;
+            margin: 0 0 0.25em;
+            width: 300px;
+            height: 0;
+            overflow: hidden;
+            opacity: 0;
+            transition:
+                height 0.3s,
+                opacity 0.2s;
+        }
+
+        .nav__body {
+            font-weight: 300;
+            font-size: 18px;
+            width: 300px;
+            height: 0;
+            overflow: hidden;
+            opacity: 0;
+            transition:
+                height 0.3s,
+                opacity 0.2s;
+        }
+
+        .nav li.active {
+            pointer-events: none;
+            padding-left: 1em;
+        }
+
+        .nav li.active:after {
+            width: 35px;
+            height: 400px;
+            top: 35px;
+        }
+
+        .nav li.active .nav__counter {
+            font-size: 48px;
+        }
+
+        .nav li.active .nav__title {
+            height: 40px;
+            opacity: 1;
+            overflow: visible;
+        }
+
+        .nav li.active .nav__body {
+            height: 100px;
+            opacity: 1;
+            overflow: visible;
+        }
+
+        /* Sections */
+        .sections {
+            margin-left: var(--nav-width);
+        }
+
+        .section {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            font-weight: 100;
+        }
+
+        .section:nth-child(1) {
+            background: #ffffff11;
+        }
+
+        .section:nth-child(2) {
+            background: #f64747;
+        }
+
+        .section:nth-child(3) {
+            background: #22a7f0;
+        }
+
+        .section:nth-child(4) {
+            background: #f9690e;
+        }
+
+        .section:nth-child(5) {
+            background: #9b59b6;
+        }
+
+        .section:nth-child(6) {
+            background: #03c9a9;
+        }
+
+        /* small screens: nav becomes top horizontal */
+        @media (max-width: 900px) {
+            .nav__wrapper {
+                position: fixed;
+                left: 0;
+                right: 0;
+                top: 0;
+                height: auto;
+                width: 100%;
+                padding: 12px;
+                background: linear-gradient(180deg,
+                        rgba(0, 0, 0, 0.25),
+                        rgba(0, 0, 0, 0.15));
+            }
+
+            /* Hide navbar entirely on small phone screens */
+            @media (max-width: 600px) {
+                .nav__wrapper {
+                    display: none !important;
+                }
+
+                .nav-toggle {
+                    display: none !important;
+                }
+
+                .sections {
+                    margin-left: 0;
+                    margin-top: 0;
+                }
+
+                .section {
+                    padding: 24px;
+                    text-align: center;
+                }
+            }
+
+            .nav {
+                display: flex;
+                gap: 18px;
+                padding: 0;
+                margin: 0 12px 0 0;
+                overflow: auto;
+            }
+
+            .nav li:after {
+                display: none;
+            }
+
+            .sections {
+                margin-left: 0;
+                margin-top: 84px;
+            }
+
+            /* show toggle */
+            .nav-toggle {
+                display: block;
+            }
+
+            .nav__wrapper {
+                padding-top: 56px;
+            }
+
+            .nav {
+                gap: 12px;
+            }
+
+            .nav a {
+                padding: 8px 10px;
+            }
+
+            .nav__title {
+                display: block;
+            }
+
+            .nav__body {
+                display: block;
+            }
+        }
+
+        /* small visual nicety */
+        .nav__counter,
+        .nav__title,
+        .nav__body {
+            color: var(--font);
+        }
+
+        .nav__title,
+        .nav__body {
+            background: transparent;
+        }
+
+        /* Nav toggle (mobile) */
+        .nav-toggle {
+            display: none;
+            position: absolute;
+            left: 12px;
+            top: 12px;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: var(--font);
+            padding: 8px 10px;
+            border-radius: 8px;
+            font-size: 18px;
+        }
+
+        .nav__wrapper.open {
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.25));
+        }
+
+        .nav__wrapper.open .nav {
+            display: flex;
+            flex-direction: column;
+            max-height: 60vh;
+            overflow: auto;
+            padding: 12px;
+        }
+
+        .nav__wrapper.open .nav li {
+            margin-bottom: 0.75rem;
+        }
+
+        /* Back button (top-left) */
+        .back-btn {
+            position: fixed;
+            left: 12px;
+            top: 12px;
+            z-index: 1200;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0, 0, 0, 0.45);
+            color: var(--font);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 8px 12px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 16px;
+            backdrop-filter: blur(4px);
+        }
+
+        .back-btn svg {
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        /* Scroll indicator (bottom-right) */
+        .scroll-indicator {
+            position: fixed;
+            right: 18px;
+            bottom: 18px;
+            z-index: 1200;
+            width: 64px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0.95;
+            transition: transform 0.2s ease, opacity 0.2s ease;
+        }
+
+        .scroll-indicator img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transform-origin: center bottom;
+            animation: bobble 1.6s ease-in-out infinite;
+        }
+
+        @keyframes bobble {
+            0% {
+                transform: translateY(0);
+            }
+
+            25% {
+                transform: translateY(-6px);
+            }
+
+            50% {
+                transform: translateY(0);
+            }
+
+            75% {
+                transform: translateY(-3px);
+            }
+
+            100% {
+                transform: translateY(0);
+            }
+        }
     </style>
-  </head>
-  <body>
-    <div class="top">
-      <div>
-        <h1 style="margin:0;">Work Experience</h1>
-        <a href="/">← Back to scene</a>
-      </div>
-      <a class="btn" href="/resume.pdf" download>Download Resume</a>
+</head>
+
+<body data-spy="scroll" data-target="#navbar-example">
+    <div class="wrapper">
+        <a href="/" class="back-btn" aria-label="Go back"
+            onclick="if(history.length>1){event.preventDefault();history.back();}">
+            <!-- simple chevron -->
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true">
+                <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" />
+            </svg>
+            Back
+        </a>
+        <nav class="nav__wrapper" id="navbar-example">
+            <button class="nav-toggle" aria-expanded="false" aria-label="Open navigation">☰</button>
+            <ul class="nav">
+                <li role="presentation" class="active">
+                    <a href="#section1"><span class="nav__counter">2025</span>
+                        <h3 class="nav__title">
+                            Current
+                        </h3>
+                        <p class="nav__body">Senior Game Designer — Current.</p>
+                    </a>
+                </li>
+                <li role="presentation">
+                    <a href="#section2"><span class="nav__counter">2024</span>
+                        <h3 class="nav__title">
+                            Collab Work
+                        </h3>
+                        <p class="nav__body">Senior Visual & UX period.</p>
+                    </a>
+                </li>
+                <li role="presentation">
+                    <a href="#section3"><span class="nav__counter">2022</span>
+                        <h3 class="nav__title">
+                            Product Push
+                        </h3>
+                        <p class="nav__body">Lead Designer period.</p>
+                    </a>
+                </li>
+                <li role="presentation">
+                    <a href="#section4"><span class="nav__counter">2020</span>
+                        <h3 class="nav__title">
+                            Side Projects
+                        </h3>
+                        <p class="nav__body">Independent work.</p>
+                    </a>
+                </li>
+                <li role="presentation">
+                    <a href="#section5"><span class="nav__counter">2019</span>
+                        <h3 class="nav__title">
+                            Growing Team
+                        </h3>
+                        <p class="nav__body">Associate Designer details.</p>
+                    </a>
+                </li>
+                <li role="presentation">
+                    <a href="#section6"><span class="nav__counter">2018</span>
+                        <h3 class="nav__title">
+                            Early Studio
+                        </h3>
+                        <p class="nav__body">
+                            <strong>Intro</strong> — Timeline-style navigation.
+                        </p>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="sections">
+            <section class="section" id="section1">
+                2025 — Current<br /><small style="opacity:.8;color:var(--muted)">Lorem ipsum dolor sit amet.</small>
+            </section>
+            <section class="section" id="section2">
+                2024 — Collab Work<br /><small style="opacity:.8;color:var(--muted)">Lorem ipsum dolor sit amet.</small>
+            </section>
+            <section class="section" id="section3">
+                2022 — Product Push<br /><small style="opacity:.8;color:var(--muted)">Lorem ipsum dolor sit
+                    amet.</small>
+            </section>
+            <section class="section" id="section4">
+                2020 — Side Projects<br /><small style="opacity:.8;color:var(--muted)">Lorem ipsum dolor sit
+                    amet.</small>
+            </section>
+            <section class="section" id="section5">
+                2019 — Growing Team<br /><small style="opacity:.8;color:var(--muted)">Lorem ipsum dolor sit
+                    amet.</small>
+            </section>
+            <section class="section" id="section6">
+                2018 — Early Studio<br /><small style="opacity:.8;color:var(--muted)">Lorem ipsum dolor sit
+                    amet.</small>
+            </section>
+        </div>
+    </div>
+    <!-- Scroll indicator (click to jump to first section) -->
+    <div class="scroll-indicator" role="button" aria-label="Scroll down" tabindex="0">
+        <img src="/img/obj/Scroll.png" alt="Scroll down" />
     </div>
 
-    <div class="timeline">
-      <div class="item">
-        <div class="role">Role — Company</div>
-        <div class="meta">Dates</div>
-        <div>1–2 impact lines.</div>
-      </div>
-    </div>
-  </body>
+    <script>
+        // Smooth scroll + scrollspy (vanilla)
+        const navLinks = Array.from(document.querySelectorAll('.nav a[href^="#"]'));
+        const navItems = Array.from(document.querySelectorAll('.nav li'));
+        const sections = Array.from(document.querySelectorAll('.section'));
+        const navWrapper = document.querySelector('.nav__wrapper');
+        const navToggle = document.querySelector('.nav-toggle');
+
+        function setActiveById(id) {
+            navItems.forEach((li) => li.classList.remove("active"));
+            const link = document.querySelector('.nav a[href="#' + id + '"]');
+            if (link) link.closest("li").classList.add("active");
+        }
+
+        navLinks.forEach((link) => {
+            if (link.getAttribute("href") === "#") return;
+            link.addEventListener("click", (e) => {
+                const href = link.getAttribute("href");
+                if (!href || !href.startsWith("#")) return;
+                const id = href.slice(1);
+                const target =
+                    document.getElementById(id) ||
+                    document.querySelector('[name="' + id + '"]');
+                if (target) {
+                    // Mobile UX: if nav is full-width (mobile), first tap should activate the item
+                    if (window.innerWidth <= 900) {
+                        const li = link.closest('li');
+                        if (!li.classList.contains('active')) {
+                            e.preventDefault();
+                            setActiveById(id);
+                            // keep nav open for reading; user can tap again to navigate
+                            return;
+                        }
+                    }
+                    e.preventDefault();
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    history.pushState ? history.pushState(null, '', '#' + id) : (location.hash = '#' + id);
+                    setActiveById(id);
+                    // on mobile, collapse nav after navigation
+                    if (window.innerWidth <= 900 && navWrapper.classList.contains('open')) {
+                        navWrapper.classList.remove('open');
+                        navToggle.setAttribute('aria-expanded', 'false');
+                    }
+                }
+            });
+        });
+
+        // Toggle nav on small screens
+        if (navToggle) {
+            navToggle.addEventListener('click', () => {
+                const open = navWrapper.classList.toggle('open');
+                navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+            });
+            // close when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!navWrapper.contains(e.target) && navWrapper.classList.contains('open')) {
+                    navWrapper.classList.remove('open');
+                    navToggle.setAttribute('aria-expanded', 'false');
+                }
+            });
+        }
+
+        if ("IntersectionObserver" in window) {
+            const io = new IntersectionObserver(
+                (entries) => {
+                    entries.forEach((entry) => {
+                        if (entry.isIntersecting) {
+                            setActiveById(entry.target.id);
+                            history.replaceState &&
+                                history.replaceState(null, "", "#" + entry.target.id);
+                        }
+                    });
+                },
+                { threshold: 0.55 },
+            );
+            sections.forEach((s) => io.observe(s));
+        } else {
+            const onScroll = () => {
+                let found = false;
+                for (const s of sections) {
+                    const rect = s.getBoundingClientRect();
+                    if (
+                        rect.top <= window.innerHeight * 0.4 &&
+                        rect.bottom >= window.innerHeight * 0.4
+                    ) {
+                        setActiveById(s.id);
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) navItems.forEach((li) => li.classList.remove("active"));
+            };
+            window.addEventListener("scroll", onScroll, { passive: true });
+            window.addEventListener("load", onScroll);
+        }
+
+        window.addEventListener("load", () => {
+            const hash = location.hash.replace("#", "");
+            if (hash) setActiveById(hash);
+            else if (sections.length) setActiveById(sections[0].id);
+        });
+
+        // Back button is handled inline (history.back) — add keyboard/click support for scroll indicator
+        const scrollIndicator = document.querySelector('.scroll-indicator');
+        if (scrollIndicator) {
+            const scrollToFirst = () => {
+                if (sections && sections.length) {
+                    sections[0].scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            };
+            scrollIndicator.addEventListener('click', scrollToFirst);
+            scrollIndicator.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    scrollToFirst();
+                }
+            });
+            // hide once user scrolls past the first viewport
+            const hideOnScroll = () => {
+                if (window.scrollY > window.innerHeight * 0.15) {
+                    scrollIndicator.style.opacity = '0';
+                    scrollIndicator.style.pointerEvents = 'none';
+                } else {
+                    scrollIndicator.style.opacity = '0.95';
+                    scrollIndicator.style.pointerEvents = '';
+                }
+            };
+            window.addEventListener('scroll', hideOnScroll, { passive: true });
+            hideOnScroll();
+        }
+    </script>
+</body>
+
 </html>

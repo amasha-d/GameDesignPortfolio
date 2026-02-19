@@ -1,0 +1,412 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Art Gallery</title>
+    <style>
+        :root {
+            --bg: #0f0f11;
+            --font: #fff;
+            --muted: #cfcfcf;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            font-family: Inter, system-ui, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--font);
+        }
+
+        #gallery {
+            padding: 40px 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 0;
+        }
+
+        #image-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .image {
+            aspect-ratio: 1;
+        }
+
+        .img-wrapper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+        }
+
+        .img-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            cursor: pointer;
+        }
+
+        .img-overlay {
+            background: rgba(0, 0, 0, 0.7);
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            cursor: pointer;
+        }
+
+        .img-overlay::after {
+            content: '+';
+            color: #fff;
+            font-size: 4rem;
+            font-weight: 300;
+        }
+
+        .img-wrapper:hover .img-overlay {
+            opacity: 1;
+        }
+
+        /* Lightbox overlay */
+        #overlay {
+            display: none;
+            background: rgba(0, 0, 0, 0.85);
+            width: 100%;
+            height: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+
+        #overlay.show {
+            display: flex;
+        }
+
+        #overlay img {
+            max-width: 90%;
+            max-height: 70vh;
+            object-fit: contain;
+            display: none;
+            border-radius: 8px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.8);
+        }
+
+        #overlay img.active {
+            display: block;
+        }
+
+        #nextButton,
+        #prevButton {
+            color: #fff;
+            font-size: 3.5rem;
+            font-weight: 300;
+            cursor: pointer;
+            padding: 10px 20px;
+            transition: opacity 0.3s ease;
+            user-select: none;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            line-height: 1;
+        }
+
+        #nextButton:hover,
+        #prevButton:hover {
+            opacity: 0.6;
+        }
+
+        #prevButton {
+            left: 20px;
+        }
+
+        #nextButton {
+            right: 20px;
+        }
+
+        #exitButton {
+            color: #fff;
+            font-size: 2.5rem;
+            font-weight: 300;
+            cursor: pointer;
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            transition: opacity 0.3s ease;
+            line-height: 1;
+        }
+
+        #exitButton:hover {
+            opacity: 0.6;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            #image-gallery {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 15px;
+            }
+
+            #nextButton,
+            #prevButton {
+                font-size: 2.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            #gallery {
+                padding: 20px 15px;
+            }
+
+            #image-gallery {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                gap: 10px;
+            }
+
+            #nextButton,
+            #prevButton {
+                font-size: 2rem;
+                padding: 5px 15px;
+            }
+
+            #exitButton {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <section id="gallery">
+        <h1>Artworks</h1>
+        <div id="image-gallery">
+            <div class="image">
+                <div class="img-wrapper">
+                    <img src="/img/artworks/Comic1.jpeg" alt="Comic1" />
+                    <div class="img-overlay"></div>
+                </div>
+            </div>
+            <div class="image">
+                <div class="img-wrapper">
+                    <img src="/img/artworks/Comic2.jpeg" alt="Comic2" />
+                    <div class="img-overlay"></div>
+                </div>
+            </div>
+            <div class="image">
+                <div class="img-wrapper">
+                    <img src="/img/artworks/Comic3.png" alt="Comic3" />
+                    <div class="img-overlay"></div>
+                </div>
+            </div>
+            <div class="image">
+                <div class="img-wrapper">
+                    <img src="/img/artworks/DGD design back.png" alt="DGD design back" />
+                    <div class="img-overlay"></div>
+                </div>
+            </div>
+            <div class="image">
+                <div class="img-wrapper">
+                    <img src="/img/artworks/Digital1.jpg" alt="Digital1" />
+                    <div class="img-overlay"></div>
+                </div>
+            </div>
+            <div class="image">
+                <div class="img-wrapper">
+                    <img src="/img/artworks/Digital2.png" alt="Digital2" />
+                    <div class="img-overlay"></div>
+                </div>
+            </div>
+            <div class="image">
+                <div class="img-wrapper">
+                    <img src="/img/artworks/Digital3.jpg" alt="Digital3" />
+                    <div class="img-overlay"></div>
+                </div>
+            </div>
+            <div class="image">
+                <div class="img-wrapper">
+                    <img src="/img/artworks/Digital4.jpg" alt="Digital4" />
+                    <div class="img-overlay"></div>
+                </div>
+            </div>
+            <div class="image">
+                <div class="img-wrapper">
+                    <img src="/img/artworks/idle.gif" alt="idle" />
+                    <div class="img-overlay"></div>
+                </div>
+            </div>
+            <div class="image">
+                <div class="img-wrapper">
+                    <img src="/img/artworks/Illustration1.jpg" alt="Illustration1" />
+                    <div class="img-overlay"></div>
+                </div>
+            </div>
+            <div class="image">
+                <div class="img-wrapper">
+                    <img src="/img/artworks/illustration2.png" alt="illustration2" />
+                    <div class="img-overlay"></div>
+                </div>
+            </div>
+            <div class="image">
+                <div class="img-wrapper">
+                    <img src="/img/artworks/logo1.png" alt="logo1" />
+                    <div class="img-overlay"></div>
+                </div>
+            </div>
+            <div class="image">
+                <div class="img-wrapper">
+                    <img src="/img/artworks/logo2.png" alt="logo2" />
+                    <div class="img-overlay"></div>
+                </div>
+            </div>
+            <div class="image">
+                <div class="img-wrapper">
+                    <img src="/img/artworks/Mapfun.png" alt="Mapfun" />
+                    <div class="img-overlay"></div>
+                </div>
+            </div>
+            <div class="image">
+                <div class="img-wrapper">
+                    <img src="/img/artworks/Traditional1.jpg" alt="Traditional1" />
+                    <div class="img-overlay"></div>
+                </div>
+            </div>
+            <div class="image">
+                <div class="img-wrapper">
+                    <img src="/img/artworks/Traditional2.jpg" alt="Traditional2" />
+                    <div class="img-overlay"></div>
+                </div>
+            </div>
+            <div class="image">
+                <div class="img-wrapper">
+                    <img src="/img/artworks/Traditional3.jpeg" alt="Traditional3" />
+                    <div class="img-overlay"></div>
+                </div>
+            </div>
+            <div class="image">
+                <div class="img-wrapper">
+                    <img src="/img/artworks/Traditional4.jpeg" alt="Traditional4" />
+                    <div class="img-overlay"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div id="overlay">
+        <div id="prevButton">‹</div>
+        <img alt="" />
+        <div id="nextButton">›</div>
+        <div id="exitButton">✕</div>
+    </div>
+
+    <script>
+        const allImages = document.querySelectorAll('#image-gallery img');
+        const overlay = document.getElementById('overlay');
+        const overlayImg = overlay.querySelector('img');
+        const prevBtn = document.getElementById('prevButton');
+        const nextBtn = document.getElementById('nextButton');
+        const exitBtn = document.getElementById('exitButton');
+
+        let currentIndex = 0;
+
+        // Add click listener to all images
+        allImages.forEach((img, idx) => {
+            img.addEventListener('click', () => {
+                currentIndex = idx;
+                overlayImg.src = img.src;
+                overlayImg.alt = img.alt;
+                overlayImg.classList.add('active');
+                overlay.classList.add('show');
+            });
+        });
+
+        // Click on overlay icons
+        document.querySelectorAll('#image-gallery .img-overlay').forEach((overlay_el, idx) => {
+            overlay_el.addEventListener('click', (e) => {
+                e.stopPropagation();
+                currentIndex = idx;
+                overlayImg.src = allImages[idx].src;
+                overlayImg.alt = allImages[idx].alt;
+                overlayImg.classList.add('active');
+                overlay.classList.add('show');
+            });
+        });
+
+        function showImage(idx) {
+            overlayImg.classList.remove('active');
+            setTimeout(() => {
+                overlayImg.src = allImages[idx].src;
+                overlayImg.alt = allImages[idx].alt;
+                overlayImg.classList.add('active');
+            }, 100);
+        }
+
+        prevBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            currentIndex = (currentIndex - 1 + allImages.length) % allImages.length;
+            showImage(currentIndex);
+        });
+
+        nextBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            currentIndex = (currentIndex + 1) % allImages.length;
+            showImage(currentIndex);
+        });
+
+        exitBtn.addEventListener('click', () => {
+            overlayImg.classList.remove('active');
+            overlay.classList.remove('show');
+        });
+
+        overlay.addEventListener('click', () => {
+            overlayImg.classList.remove('active');
+            overlay.classList.remove('show');
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (!overlay.classList.contains('show')) return;
+            if (e.key === 'ArrowLeft') {
+                currentIndex = (currentIndex - 1 + allImages.length) % allImages.length;
+                showImage(currentIndex);
+            } else if (e.key === 'ArrowRight') {
+                currentIndex = (currentIndex + 1) % allImages.length;
+                showImage(currentIndex);
+            } else if (e.key === 'Escape') {
+                overlayImg.classList.remove('active');
+                overlay.classList.remove('show');
+            }
+        });
+    </script>
+</body>
+
+</html>
