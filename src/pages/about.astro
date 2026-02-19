@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>About Me</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #f7f2ea;
+        --ink: #2a2a2a;
+        --panel-pink: #efb6d1;
+        --panel-blue: #b8c9e8;
+        --panel-lilac: #c7a8da;
+        --panel-cream: #f8f4ef;
+        --stroke: #444;
+        --muted: #666;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: "Nunito", sans-serif;
+        display: grid;
+        place-items: center;
+        padding: 1.25rem;
+      }
+
+      .back-btn {
+        position: fixed;
+        left: 12px;
+        top: 12px;
+        z-index: 1200;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(255, 255, 255, 0.92);
+        color: #1a1a1a;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        padding: 8px 12px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-size: 16px;
+        font-family: "Baloo 2", cursive;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .about-wrap {
+        width: min(920px, 96vw);
+        background: #fffdf9;
+        border: 2px solid var(--stroke);
+        border-radius: 18px;
+        padding: clamp(16px, 2vw, 28px);
+        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+      }
+
+      .card {
+        border: 2px solid var(--stroke);
+        border-radius: 14px;
+        padding: 12px 14px;
+        background: var(--panel-cream);
+        position: relative;
+      }
+
+      .pill {
+        position: absolute;
+        top: -14px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #f2f0eb;
+        border: 2px solid var(--stroke);
+        border-radius: 999px;
+        padding: 4px 16px;
+        font-family: "Baloo 2", cursive;
+        font-weight: 700;
+        letter-spacing: 0.2px;
+        white-space: nowrap;
+      }
+
+      .intro {
+        background: var(--panel-pink);
+        min-height: 170px;
+      }
+
+      .intro h1 {
+        margin: 26px 0 0;
+        line-height: 0.95;
+        font-family: "Baloo 2", cursive;
+        font-size: clamp(2rem, 3.4vw, 3rem);
+        color: #c1437e;
+      }
+
+      .facts {
+        margin-top: 12px;
+        border: 2px solid #d5a9a0;
+        border-radius: 12px;
+        background: #f7efe8;
+        padding: 10px 12px;
+        font-size: clamp(0.98rem, 1.4vw, 1.1rem);
+        line-height: 1.45;
+      }
+
+      .photo,
+      .pet-photo {
+        display: grid;
+        place-items: center;
+        border: 2px solid #919191;
+        border-radius: 12px;
+        min-height: 250px;
+        background: repeating-linear-gradient(
+          -45deg,
+          #ececec,
+          #ececec 14px,
+          #e2e2e2 14px,
+          #e2e2e2 28px
+        );
+        color: var(--muted);
+        font-weight: 700;
+        text-align: center;
+        padding: 12px;
+      }
+
+      .about {
+        background: #efc9d7;
+        min-height: 190px;
+      }
+
+      .hobbies {
+        background: var(--panel-blue);
+        min-height: 190px;
+      }
+
+      .loves {
+        background: var(--panel-lilac);
+        min-height: 190px;
+      }
+
+      .about p,
+      .hobbies ul,
+      .loves ul {
+        margin: 28px 0 0;
+        font-size: clamp(1rem, 1.4vw, 1.12rem);
+        line-height: 1.45;
+      }
+
+      .hobbies ul,
+      .loves ul {
+        padding-left: 20px;
+      }
+
+      .pet {
+        position: relative;
+        min-height: 190px;
+        display: flex;
+        align-items: stretch;
+        padding-top: 18px;
+      }
+
+      .pet .heart {
+        position: absolute;
+        top: 2px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 40px;
+        height: 40px;
+        border-radius: 999px;
+        border: 2px solid #999;
+        background: #f5f2f0;
+        display: grid;
+        place-items: center;
+        font-size: 18px;
+      }
+
+      .pet-name {
+        position: absolute;
+        bottom: -14px;
+        left: 50%;
+        transform: translateX(-50%);
+        border: 2px solid var(--stroke);
+        background: #f2f0eb;
+        border-radius: 999px;
+        padding: 4px 18px;
+        font-family: "Baloo 2", cursive;
+        font-weight: 700;
+      }
+
+      .footer {
+        margin-top: 26px;
+        text-align: center;
+        font-family: "Baloo 2", cursive;
+        font-size: 1.15rem;
+      }
+
+      @media (max-width: 760px) {
+        .grid {
+          grid-template-columns: 1fr;
+        }
+
+        .photo,
+        .pet-photo {
+          min-height: 220px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <a
+      href="/"
+      class="back-btn"
+      aria-label="Go back"
+      onclick="if(history.length>1){event.preventDefault();history.back();}"
+    >
+      <svg
+        width="18"
+        height="18"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true"
+      >
+        <path
+          d="M15 18l-6-6 6-6"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"></path>
+      </svg>
+      Back
+    </a>
+
+    <main class="about-wrap">
+      <section class="grid">
+        <article class="card intro">
+          <div class="pill">HELLO, I'M</div>
+          <h1>Amasha<br />Das</h1>
+          <div class="facts">
+            Birthday: Month Day, Year<br />
+            Zodiac Sign: Placeholder<br />
+            City: Placeholder
+          </div>
+        </article>
+
+        <article class="photo">Profile Photo Placeholder</article>
+
+        <article class="card about">
+          <div class="pill">ABOUT ME</div>
+          <p>
+            This is a short intro about you. Replace this text with your story,
+            design journey, game interests, and what makes your creative process
+            unique.
+          </p>
+        </article>
+
+        <article class="card hobbies">
+          <div class="pill">MY HOBBIES</div>
+          <ul>
+            <li>Hobby Placeholder</li>
+            <li>Hobby Placeholder</li>
+            <li>Hobby Placeholder</li>
+            <li>Hobby Placeholder</li>
+          </ul>
+        </article>
+
+        <article class="pet">
+          <div class="heart">❤</div>
+          <div class="pet-photo">Pet / Favorite Photo Placeholder</div>
+          <div class="pet-name">MOLLY</div>
+        </article>
+
+        <article class="card loves">
+          <div class="pill">THINGS I LOVE</div>
+          <ul>
+            <li>Favorite thing placeholder</li>
+            <li>Favorite thing placeholder</li>
+            <li>Favorite thing placeholder</li>
+            <li>Favorite thing placeholder</li>
+            <li>Favorite thing placeholder</li>
+          </ul>
+        </article>
+      </section>
+
+      <p class="footer">Follow me @yourhandle</p>
+    </main>
+  </body>
+</html>
