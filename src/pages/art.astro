@@ -1,5 +1,5 @@
 ---
-import { readdirSync } from "node:fs";
+import { existsSync, readdirSync } from "node:fs";
 import { extname, join } from "node:path";
 
 const allowedExts = new Set([
@@ -12,20 +12,21 @@ const allowedExts = new Set([
 ]);
 const base = import.meta.env.BASE_URL;
 const artworksDir = join(process.cwd(), "public", "img", "artworks");
+const featuredDir = join(artworksDir, "featured");
 const tabOrder = [
-"All",
+"Paintings",
+"Character Art",
+"Graphics",
 "Illustrations",
-"Logos",
-"Comics",
-"Traditional",
-"Crafts",
+"Commissions",
+"Fun",
 ];
 const bodyBgStyle =
-  "background-color:#f6f4ee;" +
-  `background-image:url('${base}img/obj/floral-bg.png');` +
-  "background-repeat:repeat;" +
-  "background-size:800px auto;" +
-  "background-position:center;";
+"background-color:#f6f4ee;" +
+`background-image:url('${base}img/obj/floral-bg.png');` +
+"background-repeat:repeat;" +
+"background-size:800px auto;" +
+"background-position:center;";
 
 type ArtworkItem = {
 src: string;
@@ -34,28 +35,14 @@ category: string;
 sortKey: string;
 };
 
-function inferCategoryFromName(name: string): string {
-const lower = name.toLowerCase();
-if (lower.includes("logo")) return "Logos";
-if (lower.includes("comic")) return "Comics";
-if (lower.includes("tradition") || lower.includes("drawing"))
-return "Traditional";
-if (
-lower.includes("craft") ||
-lower.includes("accessory") ||
-lower.includes("frame")
-)
-return "Crafts";
-return "Illustrations";
-}
-
 function categoryFromFolder(folderName: string): string | null {
-const lower = folderName.toLowerCase();
-if (lower.includes("logo")) return "Logos";
-if (lower.includes("comic")) return "Comics";
-if (lower.includes("tradition")) return "Traditional";
-if (lower.includes("craft")) return "Crafts";
-if (lower.includes("illustr")) return "Illustrations";
+const key = folderName.toLowerCase().replace(/[-_]/g, " ").trim();
+if (key === "paintings") return "Paintings";
+if (key === "character art") return "Character Art";
+if (key === "graphics") return "Graphics";
+if (key === "illustrations") return "Illustrations";
+if (key === "commissions") return "Commissions";
+if (key === "fun") return "Fun";
 return null;
 }
 
@@ -69,29 +56,63 @@ const items: ArtworkItem[] = [];
 for (const entry of entries) {
 const fullPath = join(dir, entry.name);
 if (entry.isDirectory()) {
+if (entry.name.toLowerCase() === "featured") {
+continue;
+}
+
 const nextCategory = categoryFromFolder(entry.name) ?? folderCategory;
 items.push(...listArtworkFiles(fullPath, nextCategory));
 continue;
 }
 
 const ext = extname(entry.name).toLowerCase();
-if (!allowedExts.has(ext)) continue;
+if (!allowedExts.has(ext) || !folderCategory) continue;
 
 const relPath = fullPath
 .replace(join(process.cwd(), "public"), "")
 .replaceAll("\\", "/")
 .replace(/^\/+/, "");
 
-const category = folderCategory ?? inferCategoryFromName(entry.name);
 items.push({
 src: `${base}${encodeURI(relPath)}`,
 alt: entry.name.replace(/\.[^/.]+$/, ""),
-category,
-sortKey: `${category}-${entry.name.toLowerCase()}`,
+category: folderCategory,
+sortKey: `${folderCategory}-${entry.name.toLowerCase()}`,
 });
 }
 
 return items;
+}
+
+function listFeaturedFiles(dir: string): ArtworkItem[] {
+const entries = readdirSync(dir, { withFileTypes: true });
+const items: ArtworkItem[] = [];
+
+for (const entry of entries) {
+if (!entry.isFile()) continue;
+const ext = extname(entry.name).toLowerCase();
+if (!allowedExts.has(ext)) continue;
+
+const fullPath = join(dir, entry.name);
+const relPath = fullPath
+.replace(join(process.cwd(), "public"), "")
+.replaceAll("\\", "/")
+.replace(/^\/+/, "");
+
+items.push({
+src: `${base}${encodeURI(relPath)}`,
+alt: entry.name.replace(/\.[^/.]+$/, ""),
+category: "Featured",
+sortKey: entry.name.toLowerCase(),
+});
+}
+
+return items.sort((a, b) =>
+a.sortKey.localeCompare(b.sortKey, undefined, {
+numeric: true,
+sensitivity: "base",
+}),
+);
 }
 
 const artworks = listArtworkFiles(artworksDir)
@@ -103,7 +124,11 @@ sensitivity: "base",
 )
 .map(({ sortKey, ...rest }) => rest);
 
-const featured = artworks.slice(0, 7);
+const featured = (existsSync(featuredDir)
+? listFeaturedFiles(featuredDir)
+: artworks.map((art) => ({ ...art, sortKey: art.alt.toLowerCase() })))
+.slice(0, 7)
+.map(({ sortKey, ...rest }) => rest);
 ---
 
 <!doctype html>
@@ -253,13 +278,17 @@ const featured = artworks.slice(0, 7);
         }
 
         #image-gallery {
-            display: grid;
-            grid-template-columns: repeat(4, minmax(0, 1fr));
-            gap: 14px;
+            display: block;
+            column-count: 4;
+            column-gap: 14px;
         }
 
         .image {
-            aspect-ratio: 1;
+            display: inline-block;
+            width: 100%;
+            margin: 0 0 14px;
+            break-inside: avoid;
+            -webkit-column-break-inside: avoid;
         }
 
         .image.is-hidden {
@@ -269,7 +298,7 @@ const featured = artworks.slice(0, 7);
         .img-wrapper {
             position: relative;
             width: 100%;
-            height: 100%;
+            height: auto;
             overflow: hidden;
             border-radius: 12px;
             background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
@@ -278,8 +307,8 @@ const featured = artworks.slice(0, 7);
 
         .img-wrapper img {
             width: 100%;
-            height: 100%;
-            object-fit: cover;
+            height: auto;
+            object-fit: contain;
             display: block;
             cursor: pointer;
         }
@@ -376,7 +405,7 @@ const featured = artworks.slice(0, 7);
 
         @media (max-width: 980px) {
             #image-gallery {
-                grid-template-columns: repeat(3, minmax(0, 1fr));
+                column-count: 3;
             }
         }
 
@@ -499,25 +528,33 @@ const featured = artworks.slice(0, 7);
             }, 80);
         }
 
+        function applyFilter(filter) {
+            allCards.forEach((card) => {
+                const category = card.dataset.category || "Illustrations";
+                const visible = category === filter;
+                card.classList.toggle("is-hidden", !visible);
+            });
+
+            syncActiveImages();
+            if (overlay.classList.contains("show")) {
+                overlay.classList.remove("show");
+                overlayImg.classList.remove("active");
+            }
+        }
+
         tabButtons.forEach((btn) => {
             btn.addEventListener("click", () => {
                 tabButtons.forEach((b) => b.classList.remove("active"));
                 btn.classList.add("active");
-                const filter = btn.dataset.filter || "All";
-
-                allCards.forEach((card) => {
-                    const category = card.dataset.category || "Illustrations";
-                    const visible = filter === "All" || category === filter;
-                    card.classList.toggle("is-hidden", !visible);
-                });
-
-                syncActiveImages();
-                if (overlay.classList.contains("show")) {
-                    overlay.classList.remove("show");
-                    overlayImg.classList.remove("active");
-                }
+                const filter = btn.dataset.filter || "Illustrations";
+                applyFilter(filter);
             });
         });
+
+        const initialActive = document.querySelector(".tab-btn.active");
+        if (initialActive instanceof HTMLButtonElement) {
+            applyFilter(initialActive.dataset.filter || "Illustrations");
+        }
 
         allImages.forEach((img) => {
             img.addEventListener("click", () => {
