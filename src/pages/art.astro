@@ -1,3 +1,108 @@
+---
+import { readdirSync } from "node:fs";
+import { extname, join } from "node:path";
+
+const allowedExts = new Set([
+".jpg",
+".jpeg",
+".png",
+".gif",
+".webp",
+".avif",
+]);
+const base = import.meta.env.BASE_URL;
+const artworksDir = join(process.cwd(), "public", "img", "artworks");
+const tabOrder = [
+"All",
+"Illustrations",
+"Logos",
+"Comics",
+"Traditional",
+"Crafts",
+];
+const bodyBgStyle =
+`background-color:#f6f4ee;background-image:url('${base}img/obj/floral-bg.png');background-repeat:repeat;background-size:800px
+auto;background-position:center;`;
+
+type ArtworkItem = {
+src: string;
+alt: string;
+category: string;
+sortKey: string;
+};
+
+function inferCategoryFromName(name: string): string {
+const lower = name.toLowerCase();
+if (lower.includes("logo")) return "Logos";
+if (lower.includes("comic")) return "Comics";
+if (lower.includes("tradition") || lower.includes("drawing"))
+return "Traditional";
+if (
+lower.includes("craft") ||
+lower.includes("accessory") ||
+lower.includes("frame")
+)
+return "Crafts";
+return "Illustrations";
+}
+
+function categoryFromFolder(folderName: string): string | null {
+const lower = folderName.toLowerCase();
+if (lower.includes("logo")) return "Logos";
+if (lower.includes("comic")) return "Comics";
+if (lower.includes("tradition")) return "Traditional";
+if (lower.includes("craft")) return "Crafts";
+if (lower.includes("illustr")) return "Illustrations";
+return null;
+}
+
+function listArtworkFiles(
+dir: string,
+folderCategory: string | null = null,
+): ArtworkItem[] {
+const entries = readdirSync(dir, { withFileTypes: true });
+const items: ArtworkItem[] = [];
+
+for (const entry of entries) {
+const fullPath = join(dir, entry.name);
+if (entry.isDirectory()) {
+const nextCategory = categoryFromFolder(entry.name) ?? folderCategory;
+items.push(...listArtworkFiles(fullPath, nextCategory));
+continue;
+}
+
+const ext = extname(entry.name).toLowerCase();
+if (!allowedExts.has(ext)) continue;
+
+const relPath = fullPath
+.replace(join(process.cwd(), "public"), "")
+.replaceAll("\\", "/")
+.replace(/^\/+/, "");
+
+const category = folderCategory ?? inferCategoryFromName(entry.name);
+items.push({
+src: `${base}${encodeURI(relPath)}`,
+alt: entry.name.replace(/\.[^/.]+$/, ""),
+category,
+sortKey: `${category}-${entry.name.toLowerCase()}`,
+});
+}
+
+return items;
+}
+
+const artworks = listArtworkFiles(artworksDir)
+.sort((a, b) =>
+a.sortKey.localeCompare(b.sortKey, undefined, {
+numeric: true,
+sensitivity: "base",
+}),
+)
+.map(({ sortKey, ...rest }) => rest);
+
+const featured = artworks.slice(0, 7);
+---
+
 <!doctype html>
 <html lang="en">
 
@@ -7,12 +112,16 @@
     <title>Art Gallery</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Schoolbell&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Schoolbell&family=Nunito:wght@500;700&display=swap"
+        rel="stylesheet" />
     <style>
         :root {
             --bg: #0f0f11;
             --font: #fff;
             --muted: #cfcfcf;
+            --chip: #202127;
+            --chip-active: #f0e4bf;
+            --chip-active-text: #1c1d21;
         }
 
         * {
@@ -21,10 +130,9 @@
 
         html,
         body {
-            height: 100%;
             margin: 0;
-            font-family: Inter, system-ui, Arial, sans-serif;
-            background: var(--bg);
+            min-height: 100%;
+            font-family: "Nunito", system-ui, Arial, sans-serif;
             color: var(--font);
         }
 
@@ -48,24 +156,111 @@
         }
 
         #gallery {
-            padding: 40px 30px;
-            max-width: 1200px;
+            /* padding: 76px 24px 40px; */
+            max-width: 1500px;
             margin: 0 auto;
         }
 
-        h1 {
+        .hero {
+            width: 100vw;
+            margin-left: calc(50% - 50vw);
+            margin-right: calc(50% - 50vw);
+            margin-bottom: 24px;
+            position: relative;
+        }
+
+        .hero-stage {
+            position: relative;
+            width: 100%;
+            min-height: clamp(260px, 44vw, 520px);
+            height: clamp(260px, 44vw, 520px);
+            overflow: hidden;
+            background: #15161a;
+        }
+
+        .hero-stage::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg,
+                    rgba(0, 0, 0, 0.28) 0%,
+                    rgba(0, 0, 0, 0.42) 58%,
+                    rgba(0, 0, 0, 0.58) 100%);
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .hero-slide {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            transition: opacity 0.8s ease;
+        }
+
+        .hero-slide.active {
+            opacity: 1;
+        }
+
+        .hero-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .hero-title {
+            position: absolute;
+            left: 50%;
+            bottom: clamp(16px, 4vw, 34px);
+            transform: translateX(-50%);
+            margin: 0;
+            z-index: 3;
+            font-family: "Schoolbell", cursive;
+            font-size: clamp(2.4rem, 9vw, 6rem);
+            line-height: 0.95;
+            letter-spacing: 0.01em;
+            color: #fff;
+            text-shadow: 0 4px 18px rgba(0, 0, 0, 0.65);
             text-align: center;
-            margin-top: 0;
+        }
+
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin: 0 0 18px;
+        }
+
+        .tab-btn {
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 999px;
+            background: var(--chip);
+            color: #f3f3f3;
+            padding: 8px 14px;
+            font-size: 0.95rem;
+            cursor: pointer;
+        }
+
+        .tab-btn.active {
+            background: var(--chip-active);
+            color: var(--chip-active-text);
+            border-color: rgba(0, 0, 0, 0.18);
+            font-weight: 700;
         }
 
         #image-gallery {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 14px;
         }
 
         .image {
             aspect-ratio: 1;
+        }
+
+        .image.is-hidden {
+            display: none;
         }
 
         .img-wrapper {
@@ -88,11 +283,8 @@
 
         .img-overlay {
             background: rgba(0, 0, 0, 0.7);
-            width: 100%;
-            height: 100%;
             position: absolute;
-            top: 0;
-            left: 0;
+            inset: 0;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -102,7 +294,7 @@
         }
 
         .img-overlay::after {
-            content: '+';
+            content: "+";
             color: #fff;
             font-size: 4rem;
             font-weight: 300;
@@ -112,23 +304,15 @@
             opacity: 1;
         }
 
-        /* Lightbox overlay */
         #overlay {
             display: none;
-            background: rgba(0, 0, 0, 0.85);
-            width: 100%;
-            height: 100%;
+            background: rgba(0, 0, 0, 0.88);
             position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 999;
+            inset: 0;
+            z-index: 9999;
             justify-content: center;
             align-items: center;
             flex-direction: column;
-            user-select: none;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
         }
 
         #overlay.show {
@@ -137,11 +321,11 @@
 
         #overlay img {
             max-width: 90%;
-            max-height: 70vh;
+            max-height: 72vh;
             object-fit: contain;
-            display: none;
             border-radius: 8px;
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.8);
+            display: none;
         }
 
         #overlay img.active {
@@ -151,10 +335,10 @@
         #nextButton,
         #prevButton {
             color: #fff;
-            font-size: 3.5rem;
+            font-size: 3.3rem;
             font-weight: 300;
             cursor: pointer;
-            padding: 10px 20px;
+            padding: 8px 20px;
             transition: opacity 0.3s ease;
             user-select: none;
             position: absolute;
@@ -164,7 +348,8 @@
         }
 
         #nextButton:hover,
-        #prevButton:hover {
+        #prevButton:hover,
+        #exitButton:hover {
             opacity: 0.6;
         }
 
@@ -178,47 +363,30 @@
 
         #exitButton {
             color: #fff;
-            font-size: 2.5rem;
-            font-weight: 300;
+            font-size: 2.4rem;
             cursor: pointer;
             position: absolute;
-            top: 20px;
-            right: 20px;
-            transition: opacity 0.3s ease;
+            top: 16px;
+            right: 22px;
             line-height: 1;
         }
 
-        #exitButton:hover {
-            opacity: 0.6;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
+        @media (max-width: 980px) {
             #image-gallery {
-                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-                gap: 15px;
-            }
-
-            #nextButton,
-            #prevButton {
-                font-size: 2.5rem;
+                grid-template-columns: repeat(3, minmax(0, 1fr));
             }
         }
 
-        @media (max-width: 480px) {
+        @media (max-width: 760px) {
             #gallery {
-                padding: 20px 15px;
-            }
-
-            #image-gallery {
-                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-                gap: 10px;
+                /* padding-left: 70px; */
+                padding-right: 24px;
+                padding-left: 24px;
             }
 
             #nextButton,
             #prevButton {
-                font-size: 2rem;
-                padding: 5px 15px;
+                font-size: 2.2rem;
             }
 
             #exitButton {
@@ -228,214 +396,195 @@
     </style>
 </head>
 
-<body>
-    <a href="../" class="back-btn" aria-label="Go back" onclick="if(history.length>1){event.preventDefault();history.back();}">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+<body style={bodyBgStyle}>
+    <a href={base} class="back-btn" aria-label="Go back"
+        onclick="if(history.length>1){event.preventDefault();history.back();}">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true">
+            <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round"></path>
         </svg>
         Back
     </a>
+
     <section id="gallery">
-        <h1>Artworks</h1>
+        <section class="hero" aria-label="Featured artworks">
+            <div class="hero-stage" id="heroStage">
+                {
+                featured.map((art, idx) => (
+                <div class={`hero-slide ${idx===0 ? "active" : "" }`}>
+                    <img src={art.src} alt={art.alt} loading={idx < 2 ? "eager" : "lazy" } />
+                </div>
+                ))
+                }
+                <h1 class="hero-title">Artworks</h1>
+            </div>
+        </section>
+
+        <nav class="tabs" aria-label="Artwork categories">
+            {
+            tabOrder.map((tab, idx) => (
+            <button class={`tab-btn ${idx===0 ? "active" : "" }`} type="button" data-filter={tab}>
+                {tab}
+            </button>
+            ))
+            }
+        </nav>
+
         <div id="image-gallery">
-            <div class="image">
+            {
+            artworks.map((art) => (
+            <div class="image" data-category={art.category}>
                 <div class="img-wrapper">
-                    <img src="../img/artworks/Comic1.jpeg" alt="Comic1" />
-                    <div class="img-overlay"></div>
+                    <img src={art.src} alt={art.alt} loading="lazy" />
+                    <div class="img-overlay" />
                 </div>
             </div>
-            <div class="image">
-                <div class="img-wrapper">
-                    <img src="../img/artworks/Comic2.jpeg" alt="Comic2" />
-                    <div class="img-overlay"></div>
-                </div>
-            </div>
-            <div class="image">
-                <div class="img-wrapper">
-                    <img src="../img/artworks/Comic3.png" alt="Comic3" />
-                    <div class="img-overlay"></div>
-                </div>
-            </div>
-            <div class="image">
-                <div class="img-wrapper">
-                    <img src="../img/artworks/DGD design back.png" alt="DGD design back" />
-                    <div class="img-overlay"></div>
-                </div>
-            </div>
-            <div class="image">
-                <div class="img-wrapper">
-                    <img src="../img/artworks/Digital1.jpg" alt="Digital1" />
-                    <div class="img-overlay"></div>
-                </div>
-            </div>
-            <div class="image">
-                <div class="img-wrapper">
-                    <img src="../img/artworks/Digital2.png" alt="Digital2" />
-                    <div class="img-overlay"></div>
-                </div>
-            </div>
-            <div class="image">
-                <div class="img-wrapper">
-                    <img src="../img/artworks/Digital3.jpg" alt="Digital3" />
-                    <div class="img-overlay"></div>
-                </div>
-            </div>
-            <div class="image">
-                <div class="img-wrapper">
-                    <img src="../img/artworks/Digital4.jpg" alt="Digital4" />
-                    <div class="img-overlay"></div>
-                </div>
-            </div>
-            <div class="image">
-                <div class="img-wrapper">
-                    <img src="../img/artworks/idle.gif" alt="idle" />
-                    <div class="img-overlay"></div>
-                </div>
-            </div>
-            <div class="image">
-                <div class="img-wrapper">
-                    <img src="../img/artworks/Illustration1.jpg" alt="Illustration1" />
-                    <div class="img-overlay"></div>
-                </div>
-            </div>
-            <div class="image">
-                <div class="img-wrapper">
-                    <img src="../img/artworks/illustration2.png" alt="illustration2" />
-                    <div class="img-overlay"></div>
-                </div>
-            </div>
-            <div class="image">
-                <div class="img-wrapper">
-                    <img src="../img/artworks/logo1.png" alt="logo1" />
-                    <div class="img-overlay"></div>
-                </div>
-            </div>
-            <div class="image">
-                <div class="img-wrapper">
-                    <img src="../img/artworks/logo2.png" alt="logo2" />
-                    <div class="img-overlay"></div>
-                </div>
-            </div>
-            <div class="image">
-                <div class="img-wrapper">
-                    <img src="../img/artworks/Mapfun.png" alt="Mapfun" />
-                    <div class="img-overlay"></div>
-                </div>
-            </div>
-            <div class="image">
-                <div class="img-wrapper">
-                    <img src="../img/artworks/Traditional1.jpg" alt="Traditional1" />
-                    <div class="img-overlay"></div>
-                </div>
-            </div>
-            <div class="image">
-                <div class="img-wrapper">
-                    <img src="../img/artworks/Traditional2.jpg" alt="Traditional2" />
-                    <div class="img-overlay"></div>
-                </div>
-            </div>
-            <div class="image">
-                <div class="img-wrapper">
-                    <img src="../img/artworks/Traditional3.jpeg" alt="Traditional3" />
-                    <div class="img-overlay"></div>
-                </div>
-            </div>
-            <div class="image">
-                <div class="img-wrapper">
-                    <img src="../img/artworks/Traditional4.jpeg" alt="Traditional4" />
-                    <div class="img-overlay"></div>
-                </div>
-            </div>
+            ))
+            }
         </div>
     </section>
 
     <div id="overlay">
-        <div id="prevButton">‹</div>
+        <div id="prevButton">&lsaquo;</div>
         <img alt="" />
-        <div id="nextButton">›</div>
-        <div id="exitButton">✕</div>
+        <div id="nextButton">&rsaquo;</div>
+        <div id="exitButton">&times;</div>
     </div>
 
     <script>
-        const allImages = document.querySelectorAll('#image-gallery img');
-        const overlay = document.getElementById('overlay');
-        const overlayImg = overlay.querySelector('img');
-        const prevBtn = document.getElementById('prevButton');
-        const nextBtn = document.getElementById('nextButton');
-        const exitBtn = document.getElementById('exitButton');
+        const allCards = Array.from(
+            document.querySelectorAll("#image-gallery .image"),
+        );
+        const allImages = Array.from(
+            document.querySelectorAll("#image-gallery img"),
+        );
+        const tabButtons = Array.from(document.querySelectorAll(".tab-btn"));
+        const overlay = document.getElementById("overlay");
+        const overlayImg = overlay.querySelector("img");
+        const prevBtn = document.getElementById("prevButton");
+        const nextBtn = document.getElementById("nextButton");
+        const exitBtn = document.getElementById("exitButton");
 
         let currentIndex = 0;
+        let activeImages = allImages;
 
-        // Add click listener to all images
-        allImages.forEach((img, idx) => {
-            img.addEventListener('click', () => {
-                currentIndex = idx;
-                overlayImg.src = img.src;
-                overlayImg.alt = img.alt;
-                overlayImg.classList.add('active');
-                overlay.classList.add('show');
-            });
-        });
-
-        // Click on overlay icons
-        document.querySelectorAll('#image-gallery .img-overlay').forEach((overlay_el, idx) => {
-            overlay_el.addEventListener('click', (e) => {
-                e.stopPropagation();
-                currentIndex = idx;
-                overlayImg.src = allImages[idx].src;
-                overlayImg.alt = allImages[idx].alt;
-                overlayImg.classList.add('active');
-                overlay.classList.add('show');
-            });
-        });
-
-        function showImage(idx) {
-            overlayImg.classList.remove('active');
-            setTimeout(() => {
-                overlayImg.src = allImages[idx].src;
-                overlayImg.alt = allImages[idx].alt;
-                overlayImg.classList.add('active');
-            }, 100);
+        const heroSlides = Array.from(document.querySelectorAll(".hero-slide"));
+        let heroIndex = 0;
+        if (heroSlides.length > 1) {
+            setInterval(() => {
+                heroSlides[heroIndex].classList.remove("active");
+                heroIndex = (heroIndex + 1) % heroSlides.length;
+                heroSlides[heroIndex].classList.add("active");
+            }, 2600);
         }
 
-        prevBtn.addEventListener('click', (e) => {
+        function syncActiveImages() {
+            activeImages = allCards
+                .filter((card) => !card.classList.contains("is-hidden"))
+                .map((card) => card.querySelector("img"))
+                .filter(Boolean);
+        }
+
+        function showImage(idx) {
+            if (!activeImages.length) return;
+            overlayImg.classList.remove("active");
+            setTimeout(() => {
+                overlayImg.src = activeImages[idx].src;
+                overlayImg.alt = activeImages[idx].alt;
+                overlayImg.classList.add("active");
+            }, 80);
+        }
+
+        tabButtons.forEach((btn) => {
+            btn.addEventListener("click", () => {
+                tabButtons.forEach((b) => b.classList.remove("active"));
+                btn.classList.add("active");
+                const filter = btn.dataset.filter || "All";
+
+                allCards.forEach((card) => {
+                    const category = card.dataset.category || "Illustrations";
+                    const visible = filter === "All" || category === filter;
+                    card.classList.toggle("is-hidden", !visible);
+                });
+
+                syncActiveImages();
+                if (overlay.classList.contains("show")) {
+                    overlay.classList.remove("show");
+                    overlayImg.classList.remove("active");
+                }
+            });
+        });
+
+        allImages.forEach((img) => {
+            img.addEventListener("click", () => {
+                syncActiveImages();
+                currentIndex = activeImages.indexOf(img);
+                if (currentIndex < 0) return;
+                overlayImg.src = img.src;
+                overlayImg.alt = img.alt;
+                overlayImg.classList.add("active");
+                overlay.classList.add("show");
+            });
+        });
+
+        document
+            .querySelectorAll("#image-gallery .img-overlay")
+            .forEach((overlayEl, idx) => {
+                overlayEl.addEventListener("click", (e) => {
+                    e.stopPropagation();
+                    const img = allImages[idx];
+                    if (!img) return;
+                    syncActiveImages();
+                    currentIndex = activeImages.indexOf(img);
+                    if (currentIndex < 0) return;
+                    overlayImg.src = img.src;
+                    overlayImg.alt = img.alt;
+                    overlayImg.classList.add("active");
+                    overlay.classList.add("show");
+                });
+            });
+
+        prevBtn.addEventListener("click", (e) => {
             e.stopPropagation();
-            currentIndex = (currentIndex - 1 + allImages.length) % allImages.length;
+            if (!activeImages.length) return;
+            currentIndex =
+                (currentIndex - 1 + activeImages.length) % activeImages.length;
             showImage(currentIndex);
         });
 
-        nextBtn.addEventListener('click', (e) => {
+        nextBtn.addEventListener("click", (e) => {
             e.stopPropagation();
-            currentIndex = (currentIndex + 1) % allImages.length;
+            if (!activeImages.length) return;
+            currentIndex = (currentIndex + 1) % activeImages.length;
             showImage(currentIndex);
         });
 
-        exitBtn.addEventListener('click', () => {
-            overlayImg.classList.remove('active');
-            overlay.classList.remove('show');
+        exitBtn.addEventListener("click", () => {
+            overlayImg.classList.remove("active");
+            overlay.classList.remove("show");
         });
 
-        overlay.addEventListener('click', () => {
-            overlayImg.classList.remove('active');
-            overlay.classList.remove('show');
+        overlay.addEventListener("click", () => {
+            overlayImg.classList.remove("active");
+            overlay.classList.remove("show");
         });
 
-        // Keyboard navigation
-        document.addEventListener('keydown', (e) => {
-            if (!overlay.classList.contains('show')) return;
-            if (e.key === 'ArrowLeft') {
-                currentIndex = (currentIndex - 1 + allImages.length) % allImages.length;
+        document.addEventListener("keydown", (e) => {
+            if (!overlay.classList.contains("show")) return;
+            if (e.key === "ArrowLeft") {
+                currentIndex =
+                    (currentIndex - 1 + activeImages.length) % activeImages.length;
                 showImage(currentIndex);
-            } else if (e.key === 'ArrowRight') {
-                currentIndex = (currentIndex + 1) % allImages.length;
+            } else if (e.key === "ArrowRight") {
+                currentIndex = (currentIndex + 1) % activeImages.length;
                 showImage(currentIndex);
-            } else if (e.key === 'Escape') {
-                overlayImg.classList.remove('active');
-                overlay.classList.remove('show');
+            } else if (e.key === "Escape") {
+                overlayImg.classList.remove("active");
+                overlay.classList.remove("show");
             }
         });
     </script>
 </body>
 
 </html>
-
