@@ -21,8 +21,11 @@ const tabOrder = [
 "Crafts",
 ];
 const bodyBgStyle =
-`background-color:#f6f4ee;background-image:url('${base}img/obj/floral-bg.png');background-repeat:repeat;background-size:800px
-auto;background-position:center;`;
+  "background-color:#f6f4ee;" +
+  `background-image:url('${base}img/obj/floral-bg.png');` +
+  "background-repeat:repeat;" +
+  "background-size:800px auto;" +
+  "background-position:center;";
 
 type ArtworkItem = {
 src: string;
@@ -437,7 +440,7 @@ const featured = artworks.slice(0, 7);
             <div class="image" data-category={art.category}>
                 <div class="img-wrapper">
                     <img src={art.src} alt={art.alt} loading="lazy" />
-                    <div class="img-overlay" />
+                    <div class="img-overlay"></div>
                 </div>
             </div>
             ))
