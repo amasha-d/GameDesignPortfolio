@@ -20,31 +20,57 @@ const entries = [
     year: "2025-Present",
     heading: "Lead Level Designer at LostSoulsInteractive",
     text: "Working on creating levels for a 3D horror Game called Hotel Espir. Designing levels, puzzles, strategies and more.",
+    skills: [
+      "Level Design",
+      "Puzzle Design",
+      "Gameplay Systems",
+      "Worldbuilding",
+    ],
   },
   {
     year: "2024-2025",
     heading: "Associate Game Designer at Zynga",
     text: "Add your milestone for 2024-2025 here.",
+    skills: ["Feature Design", "Prototyping", "Live Ops", "Team Collaboration"],
   },
   {
     year: "2022-2024",
     heading: "Master's in Game Design at NID",
     text: "Add your milestone for 2022-2024 here.",
+    skills: [
+      "Game Research",
+      "Player Experience",
+      "Narrative Design",
+      "Iteration",
+    ],
   },
   {
     year: "2019-2022",
     heading: "Applications Developer at DBS Bank",
     text: "Add your milestone for 2019-2022 here.",
+    skills: [
+      "Backend Development",
+      "Problem Solving",
+      "Delivery",
+      "Documentation",
+    ],
   },
   {
     year: "2018-2019",
     heading: "Developer at Capgemini",
     text: "Add your milestone for 2018-2019 here.",
+    skills: ["Software Engineering", "Debugging", "QA", "Agile Workflow"],
   },
   {
     year: "2014-2018",
     heading: "Bachelors in Engineering at BITS-Pilani",
     text: "Add your milestone for 2014-2018 here.",
+    skills: [
+      "Core Engineering",
+      "Project Building",
+      "Fundamentals",
+      "Presentation",
+    ],
   },
   //   {
   //     year: "1999-2014",
@@ -65,6 +91,7 @@ const showcaseImages = Array.from(
       .filter(Boolean),
   ),
 );
+const entrySkills = entries.map((entry) => entry.skills ?? []);
 ---
 
 <!doctype html>
@@ -382,6 +409,32 @@ const showcaseImages = Array.from(
         opacity: 1;
       }
 
+      .skills-strip {
+        position: fixed;
+        left: 50%;
+        bottom: 380px;
+        transform: translateX(-50%);
+        z-index: 860;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+        justify-content: center;
+        width: min(760px, 92vw);
+      }
+
+      :global(.skill-chip) {
+        background: rgba(255, 255, 255, 0.86);
+        /* border: 1px solid rgba(0, 0, 0, 0.12); */
+        color: #2f2f2f;
+        border-radius: 999px;
+        padding: 5px 12px;
+        font-size: 0.8rem;
+        line-height: 1.2;
+        white-space: nowrap;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+      }
+
       .cards li.is-active {
         --label-color: var(--label-color-hover);
         --label-line-h: var(--label-line-h-current);
@@ -465,6 +518,9 @@ const showcaseImages = Array.from(
 
     <p class="hint">Scroll to move through the timeline✨.</p>
 
+    <div class="skills-strip" id="skillsChips" aria-label="Key skills used">
+    </div>
+
     <div class="timeline-showcase" aria-label="Timeline artwork highlights">
       {
         showcaseImages.map((img, idx) => (
@@ -478,8 +534,24 @@ const showcaseImages = Array.from(
       }
     </div>
 
+    <div
+      id="timeline-skills-data"
+      data-skills={encodeURIComponent(JSON.stringify(entrySkills))}
+      hidden
+    >
+    </div>
+
     <script>
       const cards = document.querySelector(".cards");
+      const skillsChips = document.getElementById("skillsChips");
+      const skillsDataNode = document.getElementById("timeline-skills-data");
+      const entrySkills = skillsDataNode
+        ? JSON.parse(
+            decodeURIComponent(
+              skillsDataNode.getAttribute("data-skills") || "%5B%5D",
+            ),
+          )
+        : [];
       const radios = Array.from(
         document.querySelectorAll('input[name="gallery-item"]'),
       );
@@ -501,10 +573,25 @@ const showcaseImages = Array.from(
       }
 
       function updateActiveState() {
+        let activeIndex = 0;
         radios.forEach((radio) => {
           const item = radio.closest("li");
           item?.classList.toggle("is-active", radio.checked);
+          if (radio.checked) {
+            activeIndex = radios.indexOf(radio);
+          }
         });
+
+        const skills = entrySkills[activeIndex] || [];
+        if (skillsChips) {
+          skillsChips.innerHTML = "";
+          skills.forEach((skill) => {
+            const chip = document.createElement("span");
+            chip.className = "skill-chip";
+            chip.textContent = skill;
+            skillsChips.appendChild(chip);
+          });
+        }
       }
 
       radios.forEach((radio, idx) => {
