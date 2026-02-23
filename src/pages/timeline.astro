@@ -4,7 +4,7 @@ const bodyBgStyle =
   "background-color:#f6f4ee;" +
   `background-image:url('${base}img/obj/floral-bg.png');` +
   "background-repeat:repeat;" +
-  "background-size:800px auto;" +
+  "background-size:1000px auto;" +
   "background-position:center;";
 const flowerIcon = `${base}img/obj/flower.png`;
 const workImg = (name: string) => `${base}img/work/${name}`;
@@ -340,7 +340,7 @@ const entrySkills = entries.map((entry) => entry.skills ?? []);
       .cards > li > h2 {
         top: var(--title-top);
         /* font-family: "Schoolbell", cursive; */
-        font-size: clamp(1.6rem, 3vw, 1.5rem);
+        font-size: clamp(1.2rem, 4vw, 1.8rem);
         opacity: var(--title-opacity, 0);
         translate: 0 var(--title-offset-y);
         transition: var(--duration) ease-in-out var(--title-delay, 0ms);
@@ -433,6 +433,40 @@ const entrySkills = entries.map((entry) => entry.skills ?? []);
         line-height: 1.2;
         white-space: nowrap;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+      }
+
+      @media (max-width: 700px) {
+        .cards-container {
+          --label-line-h-current: 0;
+          --label-offset: calc(var(--radius) * -1 - 0.35rem);
+          --title-top: 2.6rem;
+          --info-top: 5.9rem;
+          --info-width: min(86vw, 560px);
+        }
+
+        .cards li > label::after {
+          display: none;
+        }
+
+        .skills-strip {
+          bottom: 250px;
+          width: min(94vw, 560px);
+          gap: 6px;
+        }
+
+        :global(.skill-chip) {
+          font-size: 0.74rem;
+          padding: 4px 10px;
+        }
+
+        .timeline-showcase {
+          bottom: 78px;
+        }
+
+        .timeline-showcase img {
+          max-width: min(82vw, 430px);
+          max-height: 170px;
+        }
       }
 
       .cards li.is-active {
@@ -560,6 +594,7 @@ const entrySkills = entries.map((entry) => entry.skills ?? []);
       );
       let wheelLocked = false;
       let showcaseIndex = 0;
+      let touchStartY = null;
 
       function setIndex(idx) {
         cards?.style.setProperty("--index", String(idx));
@@ -634,6 +669,46 @@ const entrySkills = entries.map((entry) => entry.skills ?? []);
           }, 320);
         },
         { passive: false },
+      );
+
+      window.addEventListener(
+        "touchstart",
+        (e) => {
+          if (!e.touches?.length) return;
+          touchStartY = e.touches[0].clientY;
+        },
+        { passive: true },
+      );
+
+      window.addEventListener(
+        "touchend",
+        (e) => {
+          if (touchStartY === null) return;
+          const endY = e.changedTouches?.[0]?.clientY;
+          if (typeof endY !== "number") {
+            touchStartY = null;
+            return;
+          }
+
+          const deltaY = touchStartY - endY;
+          touchStartY = null;
+          if (Math.abs(deltaY) < 24 || wheelLocked) return;
+
+          const current = radios.findIndex((r) => r.checked);
+          if (current < 0) return;
+          wheelLocked = true;
+
+          if (deltaY > 0) {
+            selectIndex((current + 1) % radios.length);
+          } else {
+            selectIndex((current - 1 + radios.length) % radios.length);
+          }
+
+          window.setTimeout(() => {
+            wheelLocked = false;
+          }, 320);
+        },
+        { passive: true },
       );
 
       window.addEventListener(
