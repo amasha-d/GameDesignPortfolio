@@ -436,6 +436,10 @@ const entrySkills = entries.map((entry) => entry.skills ?? []);
       }
 
       @media (max-width: 700px) {
+        body {
+          background-size: 750px auto !important;
+        }
+
         .cards-container {
           --label-line-h-current: 0;
           --label-offset: calc(var(--radius) * -1 - 0.35rem);
