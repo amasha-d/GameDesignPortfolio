@@ -1,0 +1,561 @@
+---
+const base = import.meta.env.BASE_URL;
+const bodyBgStyle =
+  "background-color:#f6f4ee;" +
+  `background-image:url('${base}img/obj/floral-bg.png');` +
+  "background-repeat:repeat;" +
+  "background-size:800px auto;" +
+  "background-position:center;";
+const flowerIcon = `${base}img/obj/flower.png`;
+const workImg = (name: string) => `${base}img/work/${name}`;
+const showcaseSource = [
+  workImg("gaming.png"),
+  workImg("design.png"),
+  workImg("illustration.png"),
+  workImg("dev.png"),
+];
+
+const entries = [
+  {
+    year: "2025-Present",
+    heading: "Lead Level Designer at LostSoulsInteractive",
+    text: "Working on creating levels for a 3D horror Game called Hotel Espir. Designing levels, puzzles, strategies and more.",
+  },
+  {
+    year: "2024-2025",
+    heading: "Associate Game Designer at Zynga",
+    text: "Add your milestone for 2024-2025 here.",
+  },
+  {
+    year: "2022-2024",
+    heading: "Master's in Game Design at NID",
+    text: "Add your milestone for 2022-2024 here.",
+  },
+  {
+    year: "2019-2022",
+    heading: "Applications Developer at DBS Bank",
+    text: "Add your milestone for 2019-2022 here.",
+  },
+  {
+    year: "2018-2019",
+    heading: "Developer at Capgemini",
+    text: "Add your milestone for 2018-2019 here.",
+  },
+  {
+    year: "2014-2018",
+    heading: "Bachelors in Engineering at BITS-Pilani",
+    text: "Add your milestone for 2014-2018 here.",
+  },
+  //   {
+  //     year: "1999-2014",
+  //     heading: "School and Early Life",
+  //     text: "Add your milestone for 1999-2014 here.",
+  //   },
+  //   {
+  //     year: "1996-1999",
+  //     heading: "Childhood",
+  //     text: "Add your milestone for 1996-1999 here.",
+  //   },
+];
+const showcaseImages = Array.from(
+  new Set(
+    entries
+      .map((entry) => entry.image)
+      .concat(showcaseSource)
+      .filter(Boolean),
+  ),
+);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Timeline</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Schoolbell&family=Nunito:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --ink: #1f1f1f;
+        --muted: #5b5b5b;
+        --accent: #11701e;
+        --dot: #3d3d3d;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        min-height: 100%;
+        font-family: "Nunito", system-ui, sans-serif;
+        color: var(--ink);
+        overflow: hidden;
+        overscroll-behavior: none;
+      }
+
+      .back-btn {
+        position: fixed;
+        left: 12px;
+        top: 12px;
+        z-index: 1200;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(255, 255, 255, 0.92);
+        color: #1a1a1a;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        padding: 8px 12px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-size: 16px;
+        font-family: "Schoolbell", cursive;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .page-title {
+        margin: 72px 0 0;
+        text-align: center;
+        font-family: "Schoolbell", cursive;
+        font-size: clamp(2rem, 5vw, 3.5rem);
+      }
+
+      input[type="radio"] {
+        position: fixed;
+        top: -9999px;
+        left: -9999px;
+        width: 1px;
+        height: 1px;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+
+      .cards-container {
+        --base-rotation: 0deg;
+        --full-circle: 360deg;
+        --radius: min(44vw, 470px);
+        --duration: 220ms;
+        --items: 5;
+        --index: 0;
+
+        --cards-container-size: calc(var(--radius) * 2);
+        --cards-container-padding: 2rem;
+
+        --border-color: transparent;
+        --label-offset: calc(var(--radius) * -1 - 1rem);
+        --label-size: 32px;
+        --label-color: var(--dot);
+        --label-color-hover: var(--accent);
+        --label-line-h: 0;
+        --label-line-h-current: 3rem;
+        --label-dot-size: 12px;
+        --active-flower-size: 24px;
+
+        --title-top: 1rem;
+        --title-offset-y: 26px;
+        --info-top: 4.7rem;
+        --info-width: min(72%, 560px);
+        --info-offset-y: 26px;
+
+        box-sizing: content-box;
+        position: relative;
+        isolation: isolate;
+        margin: 1.5rem auto 0;
+        width: var(--cards-container-size);
+        height: var(--cards-container-size);
+        padding: var(--cards-container-padding);
+      }
+
+      .wheel-glass {
+        position: absolute;
+        inset: var(--cards-container-padding);
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.22);
+        backdrop-filter: blur(14px) saturate(110%);
+        -webkit-backdrop-filter: blur(14px) saturate(110%);
+        border: 1px solid rgba(255, 255, 255, 0.45);
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16);
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      @media (min-width: 700px) {
+        .cards-container {
+          clip-path: polygon(0 0, 100% 0, 100% 56%, 0 56%);
+        }
+      }
+
+      @media (min-width: 800px) {
+        .cards-container {
+          --radius: min(36vw, 510px);
+          --label-size: 40px;
+          --label-dot-size: 16px;
+          --active-flower-size: 40px;
+          --label-line-h-current: 3rem;
+          --title-top: 3rem;
+          --info-top: 7rem;
+        }
+      }
+
+      @media (min-width: 1200px) {
+        .cards-container {
+          /* --label-size: 50px; */
+          --border-color: var(--label-color);
+        }
+      }
+
+      .cards {
+        position: absolute;
+        inset: var(--cards-container-padding);
+        margin: 0;
+        padding: 0;
+        aspect-ratio: 1;
+        border-radius: 50%;
+        border: 1px solid var(--border-color);
+        list-style: none;
+        transition: transform 0.35s ease-in-out;
+        transform: rotate(
+          calc(
+            var(--base-rotation) -
+              (var(--index) * var(--full-circle) / var(--items))
+          )
+        );
+        z-index: 1;
+      }
+
+      .cards li {
+        position: absolute;
+        inset: 0;
+        margin: 0;
+        padding: 0;
+        transform-origin: center;
+        display: grid;
+        place-content: center;
+        transform: rotate(calc(var(--i) * 360deg / var(--items)));
+        pointer-events: none;
+      }
+
+      .cards li > label {
+        position: absolute;
+        inset: 0;
+        margin: auto;
+        transform: translateY(var(--label-offset));
+        /* width: var(--label-size); */
+        height: var(--label-size);
+        cursor: default;
+        pointer-events: none;
+        text-align: center;
+        color: var(--label-color);
+        font-size: clamp(0.78rem, 2vw + 0.05rem, 1rem);
+        transition: var(--duration) ease-in-out;
+        user-select: none;
+      }
+
+      .cards li > label::before {
+        content: "";
+        position: absolute;
+        top: var(--cards-container-padding);
+        left: 50%;
+        translate: -50% 0;
+        width: var(--label-dot-size);
+        height: var(--label-dot-size);
+        border-radius: 50%;
+        background-color: var(--label-color);
+        background-image: none;
+        transition: transform var(--duration) ease-in-out;
+        z-index: 2;
+      }
+
+      .cards li > label::after {
+        content: "";
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        translate: -50% 5px;
+        width: 2px;
+        height: var(--label-line-h);
+        background-color: var(--accent);
+        transition: height 300ms ease-in-out var(--label-line-delay, 0ms);
+        z-index: 1;
+      }
+
+      .cards li > input[type="radio"]:checked + label::before {
+        width: var(--active-flower-size);
+        height: var(--active-flower-size);
+        border-radius: 0;
+        background-color: transparent;
+        background-image: var(--flower-icon);
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+      }
+
+      .cards > li > h2,
+      .cards > li > .info-box {
+        position: absolute;
+        left: 50%;
+        margin: 0;
+        text-align: center;
+        transform: translate(-50%, 0);
+      }
+
+      .cards > li > h2 {
+        top: var(--title-top);
+        /* font-family: "Schoolbell", cursive; */
+        font-size: clamp(1.6rem, 3vw, 1.5rem);
+        opacity: var(--title-opacity, 0);
+        translate: 0 var(--title-offset-y);
+        transition: var(--duration) ease-in-out var(--title-delay, 0ms);
+      }
+
+      .cards > li > .info-box {
+        top: var(--info-top);
+        width: var(--info-width);
+        background: rgba(255, 255, 255, 0.86);
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        border-radius: 14px;
+        padding: 0.9rem 1rem;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(1px);
+        opacity: var(--info-opacity, 0);
+        translate: 0 var(--info-offset-y);
+        transition: var(--duration) ease-in-out var(--info-delay, 0ms);
+      }
+
+      .cards > li > .info-box h3 {
+        margin: 0 0 0.45rem;
+        text-align: center;
+        /* font-family: "Schoolbell", cursive; */
+        font-size: clamp(1rem, 1.4vw, 1.2rem);
+        color: #1f1f1f;
+      }
+
+      .cards > li > .info-box p {
+        margin: 0;
+        font-size: clamp(0.82rem, 1.1vw, 0.95rem);
+        line-height: 1.5;
+        text-align: left;
+        color: var(--muted);
+      }
+
+      .timeline-showcase {
+        position: fixed;
+        left: 50%;
+        bottom: 180px;
+        transform: translateX(-50%);
+        width: auto;
+        height: auto;
+        /* border-radius: 12px; */
+        overflow: visible;
+        display: grid;
+        place-items: center;
+        /* border: 1px solid rgba(0, 0, 0, 0.12); */
+        /* background: rgba(255, 255, 255, 0.65); */
+        /* box-shadow: 0 10px 24px rgba(0, 0, 0, 0.16); */
+        z-index: 850;
+      }
+
+      .timeline-showcase img {
+        position: absolute;
+        inset: auto;
+        width: auto;
+        height: auto;
+        max-width: min(540px, 78vw);
+        max-height: 240px;
+        object-fit: contain;
+        opacity: 0;
+        transition: opacity 0.7s ease;
+      }
+
+      .timeline-showcase img.active {
+        opacity: 1;
+      }
+
+      .cards li.is-active {
+        --label-color: var(--label-color-hover);
+        --label-line-h: var(--label-line-h-current);
+        --label-line-delay: calc(var(--duration) * 1.6);
+        --title-opacity: 1;
+        --title-offset-y: 0;
+        --title-delay: calc(var(--duration) * 2.2);
+        --info-opacity: 1;
+        --info-offset-y: 0;
+        --info-delay: calc(var(--duration) * 2.8);
+      }
+
+      .hint {
+        position: fixed;
+        left: 50%;
+        bottom: 14px;
+        transform: translateX(-50%);
+        text-align: center;
+        margin: 0;
+        color: #454545;
+        font-size: 0.92rem;
+        background: rgba(255, 255, 255, 0.78);
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        border-radius: 999px;
+        padding: 6px 12px;
+        z-index: 900;
+      }
+    </style>
+  </head>
+
+  <body style={bodyBgStyle}>
+    <a
+      href={base}
+      class="back-btn"
+      aria-label="Go back"
+      onclick="if(history.length>1){event.preventDefault();history.back();}"
+    >
+      <svg
+        width="18"
+        height="18"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true"
+      >
+        <path
+          d="M15 18l-6-6 6-6"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"></path>
+      </svg>
+      Back
+    </a>
+
+    <h1 class="page-title">Experience Timeline</h1>
+
+    <div class="cards-container" style={`--flower-icon:url('${flowerIcon}');`}>
+      <div class="wheel-glass" aria-hidden="true"></div>
+      <ul class="cards" style={`--items: ${entries.length}; --index: 0;`}>
+        {
+          entries.map((item, i) => (
+            <li style={`--i: ${i};`} key={item.year}>
+              <input
+                type="radio"
+                id={`item-${i}`}
+                name="gallery-item"
+                checked={i === 0}
+              />
+              <label for={`item-${i}`}>{item.year}</label>
+              <h2>{item.year}</h2>
+              <div class="info-box">
+                <h3>{item.heading}</h3>
+                <p>{item.text}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <p class="hint">Scroll to move through the timeline✨.</p>
+
+    <div class="timeline-showcase" aria-label="Timeline artwork highlights">
+      {
+        showcaseImages.map((img, idx) => (
+          <img
+            src={img}
+            alt="Timeline illustration"
+            class={idx === 0 ? "active" : ""}
+            loading={idx < 2 ? "eager" : "lazy"}
+          />
+        ))
+      }
+    </div>
+
+    <script>
+      const cards = document.querySelector(".cards");
+      const radios = Array.from(
+        document.querySelectorAll('input[name="gallery-item"]'),
+      );
+      const showcaseSlides = Array.from(
+        document.querySelectorAll(".timeline-showcase img"),
+      );
+      let wheelLocked = false;
+      let showcaseIndex = 0;
+
+      function setIndex(idx) {
+        cards?.style.setProperty("--index", String(idx));
+      }
+
+      function selectIndex(idx) {
+        if (idx < 0 || idx >= radios.length) return;
+        radios[idx].checked = true;
+        setIndex(idx);
+        updateActiveState();
+      }
+
+      function updateActiveState() {
+        radios.forEach((radio) => {
+          const item = radio.closest("li");
+          item?.classList.toggle("is-active", radio.checked);
+        });
+      }
+
+      radios.forEach((radio, idx) => {
+        radio.addEventListener("change", () => {
+          if (radio.checked) {
+            setIndex(idx);
+            updateActiveState();
+          }
+        });
+      });
+
+      updateActiveState();
+
+      if (showcaseSlides.length > 1) {
+        window.setInterval(() => {
+          showcaseSlides[showcaseIndex].classList.remove("active");
+          showcaseIndex = (showcaseIndex + 1) % showcaseSlides.length;
+          showcaseSlides[showcaseIndex].classList.add("active");
+        }, 2300);
+      }
+
+      window.addEventListener(
+        "wheel",
+        (e) => {
+          e.preventDefault();
+          if (wheelLocked) return;
+          if (Math.abs(e.deltaY) < 8) return;
+          const current = radios.findIndex((r) => r.checked);
+          if (current < 0) return;
+          wheelLocked = true;
+
+          if (e.deltaY > 0) {
+            selectIndex((current + 1) % radios.length);
+          } else {
+            selectIndex((current - 1 + radios.length) % radios.length);
+          }
+
+          window.setTimeout(() => {
+            wheelLocked = false;
+          }, 320);
+        },
+        { passive: false },
+      );
+
+      window.addEventListener(
+        "touchmove",
+        (e) => {
+          e.preventDefault();
+        },
+        { passive: false },
+      );
+    </script>
+  </body>
+</html>
