@@ -442,14 +442,79 @@ const entrySkills = entries.map((entry) => entry.skills ?? []);
 
         .cards-container {
           --label-line-h-current: 0;
-          --label-offset: calc(var(--radius) * -1 - 0.35rem);
-          --title-top: 2.6rem;
-          --info-top: 5.9rem;
+          --label-offset: calc(var(--radius) * -1 - 0.25rem);
+          --title-top: 1.9rem;
+          --info-top: 4.25rem;
           --info-width: min(86vw, 560px);
+        }
+
+        .cards {
+          border-color: rgba(74, 74, 74, 0.34);
+          border-width: 1.2px;
         }
 
         .cards li > label::after {
           display: none;
+        }
+
+        .cards li > label {
+          color: transparent;
+          z-index: 1;
+        }
+
+        .cards li.mobile-side-visible > label,
+        .cards li.mobile-top-visible > label {
+          color: rgba(88, 88, 88, 0.42);
+          font-size: clamp(0.8rem, 2.6vw, 0.92rem);
+          z-index: 1;
+        }
+
+        .cards li.mobile-top-visible.is-active > label {
+          color: var(--accent);
+          font-weight: 700;
+        }
+
+        .cards li > label::before {
+          display: none;
+        }
+
+        .cards li.mobile-side-visible > label::before,
+        .cards li.mobile-top-visible > label::before {
+          display: block;
+          width: var(--label-dot-size);
+          height: var(--label-dot-size);
+          border-radius: 50%;
+          background-color: rgba(88, 88, 88, 0.42);
+          background-image: none;
+          box-shadow: none;
+          z-index: 1;
+        }
+
+        .cards
+          li.mobile-top-visible
+          > input[type="radio"]:checked
+          + label::before {
+          width: var(--active-flower-size);
+          height: var(--active-flower-size);
+          border-radius: 0;
+          background-color: transparent;
+          background-image: var(--flower-icon);
+          background-size: contain;
+          background-repeat: no-repeat;
+          background-position: center;
+        }
+
+        .cards > li > h2,
+        .cards > li > .info-box {
+          z-index: 4;
+        }
+
+        .cards li {
+          z-index: 1;
+        }
+
+        .cards li.is-active {
+          z-index: 12;
         }
 
         .skills-strip {
@@ -469,7 +534,11 @@ const entrySkills = entries.map((entry) => entry.skills ?? []);
 
         .timeline-showcase img {
           max-width: min(82vw, 430px);
-          max-height: 170px;
+          max-height: 1800px;
+        }
+
+        .hint {
+          display: none;
         }
       }
 
@@ -618,6 +687,21 @@ const entrySkills = entries.map((entry) => entry.skills ?? []);
           item?.classList.toggle("is-active", radio.checked);
           if (radio.checked) {
             activeIndex = radios.indexOf(radio);
+          }
+        });
+
+        // Mobile: show only top-half timeline markers/labels.
+        const topIndex = activeIndex;
+        const rightIndex = (activeIndex + 1) % radios.length;
+        const leftIndex = (activeIndex - 1 + radios.length) % radios.length;
+        radios.forEach((radio, idx) => {
+          const item = radio.closest("li");
+          if (!item) return;
+          item.classList.remove("mobile-top-visible", "mobile-side-visible");
+          if (idx === topIndex) {
+            item.classList.add("mobile-top-visible");
+          } else if (idx === rightIndex || idx === leftIndex) {
+            item.classList.add("mobile-side-visible");
           }
         });
 
