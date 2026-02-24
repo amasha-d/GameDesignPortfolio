@@ -267,9 +267,9 @@
 		/* Smaller About hit-area on touch devices while keeping full image visible */
 		@media (max-width: 1024px) {
 			.fixed-you-hit {
-				width: 58%;
-				height: 58%;
-				left: 21%;
+				width: 65%;
+				height: 100%;
+				left: 50%;
 				top: 21%;
 			}
 		}
@@ -423,6 +423,88 @@
 
 			.connect .normal {
 				width: 100px;
+			}
+		}
+
+		/* Tablet landscape layout: prevent object collisions */
+		@media (min-width: 768px) and (max-width: 1180px) and (orientation: landscape) {
+			.wrap {
+				padding: var(--topPad) 12px 12px;
+			}
+
+			.stage {
+				width: 100%;
+				height: calc(100vh - var(--topPad) - 12px);
+				max-width: 1200px;
+			}
+
+			.projects {
+				left: 38%;
+				top: 12%;
+			}
+
+			.resume {
+				left: 67%;
+				top: 34%;
+			}
+
+			.work {
+				left: 30%;
+				bottom: 12%;
+			}
+
+			.art {
+				left: 10%;
+				top: 44%;
+			}
+
+			.coffee {
+				left: 8%;
+				bottom: 10%;
+			}
+
+			.wip {
+				left: 4%;
+				top: 10%;
+			}
+
+			.connect {
+				left: 82%;
+				top: 7%;
+			}
+
+			.projects .normal {
+				width: clamp(320px, 34vw, 440px);
+			}
+
+			.resume .normal {
+				width: clamp(150px, 14vw, 210px);
+			}
+
+			.work .normal {
+				width: clamp(200px, 21vw, 280px);
+			}
+
+			.art .normal {
+				width: clamp(150px, 17vw, 220px);
+			}
+
+			.coffee .normal {
+				width: clamp(120px, 13vw, 170px);
+			}
+
+			.wip .normal {
+				width: clamp(110px, 11vw, 150px);
+			}
+
+			.connect .normal {
+				width: clamp(90px, 9vw, 130px);
+			}
+
+			.fixed-you {
+				width: min(260px, 24vw);
+				right: 8px;
+				bottom: 10px;
 			}
 		}
 
