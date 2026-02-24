@@ -194,7 +194,7 @@
 			bottom: 18px;
 			width: min(480px, 42vw);
 			/* responsive size */
-			z-index: 50;
+			z-index: 5;
 			/* above video + objects */
 			display: block;
 			cursor: pointer;
@@ -226,14 +226,16 @@
 			transition: opacity 120ms ease;
 		}
 
-		.fixed-you:hover .hover,
-		.fixed-you:focus-within .hover {
-			opacity: 1;
-		}
+		@media (hover: hover) and (pointer: fine) {
+			.fixed-you:hover .hover,
+			.fixed-you:focus-within .hover {
+				opacity: 1;
+			}
 
-		.fixed-you:hover .normal,
-		.fixed-you:focus-within .normal {
-			opacity: 0;
+			.fixed-you:hover .normal,
+			.fixed-you:focus-within .normal {
+				opacity: 0;
+			}
 		}
 
 		.fixed-you-hit {
