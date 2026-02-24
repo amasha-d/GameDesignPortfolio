@@ -1,0 +1,913 @@
+---
+const base = import.meta.env.BASE_URL;
+const bodyBgStyle =
+  "background-color:#f6f4ee;" +
+  `background-image:url('${base}img/obj/floral-bg.png');` +
+  "background-repeat:repeat;" +
+  "background-size:800px auto;" +
+  "background-position:center;";
+
+type ProjectItem = {
+  title: string;
+  description: string;
+  image: string;
+  link: string;
+  tags: string[];
+};
+
+const projects: ProjectItem[] = [
+  {
+    title: "Hotel Espir",
+    description: "Narrative horror level design and puzzle flow experiments.",
+    image: `${base}img/projects/HotelEspir.png`,
+    link: "#",
+    tags: ["Unity", "Level Design", "Puzzle Design"],
+  },
+  {
+    title: "Cascades",
+    description:
+      "Environmental storytelling with traversal-heavy gameplay beats.",
+    image: `${base}img/obj/Projects.png`,
+    link: "#",
+    tags: ["Worldbuilding", "Gameplay Systems", "Prototyping"],
+  },
+  {
+    title: "Fiore",
+    description:
+      "Color scripting and interaction concept for a cozy adventure.",
+    image: `${base}img/obj/Projects.png`,
+    link: "#",
+    tags: ["Art Direction", "Narrative", "UI Mockups"],
+  },
+  {
+    title: "Kitty Kitty",
+    description: "Fast-paced systems iteration and playful combat balancing.",
+    image: `${base}img/obj/Projects.png`,
+    link: "#",
+    tags: ["Combat Design", "Iteration", "Balancing"],
+  },
+  {
+    title: "Project 5",
+    description: "Replace with your real project text and visuals.",
+    image: `${base}img/obj/Projects.png`,
+    link: "#",
+    tags: ["Tool 1", "Tool 2", "Skill 1"],
+  },
+  {
+    title: "Project 6",
+    description: "Replace with your real project text and visuals.",
+    image: `${base}img/obj/Projects.png`,
+    link: "#",
+    tags: ["Tool 1", "Tool 2", "Skill 1"],
+  },
+  {
+    title: "Project 7",
+    description: "Replace with your real project text and visuals.",
+    image: `${base}img/obj/Projects.png`,
+    link: "#",
+    tags: ["Tool 1", "Tool 2", "Skill 1"],
+  },
+  {
+    title: "Project 8",
+    description: "Replace with your real project text and visuals.",
+    image: `${base}img/obj/Projects.png`,
+    link: "#",
+    tags: ["Tool 1", "Tool 2", "Skill 1"],
+  },
+];
+
+const spreadSize = 4;
+const spreads: ProjectItem[][] = [];
+for (let i = 0; i < projects.length; i += spreadSize) {
+  spreads.push(projects.slice(i, i + spreadSize));
+}
+
+const mobileSpreadSize = 2;
+const mobileSpreads: ProjectItem[][] = [];
+for (let i = 0; i < projects.length; i += mobileSpreadSize) {
+  mobileSpreads.push(projects.slice(i, i + mobileSpreadSize));
+}
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Project Collections</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Schoolbell&family=Nunito:wght@500;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --ink: #211d1d;
+        --accent: #f6df74;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        min-height: 100%;
+      }
+      body {
+        font-family: "Nunito", system-ui, Arial, sans-serif;
+        color: var(--ink);
+        background-color: #f6f4ee;
+      }
+
+      .back-btn {
+        position: fixed;
+        left: 12px;
+        top: 12px;
+        z-index: 60;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(255, 255, 255, 0.92);
+        color: #1a1a1a;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        padding: 8px 12px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-size: 16px;
+        font-family: "Schoolbell", cursive;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .page {
+        min-height: 100vh;
+        padding: 72px 20px 24px;
+        display: grid;
+        place-items: center;
+      }
+
+      .book-shell,
+      .book-shell-mobile {
+        position: relative;
+        overflow: visible;
+      }
+
+      .book-shell {
+        width: min(1280px, 96vw);
+        aspect-ratio: 16 / 10;
+        background-image: var(--book-bg);
+        background-size: 100% 100%;
+        background-repeat: no-repeat;
+        background-position: center;
+        display: grid;
+        place-items: center;
+      }
+
+      .book-shell-mobile {
+        display: none;
+      }
+
+      .spreads {
+        position: relative;
+        width: min(1100px, 88%);
+        height: min(84%, 780px);
+        z-index: 2;
+        overflow: hidden;
+      }
+
+      .spread,
+      .spread-mobile {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 240ms ease;
+      }
+      .spread.active,
+      .spread-mobile.active {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      .book-pins {
+        position: absolute;
+        left: 50%;
+        top: 30%;
+        transform: translate(-50%, -50%);
+        height: min(70%, 760px);
+        width: auto;
+        z-index: 6;
+        pointer-events: none;
+        filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.18));
+      }
+      .book-pins-bottom {
+        position: absolute;
+        left: 50%;
+        bottom: 5%;
+        transform: translateX(-50%);
+        height: min(12%, 250px);
+        width: auto;
+        z-index: 6;
+        pointer-events: none;
+        filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.18));
+      }
+
+      .paper-grid {
+        height: 100%;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+      }
+      .paper-page {
+        padding: clamp(18px, 2.2vw, 28px);
+        overflow: hidden;
+      }
+      .paper-page:not(.left) {
+        padding-left: clamp(28px, 3.2vw, 44px);
+      }
+      .paper-page.left {
+        padding-left: clamp(8px, 1vw, 14px);
+      }
+      .paper-page:not(.left) {
+        padding-right: clamp(8px, 1vw, 14px);
+      }
+
+      .card-list {
+        height: 100%;
+        display: grid;
+        grid-template-rows: 1fr 1fr;
+        gap: clamp(18px, 2vw, 26px);
+        min-height: 0;
+      }
+
+      .project-card {
+        position: relative;
+        display: grid;
+        grid-template-columns: 65% 1fr;
+        gap: 16px;
+        align-items: center;
+        min-height: 0;
+      }
+      .project-stack,
+      .project-stack-mobile {
+        min-height: 0;
+        display: grid;
+        grid-template-rows: minmax(0, 1fr) auto;
+        align-content: start;
+      }
+      .project-card.reverse {
+        grid-template-columns: 1fr 60%;
+      }
+      .project-card.reverse .photo {
+        order: 2;
+      }
+
+      .photo {
+        width: 100%;
+        /* background: #f3f0ed; */
+        padding: 0;
+        /* border-radius: 3px; */
+        /* box-shadow: 0 10px 18px rgba(0, 0, 0, 0.16); */
+        transform: rotate(-9deg);
+        max-height: 100%;
+        min-height: 0;
+        display: grid;
+        place-items: center;
+      }
+      .project-card.reverse .photo {
+        transform: rotate(8deg);
+      }
+      .photo img {
+        width: auto;
+        max-width: 100%;
+        height: auto;
+        max-height: 100%;
+        display: block;
+        border-radius: 10px;
+      }
+
+      .content h2 {
+        margin: 0 0 8px;
+        font-size: clamp(1.4rem, 2vw, 2.6rem);
+        font-family: "Schoolbell", cursive;
+        line-height: 1;
+      }
+      .content p {
+        margin: 0 0 12px;
+        font-size: clamp(1rem, 1.15vw, 1.25rem);
+        line-height: 1.35;
+        max-width: 36ch;
+      }
+      .see-full {
+        display: inline-flex;
+        align-items: center;
+        padding: 6px 13px;
+        border-radius: 999px;
+        border: 0;
+        text-decoration: none;
+        background: rgba(255, 255, 255, 0.42);
+        color: var(--ink);
+        font-weight: 700;
+      }
+
+      .project-card .content {
+        position: relative;
+        z-index: 3;
+        margin-left: -20%;
+        /* padding: 10px 12px; */
+        border-radius: 14px;
+        /* background: rgba(245, 231, 220, 0.72); */
+        backdrop-filter: blur(1px);
+      }
+
+      .project-card.reverse .content {
+        margin-left: 0;
+        margin-right: -16%;
+      }
+
+      .decor-star {
+        position: absolute;
+        width: 34px;
+        height: 34px;
+        right: -10px;
+        top: -12px;
+        background: var(--accent);
+        clip-path: polygon(
+          50% 0%,
+          61% 35%,
+          98% 35%,
+          68% 57%,
+          79% 91%,
+          50% 70%,
+          21% 91%,
+          32% 57%,
+          2% 35%,
+          39% 35%
+        );
+        border: 2px solid #fff;
+      }
+
+      .nav-btn {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 8;
+        width: 52px;
+        height: 52px;
+        border: 0;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.74);
+        color: #111;
+        font-size: 34px;
+        line-height: 1;
+        cursor: pointer;
+      }
+      .nav-btn.prev {
+        left: -24px;
+      }
+      .nav-btn.next {
+        right: -24px;
+      }
+
+      .nav-btn:disabled {
+        opacity: 0.35;
+        cursor: not-allowed;
+        color: rgba(17, 17, 17, 0.45);
+        background: rgba(255, 255, 255, 0.52);
+      }
+
+      .page-pill {
+        position: absolute;
+        left: 50%;
+        bottom: -14px;
+        transform: translateX(-50%);
+        padding: 8px 18px;
+        border-radius: 999px;
+        background: rgba(226, 214, 206, 0.86);
+        font-size: 2rem;
+        font-family: "Schoolbell", cursive;
+      }
+
+      .spread.flip-in-next,
+      .spread-mobile.flip-in-next {
+        animation: pageFlipInNext 520ms cubic-bezier(0.2, 0.8, 0.2, 1);
+        transform-origin: right center;
+      }
+
+      .spread.flip-in-prev,
+      .spread-mobile.flip-in-prev {
+        animation: pageFlipInPrev 520ms cubic-bezier(0.2, 0.8, 0.2, 1);
+        transform-origin: left center;
+      }
+
+      @keyframes pageFlipInNext {
+        0% {
+          opacity: 0;
+          transform: perspective(1400px) rotateY(-16deg) translateX(1.8%)
+            scale(0.98);
+          filter: brightness(0.94);
+        }
+        100% {
+          opacity: 1;
+          transform: perspective(1400px) rotateY(0deg) translateX(0) scale(1);
+          filter: brightness(1);
+        }
+      }
+
+      @keyframes pageFlipInPrev {
+        0% {
+          opacity: 0;
+          transform: perspective(1400px) rotateY(16deg) translateX(-1.8%)
+            scale(0.98);
+          filter: brightness(0.94);
+        }
+        100% {
+          opacity: 1;
+          transform: perspective(1400px) rotateY(0deg) translateX(0) scale(1);
+          filter: brightness(1);
+        }
+      }
+
+      .spreads-mobile {
+        position: relative;
+        width: 82%;
+        height: 86%;
+        z-index: 2;
+        overflow: hidden;
+      }
+      .paper-mobile {
+        height: 100%;
+        padding: 18px 14px;
+        overflow: hidden;
+      }
+      .card-list-mobile {
+        height: 100%;
+        display: grid;
+        grid-template-rows: 1fr 1fr;
+        gap: 16px;
+        min-height: 0;
+      }
+      .project-card-mobile {
+        position: relative;
+        display: grid;
+        grid-template-columns: 56% 1fr;
+        gap: 14px;
+        align-items: center;
+        min-height: 0;
+      }
+      .project-card-mobile.reverse {
+        grid-template-columns: 1fr 56%;
+      }
+      .project-card-mobile.reverse .photo {
+        order: 2;
+      }
+      .project-card-mobile .photo {
+        transform: rotate(-7deg);
+        padding: 0;
+      }
+      .project-card-mobile.reverse .photo {
+        transform: rotate(6deg);
+      }
+      .project-card-mobile .content h2 {
+        font-size: clamp(1.6rem, 5.6vw, 2.2rem);
+        margin: 0 0 6px;
+      }
+      .project-card-mobile .content p {
+        font-size: clamp(1rem, 3.7vw, 1.15rem);
+        margin: 0 0 9px;
+        line-height: 1.3;
+      }
+      .project-card-mobile .see-full {
+        padding: 6px 11px;
+        font-size: 0.95rem;
+      }
+
+      .project-card-mobile .content {
+        position: relative;
+        z-index: 3;
+        margin-left: -14%;
+        padding: 8px 10px;
+        border-radius: 12px;
+        background: rgba(245, 231, 220, 0.74);
+        backdrop-filter: blur(1px);
+      }
+
+      .project-card-mobile.reverse .content {
+        margin-left: 0;
+        margin-right: -14%;
+      }
+
+      .tag-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 10px;
+      }
+
+      .tag-chip {
+        display: inline-flex;
+        align-items: center;
+        padding: 4px 10px;
+        border-radius: 999px;
+        font-size: 0.82rem;
+        font-weight: 700;
+        line-height: 1;
+        background: rgba(255, 255, 255, 0.78);
+        color: #2b2626;
+        border: 1px solid rgba(43, 38, 38, 0.12);
+        z-index: 10;
+      }
+
+      .mobile-pins {
+        position: absolute;
+        /* right: -34px; */
+        left: 80%;
+        top: 30%;
+        transform: translateY(-50%);
+        height: min(50%, 620px);
+        width: auto;
+        z-index: 6;
+        pointer-events: none;
+        filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.18));
+      }
+
+      @media (max-width: 760px) {
+        html,
+        body {
+          height: 100%;
+          overflow: hidden;
+        }
+
+        .page {
+          min-height: 100dvh;
+          padding: 72px 10px 18px;
+          overflow: hidden;
+        }
+        .book-shell {
+          display: none;
+        }
+        .book-shell-mobile {
+          display: grid;
+          place-items: center;
+          width: min(420px, 98vw);
+          aspect-ratio: 3 / 5;
+          background-image: var(--book-half-bg);
+          background-size: 100% 100%;
+          background-repeat: no-repeat;
+          background-position: center;
+          touch-action: none;
+        }
+        .book-shell-mobile .nav-btn {
+          width: 46px;
+          height: 46px;
+          font-size: 30px;
+        }
+        .book-shell-mobile .nav-btn.prev {
+          left: -10px;
+        }
+        .book-shell-mobile .nav-btn.next {
+          right: -10px;
+        }
+        .book-shell-mobile .page-pill {
+          bottom: -12px;
+          font-size: 1.7rem;
+          padding: 7px 14px;
+        }
+      }
+    </style>
+  </head>
+  <body style={bodyBgStyle}>
+    <a
+      href={base}
+      class="back-btn"
+      aria-label="Go back"
+      onclick="if(history.length>1){event.preventDefault();history.back();}"
+    >
+      <svg
+        width="18"
+        height="18"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true"
+      >
+        <path
+          d="M15 18l-6-6 6-6"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"></path>
+      </svg>
+      Back
+    </a>
+
+    <main class="page">
+      <section
+        class="book-shell"
+        style={`--book-bg:url('${base}img/obj/bookBkg.png')`}
+      >
+        <img
+          class="book-pins"
+          src={`${base}img/obj/pins.png`}
+          alt=""
+          aria-hidden="true"
+        />
+        <img
+          class="book-pins-bottom"
+          src={`${base}img/obj/pins3.png`}
+          alt=""
+          aria-hidden="true"
+        />
+        <button
+          class="nav-btn prev"
+          id="prevBtn"
+          type="button"
+          aria-label="Previous spread">&lsaquo;</button
+        >
+        <div class="spreads" id="spreads">
+          {
+            spreads.map((spread, spreadIndex) => (
+              <article
+                class={`spread ${spreadIndex === 0 ? "active" : ""}`}
+                data-spread={spreadIndex}
+              >
+                <div class="paper-grid">
+                  <div class="paper-page left">
+                    <div class="card-list">
+                      {spread.slice(0, 2).map((project, idx) => (
+                        <section class="project-stack">
+                          <div
+                            class={`project-card ${idx % 2 === 1 ? "reverse" : ""}`}
+                          >
+                            <div class="photo">
+                              <img src={project.image} alt={project.title} />
+                            </div>
+                            <div class="content">
+                              <h2>{project.title}</h2>
+                              <p>{project.description}</p>
+                              <a class="see-full" href={project.link}>
+                                See full
+                              </a>
+                            </div>
+                            {idx === 0 && (
+                              <span class="decor-star" aria-hidden="true" />
+                            )}
+                          </div>
+                          <div class="tag-row">
+                            {project.tags.map((tag) => (
+                              <span class="tag-chip">{tag}</span>
+                            ))}
+                          </div>
+                        </section>
+                      ))}
+                    </div>
+                  </div>
+                  <div class="paper-page">
+                    <div class="card-list">
+                      {spread.slice(2, 4).map((project, idx) => (
+                        <section class="project-stack">
+                          <div
+                            class={`project-card ${idx % 2 === 0 ? "reverse" : ""}`}
+                          >
+                            <div class="photo">
+                              <img src={project.image} alt={project.title} />
+                            </div>
+                            <div class="content">
+                              <h2>{project.title}</h2>
+                              <p>{project.description}</p>
+                              <a class="see-full" href={project.link}>
+                                See full
+                              </a>
+                            </div>
+                          </div>
+                          <div class="tag-row">
+                            {project.tags.map((tag) => (
+                              <span class="tag-chip">{tag}</span>
+                            ))}
+                          </div>
+                        </section>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </article>
+            ))
+          }
+        </div>
+        <button
+          class="nav-btn next"
+          id="nextBtn"
+          type="button"
+          aria-label="Next spread">&rsaquo;</button
+        >
+        <div class="page-pill">
+          <span id="pageCurrent">1</span>/<span id="pageTotal"
+            >{spreads.length}</span
+          >
+        </div>
+      </section>
+
+      <section
+        class="book-shell-mobile"
+        style={`--book-half-bg:url('${base}img/obj/halfPage.png')`}
+      >
+        <img
+          class="mobile-pins"
+          src={`${base}img/obj/pins.png`}
+          alt=""
+          aria-hidden="true"
+        />
+        <button
+          class="nav-btn prev"
+          id="prevBtnMobile"
+          type="button"
+          aria-label="Previous spread">&lsaquo;</button
+        >
+        <div class="spreads-mobile" id="spreadsMobile">
+          {
+            mobileSpreads.map((spread, spreadIndex) => (
+              <article
+                class={`spread-mobile ${spreadIndex === 0 ? "active" : ""}`}
+                data-spread-mobile={spreadIndex}
+              >
+                <div class="paper-mobile">
+                  <div class="card-list-mobile">
+                    {spread.map((project, idx) => (
+                      <section class="project-stack-mobile">
+                        <div
+                          class={`project-card-mobile ${idx % 2 === 1 ? "reverse" : ""}`}
+                        >
+                          <div class="photo">
+                            <img src={project.image} alt={project.title} />
+                          </div>
+                          <div class="content">
+                            <h2>{project.title}</h2>
+                            <p>{project.description}</p>
+                            <a class="see-full" href={project.link}>
+                              See full
+                            </a>
+                          </div>
+                        </div>
+                        <div class="tag-row">
+                          {project.tags.map((tag) => (
+                            <span class="tag-chip">{tag}</span>
+                          ))}
+                        </div>
+                      </section>
+                    ))}
+                  </div>
+                </div>
+              </article>
+            ))
+          }
+        </div>
+        <button
+          class="nav-btn next"
+          id="nextBtnMobile"
+          type="button"
+          aria-label="Next spread">&rsaquo;</button
+        >
+        <div class="page-pill">
+          <span id="pageCurrentMobile">1</span>/<span id="pageTotalMobile"
+            >{mobileSpreads.length}</span
+          >
+        </div>
+      </section>
+    </main>
+
+    <script>
+      const spreadEls = Array.from(document.querySelectorAll(".spread"));
+      const prevBtn = document.getElementById("prevBtn");
+      const nextBtn = document.getElementById("nextBtn");
+      const pageCurrent = document.getElementById("pageCurrent");
+      let spreadIndex = 0;
+
+      function animateSpreadEntry(spreads, index, direction) {
+        const active = spreads[index];
+        if (!(active instanceof HTMLElement)) return;
+        active.classList.remove("flip-in-next", "flip-in-prev");
+        void active.offsetWidth;
+        active.classList.add(
+          direction === "prev" ? "flip-in-prev" : "flip-in-next",
+        );
+      }
+
+      function renderSpread(nextIndex, direction = "next") {
+        const prevIndex = spreadIndex;
+        spreadIndex = Math.max(0, Math.min(nextIndex, spreadEls.length - 1));
+        spreadEls.forEach((el, idx) =>
+          el.classList.toggle("active", idx === spreadIndex),
+        );
+        if (pageCurrent) pageCurrent.textContent = String(spreadIndex + 1);
+        if (prevBtn instanceof HTMLButtonElement) {
+          prevBtn.disabled = spreadIndex === 0;
+        }
+        if (nextBtn instanceof HTMLButtonElement) {
+          nextBtn.disabled = spreadIndex === spreadEls.length - 1;
+        }
+        if (spreadIndex !== prevIndex) {
+          animateSpreadEntry(spreadEls, spreadIndex, direction);
+        }
+        return spreadIndex !== prevIndex;
+      }
+
+      prevBtn?.addEventListener("click", () => {
+        renderSpread(spreadIndex - 1, "prev");
+      });
+      nextBtn?.addEventListener("click", () => {
+        renderSpread(spreadIndex + 1, "next");
+      });
+
+      const spreadElsMobile = Array.from(
+        document.querySelectorAll(".spread-mobile"),
+      );
+      const prevBtnMobile = document.getElementById("prevBtnMobile");
+      const nextBtnMobile = document.getElementById("nextBtnMobile");
+      const pageCurrentMobile = document.getElementById("pageCurrentMobile");
+      const mobileShell = document.querySelector(".book-shell-mobile");
+      let spreadIndexMobile = 0;
+
+      function renderSpreadMobile(nextIndex, direction = "next") {
+        const prevIndex = spreadIndexMobile;
+        spreadIndexMobile = Math.max(
+          0,
+          Math.min(nextIndex, spreadElsMobile.length - 1),
+        );
+        spreadElsMobile.forEach((el, idx) =>
+          el.classList.toggle("active", idx === spreadIndexMobile),
+        );
+        if (pageCurrentMobile)
+          pageCurrentMobile.textContent = String(spreadIndexMobile + 1);
+        if (prevBtnMobile instanceof HTMLButtonElement) {
+          prevBtnMobile.disabled = spreadIndexMobile === 0;
+        }
+        if (nextBtnMobile instanceof HTMLButtonElement) {
+          nextBtnMobile.disabled =
+            spreadIndexMobile === spreadElsMobile.length - 1;
+        }
+        if (spreadIndexMobile !== prevIndex) {
+          animateSpreadEntry(spreadElsMobile, spreadIndexMobile, direction);
+        }
+        return spreadIndexMobile !== prevIndex;
+      }
+
+      prevBtnMobile?.addEventListener("click", () => {
+        renderSpreadMobile(spreadIndexMobile - 1, "prev");
+      });
+      nextBtnMobile?.addEventListener("click", () => {
+        renderSpreadMobile(spreadIndexMobile + 1, "next");
+      });
+
+      let swipeStartX = 0;
+      let swipeStartY = 0;
+      const swipeThreshold = 42;
+
+      mobileShell?.addEventListener(
+        "touchstart",
+        (e) => {
+          const touch = e.changedTouches[0];
+          swipeStartX = touch.clientX;
+          swipeStartY = touch.clientY;
+        },
+        { passive: true },
+      );
+
+      mobileShell?.addEventListener(
+        "touchmove",
+        (e) => {
+          e.preventDefault();
+        },
+        { passive: false },
+      );
+
+      mobileShell?.addEventListener(
+        "touchend",
+        (e) => {
+          const touch = e.changedTouches[0];
+          const dx = touch.clientX - swipeStartX;
+          const dy = touch.clientY - swipeStartY;
+          const absX = Math.abs(dx);
+          const absY = Math.abs(dy);
+          if (absX < swipeThreshold && absY < swipeThreshold) return;
+
+          if (absX >= absY) {
+            if (dx < 0) {
+              renderSpreadMobile(spreadIndexMobile + 1, "next");
+            } else {
+              renderSpreadMobile(spreadIndexMobile - 1, "prev");
+            }
+          } else {
+            if (dy < 0) {
+              renderSpreadMobile(spreadIndexMobile + 1, "next");
+            } else {
+              renderSpreadMobile(spreadIndexMobile - 1, "prev");
+            }
+          }
+        },
+        { passive: true },
+      );
+
+      renderSpread(0);
+      renderSpreadMobile(0);
+    </script>
+  </body>
+</html>
