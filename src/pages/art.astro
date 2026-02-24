@@ -410,6 +410,13 @@ const featured = (existsSync(featuredDir)
             }
         }
 
+        @media (max-width: 1024px) {
+            #nextButton,
+            #prevButton {
+                display: none;
+            }
+        }
+
         @media (max-width: 760px) {
             #gallery {
                 /* padding-left: 70px; */
@@ -610,6 +617,34 @@ const featured = (existsSync(featuredDir)
             overlayImg.classList.remove("active");
             overlay.classList.remove("show");
         });
+
+        let touchStartX = 0;
+        let touchStartY = 0;
+        const swipeThreshold = 48;
+
+        overlay.addEventListener("touchstart", (e) => {
+            if (!overlay.classList.contains("show")) return;
+            const touch = e.changedTouches[0];
+            touchStartX = touch.clientX;
+            touchStartY = touch.clientY;
+        }, { passive: true });
+
+        overlay.addEventListener("touchend", (e) => {
+            if (!overlay.classList.contains("show") || !activeImages.length) return;
+            const touch = e.changedTouches[0];
+            const dx = touch.clientX - touchStartX;
+            const dy = touch.clientY - touchStartY;
+            if (Math.abs(dx) < swipeThreshold || Math.abs(dx) < Math.abs(dy)) return;
+
+            if (dx < 0) {
+                currentIndex = (currentIndex + 1) % activeImages.length;
+                showImage(currentIndex);
+            } else {
+                currentIndex =
+                    (currentIndex - 1 + activeImages.length) % activeImages.length;
+                showImage(currentIndex);
+            }
+        }, { passive: true });
 
         document.addEventListener("keydown", (e) => {
             if (!overlay.classList.contains("show")) return;

@@ -202,11 +202,45 @@
 			transform-origin: 80% 80%;
 		}
 
-		.fixed-you img {
+		.fixed-you .normal {
+			position: relative;
 			width: 100%;
 			height: auto;
 			display: block;
+			transition: opacity 120ms ease;
 			transform: translateX(12%) translateY(6%);
+		}
+
+		.fixed-you img {
+			position: absolute;
+			inset: 0;
+			width: 100%;
+			height: auto;
+			display: block;
+			pointer-events: none;
+			transform: translateX(12%) translateY(6%);
+		}
+
+		.fixed-you .hover {
+			opacity: 0;
+			transition: opacity 120ms ease;
+		}
+
+		.fixed-you:hover .hover,
+		.fixed-you:focus-within .hover {
+			opacity: 1;
+		}
+
+		.fixed-you:hover .normal,
+		.fixed-you:focus-within .normal {
+			opacity: 0;
+		}
+
+		.fixed-you-hit {
+			position: absolute;
+			inset: 0;
+			display: block;
+			z-index: 2;
 		}
 
 		@keyframes youFloat {
@@ -227,6 +261,16 @@
 				width: min(240px, 100vw);
 				right: 12px;
 				bottom: 12px;
+			}
+		}
+
+		/* Smaller About hit-area on touch devices while keeping full image visible */
+		@media (max-width: 1024px) {
+			.fixed-you-hit {
+				width: 58%;
+				height: 58%;
+				left: 21%;
+				top: 21%;
 			}
 		}
 
@@ -414,8 +458,8 @@
 			}
 
 			.coffee {
-				left: 7%;
-				Bottom: 6%;
+				left: 6%;
+				Bottom: 8%;
 
 			}
 
