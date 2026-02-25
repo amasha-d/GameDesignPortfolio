@@ -35,45 +35,49 @@ const projects: ProjectItem[] = [
   {
     title: "Suit Up",
     description:
-      "Color scripting and interaction concept for a cozy adventure.",
-    image: `${base}img/projects/suitup.png`,
+      "An RNG based superhero suitup game made for Global Game Jam, 2026.",
+    image: `${base}img/projects/Suitup.png`,
     link: "https://tashawych.itch.io/suit-up",
     tags: ["Development", "Unity2D", "RNG Systems"],
   },
   {
-    title: "Kids Stacking",
-    description: "Fast-paced systems iteration and playful combat balancing.",
-    image: `${base}img/obj/Projects.png`,
-    link: "#",
-    tags: ["Combat Design", "Iteration", "Balancing"],
+    title: "Kid Stacking",
+    description:
+      "2D Side-Scroller game about 2 characters stacked on top of each other and moving through levels together.",
+    image: `${base}img/projects/Kidstacking.png`,
+    link: "https://www.behance.net/gallery/198853527/Kid-Stacking-Game-Prototype",
+    tags: ["Unity2D", "Level Design", "Prototyping"],
   },
   {
     title: "Forgotten Melodies",
-    description: "Replace with your real project text and visuals.",
-    image: `${base}img/obj/Projects.png`,
-    link: "#",
-    tags: ["Tool 1", "Tool 2", "Skill 1"],
+    description:
+      "A 2D platformer using voice modulations to move the platforms and solve puzzles.",
+    image: `${base}img/projects/ForgottenMelodies.png`,
+    link: "https://www.behance.net/gallery/181633421/Forgotten-Melodies-Game-Prototype",
+    tags: ["Unity2D", "Audio Design", "Puzzle Design", "Prototyping"],
   },
-  {
-    title: "Chaat Mania",
-    description: "Replace with your real project text and visuals.",
-    image: `${base}img/obj/Projects.png`,
-    link: "#",
-    tags: ["Tool 1", "Tool 2", "Skill 1"],
-  },
+  //   {
+  //     title: "Chaat Mania",
+  //     description: "Replace with your real project text and visuals.",
+  //     image: `${base}img/obj/Projects.png`,
+  //     link: "#",
+  //     tags: ["Tool 1", "Tool 2", "Skill 1"],
+  //   },
   {
     title: "Chesship",
-    description: "Replace with your real project text and visuals.",
-    image: `${base}img/obj/Projects.png`,
-    link: "#",
-    tags: ["Tool 1", "Tool 2", "Skill 1"],
+    description:
+      "Board game design of strategy and chance mixing chess and battleship.",
+    image: `${base}img/projects/Chesship.png`,
+    link: "https://www.behance.net/gallery/184758193/Chesship-Board-Game-Concept-Reimagining-Chess",
+    tags: ["Board Game", "Strategy Design", "Figma", "Playtesting"],
   },
   {
     title: "Forest Fires",
-    description: "Replace with your real project text and visuals.",
-    image: `${base}img/obj/Projects.png`,
-    link: "#",
-    tags: ["Tool 1", "Tool 2", "Skill 1"],
+    description:
+      "Turn-based 2D game aimed to saving the maximum area of the forest and stop the fire from going out of control.",
+    image: `${base}img/projects/ForestFires.png`,
+    link: "https://amasha-d.itch.io/forestfires",
+    tags: ["Gamemaker2", "Turn-Based", "Level Design", "Prototyping"],
   },
   {
     title: "Tree Quarters",
@@ -83,14 +87,14 @@ const projects: ProjectItem[] = [
     tags: ["Tool 1", "Tool 2", "Skill 1"],
   },
   {
-    title: "Kitty Kitty Bang Bang",
+    title: "The Drowned Sorrow",
     description: "Replace with your real project text and visuals.",
     image: `${base}img/obj/Projects.png`,
     link: "#",
     tags: ["Tool 1", "Tool 2", "Skill 1"],
   },
   {
-    title: "The Drowned Giant",
+    title: "Ascend",
     description: "Replace with your real project text and visuals.",
     image: `${base}img/obj/Projects.png`,
     link: "#",
@@ -98,20 +102,14 @@ const projects: ProjectItem[] = [
   },
   {
     title: "Art of Jugaad",
-    description: "Replace with your real project text and visuals.",
+    description:
+      "A childern's book about the art of creative problem solving and jugaad.",
     image: `${base}img/obj/Projects.png`,
     link: "#",
     tags: ["Tool 1", "Tool 2", "Skill 1"],
   },
   {
     title: "Farmville:Country Escape - Decounstruct",
-    description: "Replace with your real project text and visuals.",
-    image: `${base}img/obj/Projects.png`,
-    link: "#",
-    tags: ["Tool 1", "Tool 2", "Skill 1"],
-  },
-  {
-    title: "Gaslight, Girlboss, Gatekeep",
     description: "Replace with your real project text and visuals.",
     image: `${base}img/obj/Projects.png`,
     link: "#",
@@ -191,7 +189,7 @@ for (let i = 0; i < projects.length; i += mobileSpreadSize) {
 
       .page {
         min-height: 100vh;
-        padding: 72px 20px 24px;
+        padding: 7px 20px 24px;
         display: grid;
         place-items: center;
       }
@@ -337,13 +335,13 @@ for (let i = 0; i < projects.length; i += mobileSpreadSize) {
 
       .content h2 {
         margin: 0 0 8px;
-        font-size: clamp(1.4rem, 2vw, 2.6rem);
+        font-size: clamp(1.2rem, 2vw, 2.6rem);
         font-family: "Schoolbell", cursive;
         line-height: 1;
       }
       .content p {
         margin: 0 0 10px;
-        font-size: clamp(1rem, 1.1vw, 1.25rem);
+        font-size: clamp(0.8rem, 1.1vw, 1.25rem);
         line-height: 1.35;
         max-width: 36ch;
       }
@@ -500,7 +498,7 @@ for (let i = 0; i < projects.length; i += mobileSpreadSize) {
         position: relative;
         display: grid;
         grid-template-columns: 56% 1fr;
-        gap: 14px;
+        gap: 5px;
         align-items: center;
         min-height: 0;
       }
@@ -518,17 +516,17 @@ for (let i = 0; i < projects.length; i += mobileSpreadSize) {
         transform: rotate(6deg);
       }
       .project-card-mobile .content h2 {
-        font-size: clamp(1.6rem, 5.6vw, 2.2rem);
+        font-size: clamp(1.2rem, 5.6vw, 2.2rem);
         margin: 0 0 6px;
       }
       .project-card-mobile .content p {
-        font-size: clamp(1rem, 3.7vw, 1.15rem);
+        font-size: clamp(0.8rem, 3.7vw, 1.15rem);
         margin: 0 0 9px;
         line-height: 1.3;
       }
       .project-card-mobile .see-full {
         padding: 6px 11px;
-        font-size: 0.95rem;
+        font-size: 0.8rem;
       }
 
       .project-card-mobile .content {
@@ -589,7 +587,7 @@ for (let i = 0; i < projects.length; i += mobileSpreadSize) {
 
         .page {
           min-height: 100dvh;
-          padding: 72px 10px 18px;
+          padding: 7px 10px 18px;
           overflow: hidden;
         }
         .book-shell {
