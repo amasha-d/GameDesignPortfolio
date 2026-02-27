@@ -21,7 +21,7 @@
 			background: var(--bg);
 			overflow: hidden;
 			/* no scroll on home */
-			font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+			font-family: "Nunito", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
 			background-color: #fffcf4;
 			background-image: url("../img/obj/floral-bg.png");
 			/* your static image */
@@ -186,6 +186,142 @@
 			background: transparent;
 			cursor: pointer;
 			font-size: 22px;
+		}
+
+		#contactDialog {
+			width: min(760px, calc(100vw - 24px));
+			padding: 18px 20px 20px;
+			background: #fffcf4;
+			font-family: "Nunito", system-ui, sans-serif;
+		}
+
+		.contactTitle {
+			font-weight: 800;
+		}
+
+		.contactContent {
+			display: grid;
+			grid-template-columns: minmax(150px, 220px) 1fr;
+			gap: 20px;
+			align-items: stretch;
+			margin-top: 12px;
+		}
+
+		.contactVisual {
+			/* border-radius: 12px; */
+			overflow: hidden;
+			/* background: rgba(0, 0, 0, 0.05); */
+			align-self: end;
+			justify-self: start;
+		}
+
+		.contactVisual img {
+			display: block;
+			width: 100%;
+			height: auto;
+		}
+
+		.contactForm {
+			display: grid;
+			gap: 8px;
+		}
+
+		.contactForm label {
+			font-size: 14px;
+			font-weight: 600;
+		}
+
+		.contactForm input,
+		.contactForm textarea {
+			font: inherit;
+			width: 100%;
+			border: 1px solid rgba(0, 0, 0, 0.2);
+			border-radius: 10px;
+			padding: 10px 12px;
+			box-sizing: border-box;
+			background: #fff;
+		}
+
+		.contactForm textarea {
+			resize: vertical;
+			min-height: 110px;
+		}
+
+		.contactForm button {
+			justify-self: start;
+			margin-top: 4px;
+			border: 1px solid rgba(0, 0, 0, 0.2);
+			border-radius: 10px;
+			padding: 10px 14px;
+			font: inherit;
+			font-weight: 600;
+			background: #fff;
+			cursor: pointer;
+		}
+
+		.contactForm button[disabled] {
+			opacity: 0.65;
+			cursor: not-allowed;
+		}
+
+		.contactStatus {
+			margin: 2px 0 0;
+			font-size: 0.92rem;
+			font-weight: 700;
+			color: #1a6b28;
+			min-height: 1.2em;
+		}
+
+		.contactStatus.isError {
+			color: #a12a2a;
+		}
+
+		.contactRight {
+			display: grid;
+			gap: 14px;
+		}
+
+		.contactLinks {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 10px;
+			align-items: center;
+		}
+
+		.contactLinks a {
+			width: 34px;
+			height: 34px;
+			border-radius: 999px;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			border: 1px solid rgba(0, 0, 0, 0.2);
+			background: #fff;
+			color: #1f1f1f;
+			text-decoration: none;
+			transition: transform 120ms ease, background 120ms ease;
+		}
+
+		.contactLinks a:hover,
+		.contactLinks a:focus-visible {
+			transform: translateY(-1px);
+			background: #f4efe4;
+		}
+
+		.contactLinks svg {
+			width: 17px;
+			height: 17px;
+			fill: currentColor;
+		}
+
+		@media (max-width: 720px) {
+			.contactContent {
+				grid-template-columns: 1fr;
+			}
+
+			.contactVisual {
+				max-width: 220px;
+			}
 		}
 
 		.fixed-you {
