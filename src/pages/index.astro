@@ -1,262 +1,314 @@
 ---
+import "../styles/style.css";
 const NAME = "Amasha Das";
 const ROLE = "Game Designer / Visual Designer";
-import "../styles/style.css";
+const BASE_URL = import.meta.env.BASE_URL;
 ---
 
 <html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800&family=Schoolbell&display=swap"
+      rel="stylesheet"
+    />
+    <title>{NAME}</title>
+  </head>
 
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800&display=swap" rel="stylesheet" />
-  <title>{NAME}</title>
-</head>
-
-<body>
-  <div class="topbar">
-    <div class="brand">
-      <div class="logo" aria-label="Logo (placeholder)"></div>
-      <div>
-        <div style="font-weight:800; line-height:1;">{NAME}</div>
-        <div style="opacity:.7; font-size:14px;">{ROLE}</div>
+  <body>
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo" aria-label="Logo (placeholder)"></div>
+        <div>
+          <div style="font-weight:800; line-height:1;">{NAME}</div>
+          <div style="opacity:.7; font-size:14px;">{ROLE}</div>
+        </div>
       </div>
-    </div>
-    <div class="hint">Click an object ✦</div>
-  </div>
-
-  <main class="wrap">
-    <section class="stage" aria-label="Interactive desk scene">
-      <!-- Projects -->
-      <a class="obj projects wobble" href="projectCollections" aria-label="Projects">
-        <img class="normal" src="img/obj/Projects.png" alt="" />
-        <img class="hover" src="img/obj/Projects-hover.png" alt="" />
-      </a>
-
-      <!-- Resume -->
-      <button class="obj resume wobble" type="button" aria-label="Open Resume" data-open-resume
-        style="--wTime:4.4s; --wRot:0.5deg;">
-        <img class="normal" src="img/obj/Resume.png" alt="" />
-        <img class="hover" src="img/obj/Resume-hover.png" alt="" />
-      </button>
-
-      <!-- Work -->
-      <a class="obj work wobble" style="--wTime:4.8s; --wRot:0.4deg;" href="timeline" aria-label="Work">
-        <img class="normal" src="img/obj/Work.png" alt="" />
-        <img class="hover" src="img/obj/Work-hover.png" alt="" />
-      </a>
-
-      <!-- Coffee -->
-      <a class="obj coffee wobble" style="--wTime:3.2s; --wRot:0.8deg;" href="work" aria-label="Buy me a coffee">
-        <img class="normal" src="img/obj/Coffee.png" alt="" />
-        <img class="hover" src="img/obj/Coffee-hover.png" alt="" />
-      </a>
-
-      <!-- WIP -->
-      <a class="obj wip wobble" style="--wTime:4.8s; --wRot:0.4deg;" href="work" aria-label="WIP">
-        <img class="normal" src="img/obj/WIP.png" alt="" />
-        <img class="hover" src="img/obj/WIP-hover.png" alt="" />
-      </a>
-
-      <!-- Art -->
-      <a class="obj art wobble" style="--wTime:4.8s; --wRot:0.4deg;" href="art" aria-label="Art">
-        <img class="normal" src="img/obj/Art.png" alt="" />
-        <img class="hover" src="img/obj/Art-hover.png" alt="" />
-      </a>
-      <!-- Contact Open Modal -->
-      <a class="obj connect wobble" style="--wTime:4.4s; --wRot:0.5deg;" aria-label="Open Contact" data-open-contact>
-        <img class="normal" src="img/obj/Contactme.png" alt="" />
-        <img class="hover" src="img/obj/Contactme-hover.png" alt="" />
-      </a>
-    </section>
-    <div class="fixed-you">
-      <img class="normal" src="img/obj/About.png" alt="Amasha" />
-      <img class="hover" src="img/obj/About-hover.png" alt="" />
-
-      <a class="fixed-you-hit" href="about" aria-label="About Me">
-      </a>
-
+      <div class="hint">Click an object</div>
     </div>
 
-    <dialog id="contactDialog" aria-label="Contact">
-      <div class="modalTop">
-        <div class="contactTitle">Connect</div>
-        <button class="x" type="button" aria-label="Close" data-close-contact>&times;</button>
+    <main class="wrap">
+      <section class="stage" aria-label="Interactive desk scene">
+        <!-- Projects -->
+        <a
+          class="obj projects wobble"
+          href="projectCollections"
+          aria-label="Projects"
+        >
+          <img class="normal" src="img/obj/Projects.png" alt="" />
+          <img class="hover" src="img/obj/Projects-hover.png" alt="" />
+        </a>
+
+        <!-- Resume -->
+        <a
+          class="obj resume wobble"
+          href="files/Amasha Das Resume.pdf"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Open Resume in a new tab"
+          style="--wTime:4.4s; --wRot:0.5deg;"
+        >
+          <img class="normal" src="img/obj/Resume.png" alt="" />
+          <img class="hover" src="img/obj/Resume-hover.png" alt="" />
+        </a>
+
+        <!-- Work -->
+        <a
+          class="obj work wobble"
+          style="--wTime:4.8s; --wRot:0.4deg;"
+          href="timeline"
+          aria-label="Work"
+        >
+          <img class="normal" src="img/obj/Work.png" alt="" />
+          <img class="hover" src="img/obj/Work-hover.png" alt="" />
+        </a>
+
+        <!-- Coffee -->
+        <a
+          class="obj coffee wobble"
+          style="--wTime:3.2s; --wRot:0.8deg;"
+          href="work"
+          aria-label="Buy me a coffee"
+        >
+          <img class="normal" src="img/obj/Coffee.png" alt="" />
+          <img class="hover" src="img/obj/Coffee-hover.png" alt="" />
+        </a>
+
+        <!-- WIP -->
+        <a
+          class="obj wip wobble"
+          style="--wTime:4.8s; --wRot:0.4deg;"
+          href="work"
+          aria-label="WIP"
+        >
+          <img class="normal" src="img/obj/WIP.png" alt="" />
+          <img class="hover" src="img/obj/WIP-hover.png" alt="" />
+        </a>
+
+        <!-- Art -->
+        <a
+          class="obj art wobble"
+          style="--wTime:4.8s; --wRot:0.4deg;"
+          href="art"
+          aria-label="Art"
+        >
+          <img class="normal" src="img/obj/Art.png" alt="" />
+          <img class="hover" src="img/obj/Art-hover.png" alt="" />
+        </a>
+        <!-- Contact Open Modal -->
+        <a
+          class="obj connect wobble"
+          style="--wTime:4.4s; --wRot:0.5deg;"
+          aria-label="Open Contact"
+          data-open-contact
+        >
+          <img class="normal" src="img/obj/Contactme.png" alt="" />
+          <img class="hover" src="img/obj/Contactme-hover.png" alt="" />
+        </a>
+      </section>
+      <div class="fixed-you">
+        <img class="normal" src="img/obj/About.png" alt="Amasha" />
+        <img class="hover" src="img/obj/About-hover.png" alt="" />
+
+        <a class="fixed-you-hit" href="about" aria-label="About Me"> </a>
       </div>
 
-      <div class="contactContent">
-        <div class="contactVisual">
-          <img src="/img/obj/telephone.gif" alt="Telephone" />
+      <dialog id="contactDialog" aria-label="Contact">
+        <div class="modalTop">
+          <div class="contactTitle">Connect</div>
+          <button class="x" type="button" aria-label="Close" data-close-contact
+            >&times;</button
+          >
         </div>
 
-        <div class="contactRight">
-          <form class="contactForm" id="contactForm" aria-label="Contact form">
-            <label for="contactName">Name</label>
-            <input id="contactName" name="name" type="text" placeholder="Your name" required />
+        <div class="contactContent">
+          <div class="contactVisual">
+            <img src={BASE_URL + "img/obj/telephone.gif"} alt="Telephone" />
+          </div>
 
-            <label for="contactEmail">Email</label>
-            <input id="contactEmail" name="email" type="email" placeholder="you@example.com" required />
+          <div class="contactRight">
+            <form
+              class="contactForm"
+              id="contactForm"
+              aria-label="Contact form"
+            >
+              <label for="contactName">Name</label>
+              <input
+                id="contactName"
+                name="name"
+                type="text"
+                placeholder="Your name"
+                required
+              />
 
-            <label for="contactMessage">Message</label>
-            <textarea id="contactMessage" name="message" rows="5" placeholder="Write your message..."
-              required></textarea>
+              <label for="contactEmail">Email</label>
+              <input
+                id="contactEmail"
+                name="email"
+                type="email"
+                placeholder="you@example.com"
+                required
+              />
 
-            <button type="submit">Send Message</button>
-            <p class="contactStatus" id="contactStatus" role="status" aria-live="polite"></p>
-          </form>
+              <label for="contactMessage">Message</label>
+              <textarea
+                id="contactMessage"
+                name="message"
+                rows="5"
+                placeholder="Write your message..."
+                required></textarea>
 
-          <div class="contactLinks" aria-label="Social links">
-            <a href="YOUR_LINKEDIN_URL" aria-label="LinkedIn" title="LinkedIn">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path
-                  d="M6.94 8.5v9.36H3.82V8.5h3.12zM5.38 3.5a1.81 1.81 0 1 1 0 3.62 1.81 1.81 0 0 1 0-3.62zM20.2 12.43v5.43h-3.12v-5.07c0-1.27-.46-2.13-1.6-2.13-.88 0-1.4.59-1.63 1.16-.08.2-.1.48-.1.77v5.27h-3.12s.04-8.56 0-9.36h3.12v1.33c.42-.64 1.18-1.56 2.88-1.56 2.1 0 3.67 1.37 3.67 4.16z" />
-              </svg>
-            </a>
-            <a href="YOUR_BEHANCE_URL" aria-label="Behance" title="Behance">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path
-                  d="M9.42 11.02c.95-.36 1.43-1.08 1.43-2.17 0-1.74-1.29-2.61-3.87-2.61H2v11.52h5.26c2.66 0 3.99-.96 3.99-2.88 0-1.47-.61-2.42-1.83-2.86zM5.05 8.54h1.67c.86 0 1.29.31 1.29.92 0 .66-.47.99-1.41.99H5.05V8.54zm1.84 6.95H5.05v-2.78h1.9c1.01 0 1.52.44 1.52 1.31 0 .98-.52 1.47-1.58 1.47zM21.78 13.84h-6.68c.04 1.42.8 2.13 2.27 2.13.85 0 1.47-.27 1.84-.8h2.38c-.76 1.92-2.19 2.88-4.3 2.88-1.48 0-2.64-.44-3.49-1.32-.84-.88-1.26-2.08-1.26-3.58 0-1.47.42-2.65 1.26-3.55.85-.9 1.98-1.35 3.4-1.35 1.54 0 2.73.48 3.56 1.45.83.96 1.2 2.34 1.02 4.14zM19.24 12.24c-.13-1.25-.78-1.87-1.95-1.87-1.18 0-1.89.62-2.12 1.87h4.07zM14.38 6.65h5.4v1.27h-5.4V6.65z" />
-              </svg>
-            </a>
-            <a href="YOUR_INSTAGRAM_URL" aria-label="Instagram" title="Instagram">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path
-                  d="M12 7.17A4.83 4.83 0 1 0 12 16.83 4.83 4.83 0 0 0 12 7.17zm0 7.96A3.13 3.13 0 1 1 12 8.87a3.13 3.13 0 0 1 0 6.26zM17.15 6.98a1.13 1.13 0 1 0 0 2.26 1.13 1.13 0 0 0 0-2.26z" />
-                <path
-                  d="M12 2.95c2.95 0 3.3.01 4.46.06 1.07.05 1.66.23 2.05.38.52.2.89.44 1.28.83.39.39.63.76.83 1.28.15.39.33.98.38 2.05.05 1.16.06 1.51.06 4.46s-.01 3.3-.06 4.46c-.05 1.07-.23 1.66-.38 2.05-.2.52-.44.89-.83 1.28-.39.39-.76.63-1.28.83-.39.15-.98.33-2.05.38-1.16.05-1.51.06-4.46.06s-3.3-.01-4.46-.06c-1.07-.05-1.66-.23-2.05-.38a3.45 3.45 0 0 1-1.28-.83 3.45 3.45 0 0 1-.83-1.28c-.15-.39-.33-.98-.38-2.05-.05-1.16-.06-1.51-.06-4.46s.01-3.3.06-4.46c.05-1.07.23-1.66.38-2.05.2-.52.44-.89.83-1.28.39-.39.76-.63 1.28-.83.39-.15.98-.33 2.05-.38 1.16-.05 1.51-.06 4.46-.06zm0-1.95c-3 0-3.38.01-4.54.06-1.16.05-1.95.24-2.65.52a5.36 5.36 0 0 0-1.94 1.27 5.36 5.36 0 0 0-1.27 1.94c-.28.7-.47 1.49-.52 2.65C1.01 8.62 1 9 1 12s.01 3.38.06 4.54c.05 1.16.24 1.95.52 2.65.28.71.67 1.32 1.27 1.94.62.6 1.23.99 1.94 1.27.7.28 1.49.47 2.65.52 1.16.05 1.54.06 4.54.06s3.38-.01 4.54-.06c1.16-.05 1.95-.24 2.65-.52a5.36 5.36 0 0 0 1.94-1.27 5.36 5.36 0 0 0 1.27-1.94c.28-.7.47-1.49.52-2.65.05-1.16.06-1.54.06-4.54s-.01-3.38-.06-4.54c-.05-1.16-.24-1.95-.52-2.65a5.36 5.36 0 0 0-1.27-1.94 5.36 5.36 0 0 0-1.94-1.27c-.7-.28-1.49-.47-2.65-.52C15.38 1.01 15 1 12 1z" />
-              </svg>
-            </a>
-            <a href="YOUR_ITCH_URL" aria-label="Itch.io" title="Itch.io">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path
-                  d="M3 8.3c0-1.43 1.17-2.6 2.6-2.6h12.8c1.43 0 2.6 1.17 2.6 2.6v5.45a2.1 2.1 0 0 1-2.1 2.1h-1.22c-.24 1.32-1.17 2.45-2.45 2.45-1.35 0-2.32-.84-3.23-2.11-.91 1.27-1.88 2.11-3.23 2.11-1.28 0-2.21-1.13-2.45-2.45H5.1A2.1 2.1 0 0 1 3 13.75V8.3zm4.7 2.6a1.3 1.3 0 1 0 0-2.6 1.3 1.3 0 0 0 0 2.6zm8.6 0a1.3 1.3 0 1 0 0-2.6 1.3 1.3 0 0 0 0 2.6z" />
-              </svg>
-            </a>
-            <a href="mailto:colourscoded@gmail.com" aria-label="Email" title="Email">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path
-                  d="M3 5.5A2.5 2.5 0 0 1 5.5 3h13A2.5 2.5 0 0 1 21 5.5v13a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 18.5v-13zm2 1.09v.46l7 4.67 7-4.67v-.46a.5.5 0 0 0-.5-.5h-13a.5.5 0 0 0-.5.5zm14 2.87-6.45 4.3a1 1 0 0 1-1.1 0L5 9.46v9.04c0 .28.22.5.5.5h13a.5.5 0 0 0 .5-.5V9.46z" />
-              </svg>
-            </a>
+              <button type="submit">Send Message</button>
+              <p
+                class="contactStatus"
+                id="contactStatus"
+                role="status"
+                aria-live="polite"
+              >
+              </p>
+            </form>
+
+            <div class="contactLinks" aria-label="Social links">
+              <a
+                href="https://www.linkedin.com/in/amasha-das"
+                aria-label="LinkedIn"
+                title="LinkedIn"
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path
+                    d="M6.94 8.5v9.36H3.82V8.5h3.12zM5.38 3.5a1.81 1.81 0 1 1 0 3.62 1.81 1.81 0 0 1 0-3.62zM20.2 12.43v5.43h-3.12v-5.07c0-1.27-.46-2.13-1.6-2.13-.88 0-1.4.59-1.63 1.16-.08.2-.1.48-.1.77v5.27h-3.12s.04-8.56 0-9.36h3.12v1.33c.42-.64 1.18-1.56 2.88-1.56 2.1 0 3.67 1.37 3.67 4.16z"
+                  ></path>
+                </svg>
+              </a>
+              <a
+                href="https://www.behance.net/amashadas"
+                aria-label="Behance"
+                title="Behance"
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path
+                    d="M9.42 11.02c.95-.36 1.43-1.08 1.43-2.17 0-1.74-1.29-2.61-3.87-2.61H2v11.52h5.26c2.66 0 3.99-.96 3.99-2.88 0-1.47-.61-2.42-1.83-2.86zM5.05 8.54h1.67c.86 0 1.29.31 1.29.92 0 .66-.47.99-1.41.99H5.05V8.54zm1.84 6.95H5.05v-2.78h1.9c1.01 0 1.52.44 1.52 1.31 0 .98-.52 1.47-1.58 1.47zM21.78 13.84h-6.68c.04 1.42.8 2.13 2.27 2.13.85 0 1.47-.27 1.84-.8h2.38c-.76 1.92-2.19 2.88-4.3 2.88-1.48 0-2.64-.44-3.49-1.32-.84-.88-1.26-2.08-1.26-3.58 0-1.47.42-2.65 1.26-3.55.85-.9 1.98-1.35 3.4-1.35 1.54 0 2.73.48 3.56 1.45.83.96 1.2 2.34 1.02 4.14zM19.24 12.24c-.13-1.25-.78-1.87-1.95-1.87-1.18 0-1.89.62-2.12 1.87h4.07zM14.38 6.65h5.4v1.27h-5.4V6.65z"
+                  ></path>
+                </svg>
+              </a>
+              <a
+                href="https://www.instagram.com/colourscoded"
+                aria-label="Instagram"
+                title="Instagram"
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path
+                    d="M12 7.17A4.83 4.83 0 1 0 12 16.83 4.83 4.83 0 0 0 12 7.17zm0 7.96A3.13 3.13 0 1 1 12 8.87a3.13 3.13 0 0 1 0 6.26zM17.15 6.98a1.13 1.13 0 1 0 0 2.26 1.13 1.13 0 0 0 0-2.26z"
+                  ></path>
+                  <path
+                    d="M12 2.95c2.95 0 3.3.01 4.46.06 1.07.05 1.66.23 2.05.38.52.2.89.44 1.28.83.39.39.63.76.83 1.28.15.39.33.98.38 2.05.05 1.16.06 1.51.06 4.46s-.01 3.3-.06 4.46c-.05 1.07-.23 1.66-.38 2.05-.2.52-.44.89-.83 1.28-.39.39-.76.63-1.28.83-.39.15-.98.33-2.05.38-1.16.05-1.51.06-4.46.06s-3.3-.01-4.46-.06c-1.07-.05-1.66-.23-2.05-.38a3.45 3.45 0 0 1-1.28-.83 3.45 3.45 0 0 1-.83-1.28c-.15-.39-.33-.98-.38-2.05-.05-1.16-.06-1.51-.06-4.46s.01-3.3.06-4.46c.05-1.07.23-1.66.38-2.05.2-.52.44-.89.83-1.28.39-.39.76-.63 1.28-.83.39-.15.98-.33 2.05-.38 1.16-.05 1.51-.06 4.46-.06zm0-1.95c-3 0-3.38.01-4.54.06-1.16.05-1.95.24-2.65.52a5.36 5.36 0 0 0-1.94 1.27 5.36 5.36 0 0 0-1.27 1.94c-.28.7-.47 1.49-.52 2.65C1.01 8.62 1 9 1 12s.01 3.38.06 4.54c.05 1.16.24 1.95.52 2.65.28.71.67 1.32 1.27 1.94.62.6 1.23.99 1.94 1.27.7.28 1.49.47 2.65.52 1.16.05 1.54.06 4.54.06s3.38-.01 4.54-.06c1.16-.05 1.95-.24 2.65-.52a5.36 5.36 0 0 0 1.94-1.27 5.36 5.36 0 0 0 1.27-1.94c.28-.7.47-1.49.52-2.65.05-1.16.06-1.54.06-4.54s-.01-3.38-.06-4.54c-.05-1.16-.24-1.95-.52-2.65a5.36 5.36 0 0 0-1.27-1.94 5.36 5.36 0 0 0-1.94-1.27c-.7-.28-1.49-.47-2.65-.52C15.38 1.01 15 1 12 1z"
+                  ></path>
+                </svg>
+              </a>
+              <a
+                href="https://amasha-d.itch.io/"
+                aria-label="Itch.io"
+                title="Itch.io"
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path
+                    d="M3 8.3c0-1.43 1.17-2.6 2.6-2.6h12.8c1.43 0 2.6 1.17 2.6 2.6v5.45a2.1 2.1 0 0 1-2.1 2.1h-1.22c-.24 1.32-1.17 2.45-2.45 2.45-1.35 0-2.32-.84-3.23-2.11-.91 1.27-1.88 2.11-3.23 2.11-1.28 0-2.21-1.13-2.45-2.45H5.1A2.1 2.1 0 0 1 3 13.75V8.3zm4.7 2.6a1.3 1.3 0 1 0 0-2.6 1.3 1.3 0 0 0 0 2.6zm8.6 0a1.3 1.3 0 1 0 0-2.6 1.3 1.3 0 0 0 0 2.6z"
+                  ></path>
+                </svg>
+              </a>
+              <a
+                href="mailto:colourscoded@gmail.com"
+                aria-label="Email"
+                title="Email"
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path
+                    d="M3 5.5A2.5 2.5 0 0 1 5.5 3h13A2.5 2.5 0 0 1 21 5.5v13a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 18.5v-13zm2 1.09v.46l7 4.67 7-4.67v-.46a.5.5 0 0 0-.5-.5h-13a.5.5 0 0 0-.5.5zm14 2.87-6.45 4.3a1 1 0 0 1-1.1 0L5 9.46v9.04c0 .28.22.5.5.5h13a.5.5 0 0 0 .5-.5V9.46z"
+                  ></path>
+                </svg>
+              </a>
+            </div>
           </div>
         </div>
-      </div>
-    </dialog>
-    <dialog class="modal" id="resumeModal" aria-label="Resume viewer">
-      <div class="modalCard">
-        <header class="modalHeader">
-          <div class="modalTitle">Resume</div>
+      </dialog>
+      <script>
+        const dlg = document.getElementById("contactDialog");
+        document
+          .querySelector("[data-open-contact]")
+          ?.addEventListener("click", () => dlg.showModal());
+        document
+          .querySelector("[data-close-contact]")
+          ?.addEventListener("click", () => dlg.close());
+        const contactForm = document.getElementById("contactForm");
+        const contactStatus = document.getElementById("contactStatus");
+        const contactSubmitBtn = contactForm?.querySelector(
+          "button[type='submit']",
+        );
+        const web3formsAccessKey = "38226a23-1a98-4825-8185-cb9665eb56f8";
 
-          <div class="modalActions">
-            <a class="btn" href="files/Amasha Das Resume.pdf" download>Download PDF</a>
-            <a class="btn btnSecondary" href="files/Amasha Das EuropassCV.pdf" target="_blank" rel="noreferrer">
-              Europass CV
-            </a>
-            <button class="btn btnGhost" type="button" data-close-resume aria-label="Close">✕</button>
-          </div>
-        </header>
-
-        <div class="modalBody">
-          <iframe class="pdfFrame" src="files/Amasha Das Resume.pdf#zoom=page-width" title="Amasha Das Resume"></iframe>
-        </div>
-      </div>
-    </dialog>
-
-    <script>
-      const dlg = document.getElementById("contactDialog");
-      document
-        .querySelector("[data-open-contact]")
-        ?.addEventListener("click", () => dlg.showModal());
-      document
-        .querySelector("[data-close-contact]")
-        ?.addEventListener("click", () => dlg.close());
-      const contactForm = document.getElementById("contactForm");
-      const contactStatus = document.getElementById("contactStatus");
-      const contactSubmitBtn = contactForm?.querySelector("button[type='submit']");
-      const web3formsAccessKey = "38226a23-1a98-4825-8185-cb9665eb56f8";
-
-      function setContactStatus(message, isError = false) {
-        if (!contactStatus) return;
-        contactStatus.textContent = message;
-        contactStatus.classList.toggle("isError", isError);
-      }
-
-      contactForm?.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const formData = new FormData(contactForm);
-        const name = (formData.get("name") || "").toString().trim();
-        const email = (formData.get("email") || "").toString().trim();
-        const message = (formData.get("message") || "").toString().trim();
-        if (!name || !email || !message) return;
-
-        if (!web3formsAccessKey || web3formsAccessKey.includes("YOUR_")) {
-          setContactStatus("Contact form is not configured yet.", true);
-          return;
+        function setContactStatus(message, isError = false) {
+          if (!contactStatus) return;
+          contactStatus.textContent = message;
+          contactStatus.classList.toggle("isError", isError);
         }
 
-        contactSubmitBtn?.setAttribute("disabled", "true");
-        setContactStatus("Sending...");
+        contactForm?.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const formData = new FormData(contactForm);
+          const name = (formData.get("name") || "").toString().trim();
+          const email = (formData.get("email") || "").toString().trim();
+          const message = (formData.get("message") || "").toString().trim();
+          if (!name || !email || !message) return;
 
-        try {
-          const response = await fetch("https://api.web3forms.com/submit", {
-            method: "POST",
-            headers: { "Content-Type": "application/json", Accept: "application/json" },
-            body: JSON.stringify({
-              access_key: web3formsAccessKey,
-              subject: `Portfolio Contact from ${name}`,
-              from_name: name,
-              email,
-              replyto: email,
-              message,
-              to: "colourscoded@gmail.com",
-            }),
-          });
-
-          const result = await response.json();
-          if (response.ok && result.success) {
-            contactForm.reset();
-            setContactStatus("Got it! Will reply ASAP! Thank you :)");
+          if (!web3formsAccessKey || web3formsAccessKey.includes("YOUR_")) {
+            setContactStatus("Contact form is not configured yet.", true);
             return;
           }
-          setContactStatus("Could not send right now. Please try again.", true);
-        } catch (error) {
-          setContactStatus("Could not send right now. Please try again.", true);
-        } finally {
-          contactSubmitBtn?.removeAttribute("disabled");
-        }
-      });
-      const resumeModal = document.getElementById("resumeModal");
-      const openBtn = document.querySelector("[data-open-resume]");
-      const closeBtn = document.querySelector("[data-close-resume]");
-      const resumePdfUrl = "files/Amasha Das Resume.pdf";
 
-      if (openBtn && resumeModal) {
-        openBtn.addEventListener("click", () => {
-          const isTouchOrTablet =
-            window.matchMedia("(max-width: 1024px)").matches ||
-            window.matchMedia("(pointer: coarse)").matches;
-          if (isTouchOrTablet) {
-            window.open(resumePdfUrl, "_blank", "noopener,noreferrer");
-            return;
+          contactSubmitBtn?.setAttribute("disabled", "true");
+          setContactStatus("Sending...");
+
+          try {
+            const response = await fetch("https://api.web3forms.com/submit", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+              },
+              body: JSON.stringify({
+                access_key: web3formsAccessKey,
+                subject: `Portfolio Contact from ${name}`,
+                from_name: name,
+                email,
+                replyto: email,
+                message,
+                to: "colourscoded@gmail.com",
+              }),
+            });
+
+            const result = await response.json();
+            if (response.ok && result.success) {
+              contactForm.reset();
+              setContactStatus("Got it! Will reply ASAP! Thank you :)");
+              return;
+            }
+            setContactStatus(
+              "Could not send right now. Please try again.",
+              true,
+            );
+          } catch (error) {
+            setContactStatus(
+              "Could not send right now. Please try again.",
+              true,
+            );
+          } finally {
+            contactSubmitBtn?.removeAttribute("disabled");
           }
-          resumeModal.showModal();
         });
-      }
-
-      if (closeBtn && resumeModal) {
-        closeBtn.addEventListener("click", () => resumeModal.close());
-      }
-
-      // Close when clicking outside the card
-      resumeModal?.addEventListener("click", (e) => {
-        const card = resumeModal.querySelector(".modalCard");
-        if (card && !card.contains(e.target)) resumeModal.close();
-      });
-
-    </script>
-  </main>
-</body>
-
+      </script>
+    </main>
+  </body>
 </html>
