@@ -98,7 +98,7 @@ import "../styles/style.css";
 
           <div class="modalActions">
             <a class="btn" href="files/Amasha Das Resume.pdf" download>Download PDF</a>
-            <a class="btn btnSecondary" href="files/Amasha Das Resume.pdf" target="_blank" rel="noreferrer">
+            <a class="btn btnSecondary" href="files/Amasha Das EuropassCV.pdf" target="_blank" rel="noreferrer">
               Europass CV
             </a>
             <button class="btn btnGhost" type="button" data-close-resume aria-label="Close">✕</button>
@@ -122,9 +122,19 @@ import "../styles/style.css";
       const resumeModal = document.getElementById("resumeModal");
       const openBtn = document.querySelector("[data-open-resume]");
       const closeBtn = document.querySelector("[data-close-resume]");
+      const resumePdfUrl = "files/Amasha Das Resume.pdf";
 
       if (openBtn && resumeModal) {
-        openBtn.addEventListener("click", () => resumeModal.showModal());
+        openBtn.addEventListener("click", () => {
+          const isTouchOrTablet =
+            window.matchMedia("(max-width: 1024px)").matches ||
+            window.matchMedia("(pointer: coarse)").matches;
+          if (isTouchOrTablet) {
+            window.open(resumePdfUrl, "_blank", "noopener,noreferrer");
+            return;
+          }
+          resumeModal.showModal();
+        });
       }
 
       if (closeBtn && resumeModal) {
