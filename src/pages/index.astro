@@ -21,13 +21,17 @@ const BASE_URL = import.meta.env.BASE_URL;
   <body>
     <div class="topbar">
       <div class="brand">
-        <div class="logo" aria-label="Logo (placeholder)"></div>
+        <img
+          class="logo"
+          src={BASE_URL + "img/obj/logo.jpg"}
+          alt="Amasha Das logo"
+        />
         <div>
           <div style="font-weight:800; line-height:1;">{NAME}</div>
           <div style="opacity:.7; font-size:14px;">{ROLE}</div>
         </div>
       </div>
-      <div class="hint">Click an object</div>
+      <div class="hint">Click an object to Explore ✨</div>
     </div>
 
     <main class="wrap">
@@ -174,6 +178,8 @@ const BASE_URL = import.meta.env.BASE_URL;
             <div class="contactLinks" aria-label="Social links">
               <a
                 href="https://www.linkedin.com/in/amasha-das"
+                target="_blank"
+                rel="noopener noreferrer"
                 aria-label="LinkedIn"
                 title="LinkedIn"
               >
@@ -185,6 +191,8 @@ const BASE_URL = import.meta.env.BASE_URL;
               </a>
               <a
                 href="https://www.behance.net/amashadas"
+                target="_blank"
+                rel="noopener noreferrer"
                 aria-label="Behance"
                 title="Behance"
               >
@@ -196,6 +204,8 @@ const BASE_URL = import.meta.env.BASE_URL;
               </a>
               <a
                 href="https://www.instagram.com/colourscoded"
+                target="_blank"
+                rel="noopener noreferrer"
                 aria-label="Instagram"
                 title="Instagram"
               >
@@ -210,6 +220,8 @@ const BASE_URL = import.meta.env.BASE_URL;
               </a>
               <a
                 href="https://amasha-d.itch.io/"
+                target="_blank"
+                rel="noopener noreferrer"
                 aria-label="Itch.io"
                 title="Itch.io"
               >
@@ -221,6 +233,8 @@ const BASE_URL = import.meta.env.BASE_URL;
               </a>
               <a
                 href="mailto:colourscoded@gmail.com"
+                target="_blank"
+                rel="noopener noreferrer"
                 aria-label="Email"
                 title="Email"
               >
