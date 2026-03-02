@@ -79,41 +79,28 @@ const projects: ProjectItem[] = [
     link: "https://amasha-d.itch.io/forestfires",
     tags: ["Gamemaker2", "Turn-Based", "Level Design", "Prototyping"],
   },
-  {
-    title: "Grave",
-    description: "Replace with your real project text and visuals.",
-    image: `${base}img/obj/Projects.png`,
-    link: "#",
-    tags: ["Tool 1", "Tool 2", "Skill 1"],
-  },
+  // {
+  //   title: "Grave",
+  //   description: "Replace with your real project text and visuals.",
+  //   image: `${base}img/obj/Projects.png`,
+  //   link: "#",
+  //   tags: ["Tool 1", "Tool 2", "Skill 1"],
+  // },
   {
     title: "Tree Quarters",
-    description: "Replace with your real project text and visuals.",
-    image: `${base}img/obj/Projects.png`,
-    link: "#",
-    tags: ["Tool 1", "Tool 2", "Skill 1"],
-  },
-  {
-    title: "The Drowned Sorrow",
-    description: "Replace with your real project text and visuals.",
-    image: `${base}img/obj/Projects.png`,
-    link: "#",
-    tags: ["Tool 1", "Tool 2", "Skill 1"],
+    description:
+      "Board Game prototype about growing trees and forest by using quarter cards.",
+    image: `${base}img/projects/TreeQuarters.png`,
+    link: "https://www.behance.net/gallery/181494637/Tree-Quarters-Board-Game-Prototype",
+    tags: ["Board Game", "Strategy Design", "Figma", "Playtesting"],
   },
   {
     title: "Ascend",
-    description: "Replace with your real project text and visuals.",
-    image: `${base}img/obj/Projects.png`,
-    link: "#",
-    tags: ["Tool 1", "Tool 2", "Skill 1"],
-  },
-  {
-    title: "Art of Jugaad",
     description:
-      "A childern's book about the art of creative problem solving and jugaad.",
-    image: `${base}img/obj/Projects.png`,
-    link: "#",
-    tags: ["Tool 1", "Tool 2", "Skill 1"],
+      "An Experimental game designed to explore AI-powered conversation, using adaptive dialogue and stat-based evaluation.",
+    image: `${base}img/projects/Ascend.png`,
+    link: "https://www.behance.net/gallery/244798231/Ascend-Experimental-Game-Concept",
+    tags: ["Conceptual Design", "System Design", "Narrative Design"],
   },
   {
     title: "Farmville:Country Escape - Decounstruct",
@@ -125,17 +112,33 @@ const projects: ProjectItem[] = [
   {
     title: "Marvel Snap - Decounstruct",
     description: "Replace with your real project text and visuals.",
-    image: `${base}img/obj/Projects.png`,
-    link: "#",
+    image: `${base}img/obj/GameDissect.png`,
+    link: "https://www.behance.net/gallery/244807879/Marvel-Snap-Deconstruction",
     tags: ["Tool 1", "Tool 2", "Skill 1"],
   },
   {
-    title: "Folio",
+    title: "The Drowned Sorrow",
     description: "Replace with your real project text and visuals.",
     image: `${base}img/obj/Projects.png`,
     link: "#",
     tags: ["Tool 1", "Tool 2", "Skill 1"],
   },
+  // {
+  //   title: "Art of Jugaad",
+  //   description:
+  //     "A childern's book about the art of creative problem solving and jugaad.",
+  //   image: `${base}img/obj/Projects.png`,
+  //   link: "#",
+  //   tags: ["Tool 1", "Tool 2", "Skill 1"],
+  // },
+
+  // {
+  //   title: "Folio",
+  //   description: "Replace with your real project text and visuals.",
+  //   image: `${base}img/obj/Projects.png`,
+  //   link: "#",
+  //   tags: ["Tool 1", "Tool 2", "Skill 1"],
+  // },
 ];
 
 const spreadSize = 4;
@@ -345,6 +348,12 @@ for (let i = 0; i < projects.length; i += mobileSpreadSize) {
         max-height: 100%;
         display: block;
         border-radius: 10px;
+      }
+
+      .photo-link {
+        display: block;
+        width: 100%;
+        height: 100%;
       }
 
       .content h2 {
@@ -701,13 +710,26 @@ for (let i = 0; i < projects.length; i += mobileSpreadSize) {
                             class={`project-card ${idx % 2 === 1 ? "reverse" : ""}`}
                           >
                             <div class="photo">
-                              <img src={project.image} alt={project.title} />
+                              <a
+                                class="photo-link"
+                                href={project.link}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                aria-label={`Open ${project.title}`}
+                              >
+                                <img src={project.image} alt={project.title} />
+                              </a>
                             </div>
                             <div class="content">
                               <h2>{project.title}</h2>
                               <p>{project.description}</p>
-                              <a class="see-full" href={project.link}>
-                                See full
+                              <a
+                                class="see-full"
+                                href={project.link}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                Know More...
                               </a>
                             </div>
                             {idx === 0 && (
@@ -731,13 +753,26 @@ for (let i = 0; i < projects.length; i += mobileSpreadSize) {
                             class={`project-card ${idx % 2 === 0 ? "reverse" : ""}`}
                           >
                             <div class="photo">
-                              <img src={project.image} alt={project.title} />
+                              <a
+                                class="photo-link"
+                                href={project.link}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                aria-label={`Open ${project.title}`}
+                              >
+                                <img src={project.image} alt={project.title} />
+                              </a>
                             </div>
                             <div class="content">
                               <h2>{project.title}</h2>
                               <p>{project.description}</p>
-                              <a class="see-full" href={project.link}>
-                                See full
+                              <a
+                                class="see-full"
+                                href={project.link}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                Know More...
                               </a>
                             </div>
                           </div>
@@ -799,13 +834,26 @@ for (let i = 0; i < projects.length; i += mobileSpreadSize) {
                           class={`project-card-mobile ${idx % 2 === 1 ? "reverse" : ""}`}
                         >
                           <div class="photo">
-                            <img src={project.image} alt={project.title} />
+                            <a
+                              class="photo-link"
+                              href={project.link}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              aria-label={`Open ${project.title}`}
+                            >
+                              <img src={project.image} alt={project.title} />
+                            </a>
                           </div>
                           <div class="content">
                             <h2>{project.title}</h2>
                             <p>{project.description}</p>
-                            <a class="see-full" href={project.link}>
-                              See full
+                            <a
+                              class="see-full"
+                              href={project.link}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              Know More
                             </a>
                           </div>
                         </div>
