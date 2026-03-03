@@ -194,6 +194,8 @@
 			padding: 18px 20px 20px;
 			background: #fffcf4;
 			font-family: "Nunito", system-ui, sans-serif;
+			max-height: 90dvh;
+			overflow-y: auto;
 		}
 
 		.contactTitle {
@@ -318,12 +320,32 @@
 		}
 
 		@media (max-width: 720px) {
+			#contactDialog {
+				width: calc(100vw - 12px);
+				padding: 12px 12px 14px;
+				max-height: 86dvh;
+			}
+
 			.contactContent {
 				grid-template-columns: 1fr;
+				gap: 12px;
 			}
 
 			.contactVisual {
-				max-width: 150px;
+				max-width: 110px;
+			}
+
+			.contactForm {
+				gap: 6px;
+			}
+
+			.contactForm textarea {
+				min-height: 84px;
+			}
+
+			.contactForm button {
+				width: 100%;
+				justify-self: stretch;
 			}
 		}
 
