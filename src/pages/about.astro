@@ -57,6 +57,7 @@ const slideCycleSeconds = aboutMePhotos.length * slideStepSeconds;
         display: grid;
         place-items: center;
         padding: 1.25rem;
+        overflow-x: hidden;
       }
 
       .back-btn {
@@ -79,12 +80,13 @@ const slideCycleSeconds = aboutMePhotos.length * slideStepSeconds;
       }
 
       .about-wrap {
-        width: min(920px, 96vw);
+        width: min(920px, calc(100vw - 20px));
         background: #fffdf9;
         border: 2px solid var(--stroke);
         border-radius: 18px;
         padding: clamp(16px, 2vw, 28px);
         box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+        overflow-x: hidden;
       }
 
       .grid {
@@ -228,6 +230,7 @@ const slideCycleSeconds = aboutMePhotos.length * slideStepSeconds;
         margin: 28px 0 0;
         font-size: clamp(1rem, 1.4vw, 1.12rem);
         line-height: 1.45;
+        overflow-wrap: anywhere;
       }
 
       .hobbies ul,
@@ -279,8 +282,32 @@ const slideCycleSeconds = aboutMePhotos.length * slideStepSeconds;
       }
 
       @media (max-width: 760px) {
+        html,
+        body {
+          width: 100%;
+          overflow-x: hidden;
+        }
+
+        body {
+          padding: 10px 8px;
+        }
+
+        .about-wrap {
+          width: 100%;
+          max-width: 100%;
+          padding: 14px 10px 16px;
+          border-radius: 14px;
+        }
+
         .grid {
           grid-template-columns: 1fr;
+          gap: 12px;
+        }
+
+        .card {
+          width: 100%;
+          min-width: 0;
+          padding: 10px 12px;
         }
 
         .photo,
@@ -290,6 +317,12 @@ const slideCycleSeconds = aboutMePhotos.length * slideStepSeconds;
 
         .photo {
           height: 220px;
+        }
+
+        .pill {
+          max-width: calc(100% - 20px);
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
       }
     </style>
@@ -323,7 +356,7 @@ const slideCycleSeconds = aboutMePhotos.length * slideStepSeconds;
       <section class="grid">
         <article class="card intro">
           <div class="pill">HELLO, I'M</div>
-          <h1>Amasha<br />Das</h1>
+          <h1>Amasha Das</h1>
           <div class="facts">
             Birthday: Sept, 20th 1996<br />
             Current City: Austin, Texas<br />
@@ -390,7 +423,10 @@ const slideCycleSeconds = aboutMePhotos.length * slideStepSeconds;
         </article>
       </section>
 
-      <p class="footer">Follow me @colourscoded</p>
+      <p class="footer">
+        Follow me
+        <a href="https://www.instagram.com/colourscoded" target="_blank" rel="noopener noreferrer">@colourscoded</a>
+      </p>
     </main>
   </body>
 </html>
