@@ -1,0 +1,724 @@
+---
+const base = import.meta.env.BASE_URL;
+const bodyBgStyle =
+  "background-color:#f6f4ee;" +
+  `background-image:url('${base}img/obj/floral-bg.png');` +
+  "background-repeat:repeat;" +
+  "background-size:800px auto;" +
+  "background-position:center;";
+const doodleIcons = Array.from(
+  { length: 12 },
+  (_, i) => `${base}img/projects/doodles/${i + 1}.png`,
+);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Work In Progress</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Schoolbell&family=Nunito:wght@500;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style is:global>
+      :root {
+        --ink: #2a2a2a;
+        --paper: #f3f3f3;
+        --stroke: #737373;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        min-height: 100%;
+        width: 100%;
+        overflow-x: hidden;
+      }
+
+      body {
+        font-family: "Nunito", system-ui, sans-serif;
+        color: var(--ink);
+      }
+
+      .back-btn {
+        position: fixed;
+        left: 12px;
+        top: 12px;
+        z-index: 60;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(255, 255, 255, 0.92);
+        color: #1a1a1a;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        padding: 8px 12px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-size: 16px;
+        font-family: "Schoolbell", cursive;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .page {
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        padding: 80px 20px 28px;
+        width: 100%;
+        overflow-x: hidden;
+      }
+
+      .sheet {
+        width: min(900px, 96vw);
+        max-width: 100%;
+        padding: 34px clamp(20px, 4vw, 46px);
+      }
+
+      .boardWrap {
+        position: relative;
+        margin-inline: auto;
+        width: min(600px, 100%);
+      }
+
+      .calendar {
+        position: absolute;
+        top: -80px;
+        left: -34px;
+        width: 130px;
+        border-radius: 0 0 18px 18px;
+        overflow: hidden;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.16);
+        z-index: 5;
+      }
+
+      .calendarMonth {
+        background: #ee7878;
+        color: #7b3d3d;
+        text-align: center;
+        font-family: "Schoolbell", cursive;
+        font-size: 34px;
+        line-height: 1;
+        padding: 10px 10px 8px;
+      }
+
+      .calendarDay {
+        background: #d5d5d5;
+        text-align: center;
+        font-size: 56px;
+        line-height: 1;
+        color: #1f1f1f;
+        padding: 10px 10px 12px;
+      }
+
+      .board {
+        border: 3px solid var(--stroke);
+        border-radius: 20px;
+        padding: 24px 18px 20px 24px;
+        min-height: 620px;
+        background: rgba(255, 255, 255, 1);
+      }
+
+      .heading {
+        margin: 0 0 16px 76px;
+        font-family: "Schoolbell", cursive;
+        font-size: clamp(40px, 5vw, 56px);
+        line-height: 0.95;
+        color: #4f4f4f;
+      }
+
+      .scrollArea {
+        margin-top: 8px;
+        max-height: 480px;
+        overflow: auto;
+        padding-right: 8px;
+      }
+
+      .scrollArea::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      .scrollArea::-webkit-scrollbar-thumb {
+        background: rgba(115, 115, 115, 0.45);
+        border-radius: 10px;
+      }
+
+      .taskList,
+      .doneList {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+
+      .taskItem {
+        display: grid;
+        grid-template-columns: 34px 1fr;
+        gap: 10px;
+        align-items: center;
+        margin: 0 0 16px;
+        border-radius: 24px;
+        background: #a1c7f747;
+        padding: 12px 14px 12px 10px;
+        min-width: 0;
+      }
+
+      .taskItem > div {
+        min-width: 0;
+      }
+
+      .marker {
+        width: 34px;
+        height: 34px;
+        display: grid;
+        place-items: center;
+      }
+
+      .marker img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        display: block;
+      }
+
+      .taskTitle {
+        margin: 0 0 4px;
+        font-size: clamp(24px, 3.3vw, 36px);
+        font-family: "Schoolbell", cursive;
+        line-height: 1;
+      }
+
+      .progressRow {
+        display: grid;
+        grid-template-columns: minmax(0, 320px) auto;
+        gap: 10px;
+        align-items: center;
+        justify-content: start;
+        min-width: 0;
+      }
+
+      .progressTrack {
+        position: relative;
+        height: 34px;
+        width: 100%;
+        background:
+          repeating-linear-gradient(
+            -45deg,
+            rgba(90, 90, 90, 0.35) 0 2px,
+            rgba(255, 255, 255, 0) 2px 4px
+          ),
+          rgba(255, 255, 255, 0.5);
+        border: 1px solid rgba(0, 0, 0, 0.06);
+        overflow: hidden;
+      }
+
+      .progressFill {
+        position: absolute;
+        inset: 0 auto 0 0;
+        width: 0%;
+        background: var(--bar-color, #3db857);
+      }
+
+      .percent {
+        font-size: clamp(30px, 3.2vw, 44px);
+        font-family: "Schoolbell", cursive;
+        line-height: 1;
+        color: var(--bar-color, #3db857);
+      }
+
+      .taskNote {
+        margin: 6px 0 0;
+        font-size: clamp(15px, 1.5vw, 22px);
+        line-height: 1.15;
+        color: #6a6a6a;
+        white-space: normal;
+        overflow-wrap: anywhere;
+        word-break: break-word;
+      }
+
+      .donePanel {
+        border-radius: 24px;
+        background: rgba(190, 190, 190, 0.45);
+        padding: 10px 12px 2px;
+        margin: 4px 0 0;
+      }
+
+      .doneItem {
+        display: grid;
+        grid-template-columns: 44px 1fr;
+        gap: 10px;
+        align-items: center;
+        margin: 0 0 8px;
+      }
+
+      .check {
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        background: #6aae4f;
+        display: grid;
+        place-items: center;
+        color: #fff;
+        font-size: 30px;
+        font-weight: 800;
+      }
+
+      .doneText {
+        margin: 0;
+        font-size: clamp(24px, 3.2vw, 36px);
+        font-family: "Schoolbell", cursive;
+        text-decoration: line-through;
+        text-decoration-thickness: 4px;
+        text-decoration-color: #0b7328;
+        color: rgba(32, 32, 32, 0.5);
+      }
+
+      .message {
+        font-size: 15px;
+        color: #6a6a6a;
+        margin-top: 10px;
+      }
+
+      @media (max-width: 760px) {
+        .page {
+          padding: 7px 8px 10px;
+        }
+
+        .sheet {
+          width: 100%;
+          max-width: 100vw;
+          padding: 16px 8px 10px;
+          margin-top: -60px;
+        }
+
+        .boardWrap {
+          width: 100%;
+        }
+
+        .calendar {
+          left: 0;
+          top: -40px;
+          width: 82px;
+        }
+
+        .calendarMonth {
+          font-size: 19px;
+          padding: 7px 6px 5px;
+        }
+
+        .calendarDay {
+          font-size: 32px;
+          padding: 6px;
+        }
+
+        .heading {
+          margin: 8px 8px 8px 8px;
+          /* font-size: 28px; */
+        }
+
+        .board {
+          padding: 14px 7px 10px;
+          min-height: 0;
+          width: 100%;
+          overflow-x: hidden;
+        }
+
+        .taskItem {
+          grid-template-columns: 28px 1fr;
+          padding: 9px 8px;
+          gap: 7px;
+          border-radius: 16px;
+          margin-bottom: 10px;
+        }
+
+        .marker {
+          width: 26px;
+          height: 26px;
+        }
+
+        .taskTitle {
+          font-size: 19px;
+          margin-bottom: 3px;
+        }
+
+        .progressRow {
+          grid-template-columns: minmax(0, 1fr) auto;
+          gap: 6px;
+          width: 100%;
+        }
+
+        .progressTrack {
+          height: 22px;
+        }
+
+        .percent {
+          font-size: 24px;
+        }
+
+        .taskNote {
+          font-size: 14px;
+          margin-top: 4px;
+        }
+
+        .donePanel {
+          border-radius: 16px;
+          padding: 8px 8px 2px;
+        }
+
+        .doneItem {
+          grid-template-columns: 32px 1fr;
+          gap: 8px;
+        }
+
+        .check {
+          width: 28px;
+          height: 28px;
+          font-size: 21px;
+          border-radius: 6px;
+        }
+
+        .doneText {
+          font-size: 20px;
+        }
+
+        .scrollArea {
+          max-height: calc(100dvh - 170px);
+          padding-right: 4px;
+          overflow-x: hidden;
+        }
+      }
+    </style>
+  </head>
+  <body style={bodyBgStyle}>
+    <a
+      href={base}
+      class="back-btn"
+      aria-label="Go back"
+      onclick="if(history.length>1){event.preventDefault();history.back();}"
+    >
+      <svg
+        width="18"
+        height="18"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true"
+      >
+        <path
+          d="M15 18l-6-6 6-6"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"></path>
+      </svg>
+      Back
+    </a>
+
+    <main class="page">
+      <h1 class="heading">Work In Progress</h1>
+      <section class="sheet">
+        <div class="boardWrap">
+          <div class="calendar" aria-label="Today's date">
+            <div class="calendarMonth" id="monthText">Month</div>
+            <div class="calendarDay" id="dayText">00</div>
+          </div>
+
+          <div class="board">
+            <div class="scrollArea">
+              <ul class="taskList" id="taskList"></ul>
+              <div class="donePanel" id="donePanel" hidden>
+                <ul class="doneList" id="doneList"></ul>
+              </div>
+              <p class="message" id="sheetMsg"></p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <div
+      id="wipData"
+      data-doodles={encodeURIComponent(JSON.stringify(doodleIcons))}
+      hidden
+    >
+    </div>
+
+    <script>
+      const SHEET_CSV_URL =
+        "https://docs.google.com/spreadsheets/d/e/2PACX-1vRCqW8ecksOzXKKWQA22sUITfZL6mTnrdjy9LVR9yWwQnzyeNgsjRdJmuPIi1HZW8J5I5gLgYX-E8qU/pub?gid=0&single=true&output=csv";
+      const doodleDataNode = document.getElementById("wipData");
+      const DOODLES = doodleDataNode
+        ? JSON.parse(
+            decodeURIComponent(
+              doodleDataNode.getAttribute("data-doodles") || "%5B%5D",
+            ),
+          )
+        : [];
+
+      const fallbackTasks = [
+        {
+          title: "Kitty Kitty - Card Game",
+          note: "Illustrating scaredy cats",
+          percent: 72,
+          weight: 2,
+          color: "#d8af16",
+          done: false,
+        },
+        {
+          title: "Big Painting",
+          note: "Mixing colours",
+          percent: 20,
+          weight: 1,
+          color: "#cb3737",
+          done: false,
+        },
+        {
+          title: "Kitty Kitty - Card Game",
+          note: "Ready to release",
+          percent: 90,
+          weight: 3,
+          color: "#22c53b",
+          done: false,
+        },
+        {
+          title: "Kitty Kitty - Card Game",
+          note: "Illustrating scaredy cats",
+          percent: 62,
+          weight: 2,
+          color: "#111111",
+          done: false,
+        },
+        {
+          title: "Kitty Kitty - Card Game",
+          note: "",
+          percent: 100,
+          weight: 2,
+          done: true,
+        },
+        {
+          title: "Kitty Kitty - Card Game",
+          note: "",
+          percent: 100,
+          weight: 1,
+          done: true,
+        },
+      ];
+
+      function setToday() {
+        const now = new Date();
+        const month = now.toLocaleDateString("en-US", { month: "long" });
+        const day = String(now.getDate()).padStart(2, "0");
+        const monthNode = document.getElementById("monthText");
+        const dayNode = document.getElementById("dayText");
+        if (monthNode) monthNode.textContent = month;
+        if (dayNode) dayNode.textContent = day;
+      }
+
+      function clampPercent(value) {
+        const n = Number(value);
+        if (!Number.isFinite(n)) return 0;
+        return Math.max(0, Math.min(100, Math.round(n)));
+      }
+
+      function statusToPercent(statusText) {
+        const value = (statusText || "").toLowerCase().trim();
+        if (value === "done" || value === "completed" || value === "complete")
+          return 100;
+        if (value === "doing" || value === "in progress" || value === "wip")
+          return 65;
+        if (value === "started") return 22;
+        if (value === "todo" || value === "to do") return 5;
+        if (value === "later" || value === "backlog") return 0;
+        return null;
+      }
+
+      function defaultColor(percent) {
+        if (percent < 35) return "#cb3737";
+        if (percent < 70) return "#d8af16";
+        return "#22c53b";
+      }
+
+      function parseWeight(value) {
+        const n = Number(value);
+        if (!Number.isFinite(n) || n < 0) return 0;
+        return n;
+      }
+
+      function parseCsv(csvText) {
+        const rows = [];
+        let row = [];
+        let cell = "";
+        let inQuotes = false;
+
+        for (let i = 0; i < csvText.length; i++) {
+          const char = csvText[i];
+          const next = csvText[i + 1];
+
+          if (char === '"') {
+            if (inQuotes && next === '"') {
+              cell += '"';
+              i++;
+            } else {
+              inQuotes = !inQuotes;
+            }
+            continue;
+          }
+
+          if (char === "," && !inQuotes) {
+            row.push(cell.trim());
+            cell = "";
+            continue;
+          }
+
+          if ((char === "\n" || char === "\r") && !inQuotes) {
+            if (char === "\r" && next === "\n") i++;
+            row.push(cell.trim());
+            if (row.some((item) => item.length > 0)) rows.push(row);
+            row = [];
+            cell = "";
+            continue;
+          }
+
+          cell += char;
+        }
+
+        row.push(cell.trim());
+        if (row.some((item) => item.length > 0)) rows.push(row);
+        return rows;
+      }
+
+      function rowsToTasks(rows) {
+        if (!rows.length) return [];
+        const headers = rows[0].map((h) => h.toLowerCase().trim());
+        return rows
+          .slice(1)
+          .map((cols) => {
+            const obj = {};
+            headers.forEach((header, idx) => {
+              obj[header] = (cols[idx] || "").trim();
+            });
+            const progressText = (obj.progress || obj.status || obj.stage || "")
+              .toLowerCase()
+              .trim();
+
+            const title =
+              obj.project || obj.title || obj.task || obj.name || "";
+            if (!title) return null;
+
+            const currentTask =
+              obj.current_task || obj.currenttask || obj.task || "";
+            const extraNote = obj.note || obj.description || obj.details || "";
+            const note = [currentTask, extraNote].filter(Boolean).join(" - ");
+
+            const rawPercent =
+              obj.percent || obj.progress_percent || obj.progress_value || "";
+            const hasPercent = String(rawPercent).trim() !== "";
+            const parsedPercent = clampPercent(rawPercent);
+            const mappedPercent = statusToPercent(progressText);
+            const percent = hasPercent ? parsedPercent : (mappedPercent ?? 0);
+
+            const weight = parseWeight(
+              obj.weight || obj.points || obj.score || "0",
+            );
+            const status = (
+              obj.done ||
+              obj.completed ||
+              obj.status ||
+              obj.progress ||
+              ""
+            )
+              .toLowerCase()
+              .trim();
+            const done =
+              ["1", "yes", "true", "done", "complete", "completed"].includes(
+                status,
+              ) || ["done", "complete", "completed"].includes(progressText);
+            const color = obj.color || defaultColor(percent);
+            return { title, note, percent, done, color, weight };
+          })
+          .filter(Boolean);
+      }
+
+      async function loadTasks() {
+        if (!SHEET_CSV_URL) return fallbackTasks;
+        const response = await fetch(SHEET_CSV_URL, { cache: "no-store" });
+        if (!response.ok) throw new Error("Sheet fetch failed");
+        const csvText = await response.text();
+        const tasks = rowsToTasks(parseCsv(csvText));
+        return tasks.length ? tasks : fallbackTasks;
+      }
+
+      function renderTasks(tasks) {
+        const taskList = document.getElementById("taskList");
+        const doneList = document.getElementById("doneList");
+        const donePanel = document.getElementById("donePanel");
+        const msg = document.getElementById("sheetMsg");
+        if (!taskList || !doneList || !donePanel || !msg) return;
+
+        const activeTasks = tasks.filter((task) => !task.done);
+        const completedTasks = tasks.filter((task) => task.done);
+
+        function pickDoodle() {
+          if (!DOODLES.length) return "";
+          return DOODLES[Math.floor(Math.random() * DOODLES.length)];
+        }
+
+        taskList.innerHTML = activeTasks
+          .map((task) => {
+            const doodle = pickDoodle();
+            return `
+              <li class="taskItem">
+                <span class="marker" aria-hidden="true">
+                  ${doodle ? `<img src="${doodle}" alt="" />` : ""}
+                </span>
+                <div>
+                  <p class="taskTitle">${task.title}</p>
+                  <div class="progressRow">
+                    <div class="progressTrack">
+                      <div class="progressFill" style="width:${task.percent}%; --bar-color:${task.color};"></div>
+                    </div>
+                    <span class="percent" style="--bar-color:${task.color};">${task.percent}%</span>
+                  </div>
+                  ${task.note ? `<p class="taskNote">${task.note}</p>` : ""}
+                </div>
+              </li>
+            `;
+          })
+          .join("");
+
+        doneList.innerHTML = completedTasks
+          .map(
+            (task) => `
+              <li class="doneItem">
+                <span class="check" aria-hidden="true">&#10003;</span>
+                <p class="doneText">${task.title}</p>
+              </li>
+            `,
+          )
+          .join("");
+
+        donePanel.hidden = completedTasks.length === 0;
+
+        msg.textContent = SHEET_CSV_URL
+          ? "Loaded from Google Sheet."
+          : "Using sample tasks. Add your Google Sheet CSV URL in SHEET_CSV_URL.";
+      }
+
+      setToday();
+      loadTasks()
+        .then(renderTasks)
+        .catch(() => {
+          renderTasks(fallbackTasks);
+          const msg = document.getElementById("sheetMsg");
+          if (msg)
+            msg.textContent =
+              "Could not load Google Sheet. Showing sample tasks.";
+        });
+    </script>
+  </body>
+</html>
