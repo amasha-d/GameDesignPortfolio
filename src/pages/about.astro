@@ -6,6 +6,19 @@ const bodyBgStyle =
   "background-repeat:repeat;" +
   "background-size:1000px auto;" +
   "background-position:center;";
+const aboutMePhotos = [
+  `${base}img/aboutme/me1.jpg`,
+  `${base}img/aboutme/me2.jpg`,
+  `${base}img/aboutme/me3.jpg`,
+  `${base}img/aboutme/me6.jpg`,
+  `${base}img/aboutme/me7.jpg`,
+  `${base}img/aboutme/me8.jpg`,
+  `${base}img/aboutme/me9.jpg`,
+  `${base}img/aboutme/me10.jpg`,
+  `${base}img/aboutme/me13.jpeg`,
+];
+const slideStepSeconds = 3;
+const slideCycleSeconds = aboutMePhotos.length * slideStepSeconds;
 ---
 
 <!doctype html>
@@ -150,6 +163,7 @@ const bodyBgStyle =
         height: 250px;
         padding: 0;
         overflow: hidden;
+        position: relative;
       }
 
       .photo img {
@@ -159,6 +173,38 @@ const bodyBgStyle =
         max-height: none;
         border-radius: 0;
         display: block;
+      }
+
+      .photoSlide {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        animation-name: aboutFade;
+        animation-duration: var(--about-cycle, 27s);
+        animation-iteration-count: infinite;
+        animation-timing-function: ease-in-out;
+      }
+
+      .photoSlide.isActive {
+        opacity: 1;
+      }
+
+      @keyframes aboutFade {
+        0% {
+          opacity: 0;
+        }
+        4% {
+          opacity: 1;
+        }
+        15% {
+          opacity: 1;
+        }
+        19% {
+          opacity: 0;
+        }
+        100% {
+          opacity: 0;
+        }
       }
 
       .about {
@@ -285,43 +331,61 @@ const bodyBgStyle =
           </div>
         </article>
 
-        <article class="photo">
-          <img src={`${base}img/profile.jpeg`} alt="Profile Photo" />
+        <article class="photo" style={`--about-cycle:${slideCycleSeconds}s;`}>
+          {
+            aboutMePhotos.map((src, idx) => (
+              <img
+                class="photoSlide"
+                src={src}
+                alt="About me photo"
+                loading="eager"
+                decoding="async"
+                style={`animation-delay:-${idx * slideStepSeconds}s;`}
+              />
+            ))
+          }
         </article>
 
         <article class="card about">
           <div class="pill">ABOUT ME</div>
           <p>
-            This is a short intro about you. Replace this text with your story,
-            design journey, game interests, and what makes your creative process
-            unique.
+            Hi, I’m a game designer who believes play is one of the most
+            powerful ways to tell stories. I design systems, worlds, and tiny
+            moments that make people feel something - whether that’s chaos,
+            comfort, curiosity, or laughter. By day, I work on games. By night
+            (and weekends), I build weird little experiments, design card games,
+            sketch ideas on my iPad, and document the creative process online.
+            Ps: I run on coffee and curiosity.
           </p>
         </article>
-
+        <article class="card loves">
+          <div class="pill">SKILLS I HAVE</div>
+          <ul>
+            <b>Real Ones:</b>
+            <li>Game design (systems & balance)</li>
+            <li>Level Design</li>
+            <li>Rapid Prototyping</li>
+            <li>Unity/Unreal workflows</li>
+            <li>UI/UX thinking & Design</li>
+            <li>Blender basics</li>
+          </ul>
+          <ul>
+            <b>Also real (less official):</b>
+            <li>
+              Excellent Communication- Will always listen to your ideas and give
+              feedback
+            </li>
+            <li>Team Player- I’m here to make the team and project better</li>
+            <li>Fast Learner- I pick up new tools and concepts quickly</li>
+          </ul>
+        </article>
         <article class="card hobbies">
           <div class="pill">MY HOBBIES</div>
           <ul>
-            <li>Painting</li>
-            <li>Reading</li>
-            <li>Playing Games</li>
-            <li>Hiking</li>
-          </ul>
-        </article>
-
-        <article class="pet">
-          <div class="heart">❤</div>
-          <div class="pet-photo">Pet / Favorite Photo Placeholder</div>
-          <div class="pet-name">MOLLY</div>
-        </article>
-
-        <article class="card loves">
-          <div class="pill">THINGS I LOVE</div>
-          <ul>
-            <li>Favorite thing placeholder</li>
-            <li>Favorite thing placeholder</li>
-            <li>Favorite thing placeholder</li>
-            <li>Favorite thing placeholder</li>
-            <li>Favorite thing placeholder</li>
+            <li>🎨🖌️Painting</li>
+            <li>Reading📖</li>
+            <li>Playing Games🎮🎳</li>
+            <li>Hiking🥾🧗🏻‍♂️</li>
           </ul>
         </article>
       </section>
