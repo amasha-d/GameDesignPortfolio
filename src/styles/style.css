@@ -78,7 +78,7 @@
 		/* Stage scales responsively */
 		.stage {
 			position: relative;
-			width: 80%;
+			width: min(80%, 1600px);
 			height: 100%;
 		}
 
@@ -437,79 +437,108 @@
 			}
 		}
 
-		@media (max-width: 1920px) {
+		/* Default desktop layout (including ultrawide screens) */
+		.projects {
+			left: 37%;
+			top: 10%;
+		}
 
-			/* Positioning (PERCENT based = responsive) */
-			/* Replace these with your real object locations */
-			.projects {
-				left: 37%;
-				top: 10%;
+		.resume {
+			left: 70%;
+			top: 36%;
+		}
 
-			}
+		.coffee {
+			left: 7%;
+			bottom: 6%;
+		}
 
-			.resume {
-				left: 70%;
-				top: 36%;
+		.work {
+			left: 30%;
+			bottom: 10%;
+		}
 
-			}
+		.connect {
+			left: 80%;
+			top: 10%;
+		}
 
-			.coffee {
-				left: 7%;
-				Bottom: 6%;
+		.art {
+			left: 10%;
+			top: 40%;
+		}
 
-			}
+		.wip {
+			left: 2%;
+			top: 8%;
+		}
 
-			.work {
-				left: 30%;
-				bottom: 10%;
+		.projects .normal {
+			width: 500px;
+		}
 
-			}
+		.resume .normal {
+			width: 220px;
+		}
 
-			.connect {
-				left: 80%;
-				top: 10%;
+		.work .normal {
+			width: 300px;
+		}
 
-			}
+		.coffee .normal {
+			width: 180px;
+		}
 
-			.art {
-				left: 10%;
-				top: 40%;
+		.wip .normal {
+			width: 160px;
+		}
 
-			}
+		.art .normal {
+			width: 240px;
+		}
 
+		.connect .normal {
+			width: 160px;
+		}
 
-			.wip {
-				left: 2%;
-				top: 8%;
-
+		/* Ultrawide scaling (bigger than 1920px wide) */
+		@media (min-width: 1921px) {
+			.stage {
+				width: min(80%, 1900px);
 			}
 
 			.projects .normal {
-				width: 500px;
+				width: 600px;
 			}
 
 			.resume .normal {
-				width: 220px;
+				width: 260px;
 			}
 
 			.work .normal {
-				width: 300px;
+				width: 360px;
 			}
 
 			.coffee .normal {
-				width: 180px;
+				width: 210px;
 			}
 
 			.wip .normal {
-				width: 160px;
+				width: 190px;
 			}
 
 			.art .normal {
-				width: 240px;
+				width: 280px;
 			}
 
 			.connect .normal {
-				width: 160px;
+				width: 190px;
+			}
+
+			.fixed-you {
+				width: min(560px, 38vw);
+				right: 18px;
+				bottom: 18px;
 			}
 		}
 
@@ -531,7 +560,7 @@
 
 			.coffee {
 				left: 7%;
-				Bottom: 6%;
+				bottom: 6%;
 
 			}
 
@@ -704,7 +733,7 @@
 
 			.coffee {
 				left: 6%;
-				Bottom: 8%;
+				bottom: 8%;
 
 			}
 
