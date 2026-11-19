@@ -476,46 +476,6 @@ for (let i = 0; i < projects.length; i += mobileSpreadSize) {
         font-family: "Schoolbell", cursive;
       }
 
-      .spread.flip-in-next,
-      .spread-mobile.flip-in-next {
-        animation: pageFlipInNext 520ms cubic-bezier(0.2, 0.8, 0.2, 1);
-        transform-origin: right center;
-      }
-
-      .spread.flip-in-prev,
-      .spread-mobile.flip-in-prev {
-        animation: pageFlipInPrev 520ms cubic-bezier(0.2, 0.8, 0.2, 1);
-        transform-origin: left center;
-      }
-
-      @keyframes pageFlipInNext {
-        0% {
-          opacity: 0;
-          transform: perspective(1400px) rotateY(-16deg) translateX(1.8%)
-            scale(0.98);
-          filter: brightness(0.94);
-        }
-        100% {
-          opacity: 1;
-          transform: perspective(1400px) rotateY(0deg) translateX(0) scale(1);
-          filter: brightness(1);
-        }
-      }
-
-      @keyframes pageFlipInPrev {
-        0% {
-          opacity: 0;
-          transform: perspective(1400px) rotateY(16deg) translateX(-1.8%)
-            scale(0.98);
-          filter: brightness(0.94);
-        }
-        100% {
-          opacity: 1;
-          transform: perspective(1400px) rotateY(0deg) translateX(0) scale(1);
-          filter: brightness(1);
-        }
-      }
-
       .spreads-mobile {
         position: relative;
         width: 82%;
@@ -661,6 +621,55 @@ for (let i = 0; i < projects.length; i += mobileSpreadSize) {
           font-size: 1.7rem;
           padding: 7px 14px;
         }
+      }
+    </style>
+    <style is:global>
+      /* ---------- Page-turn animation (elements are created by the script) ---------- */
+      .turn-layer {
+        position: absolute;
+        inset: 0;
+        z-index: 5;
+        pointer-events: none;
+        perspective: 2200px;
+      }
+      .turn-static,
+      .turn-leaf {
+        position: absolute;
+        top: 0;
+        height: 100%;
+      }
+      /* Own stacking contexts: card text/tags use z-index 3/10, which would otherwise
+         escape the static page and paint on top of the turning leaf */
+      .turn-static {
+        z-index: 0;
+      }
+      .turn-leaf {
+        z-index: 1;
+        transform-style: preserve-3d;
+        will-change: transform;
+      }
+      .turn-face {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
+        background-repeat: no-repeat;
+      }
+      .turn-back {
+        transform: rotateY(180deg);
+      }
+      .turn-face > .paper-page,
+      .turn-face > .paper-mobile,
+      .turn-static > .paper-page,
+      .turn-static > .paper-mobile {
+        height: 100%;
+      }
+      .turn-shade {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        pointer-events: none;
       }
     </style>
   </head>
@@ -909,17 +918,142 @@ for (let i = 0; i < projects.length; i += mobileSpreadSize) {
       const pageCurrent = document.getElementById("pageCurrent");
       let spreadIndex = 0;
 
-      function animateSpreadEntry(spreads, index, direction) {
-        const active = spreads[index];
-        if (!(active instanceof HTMLElement)) return;
-        active.classList.remove("flip-in-next", "flip-in-prev");
-        void active.offsetWidth;
-        active.classList.add(
-          direction === "prev" ? "flip-in-prev" : "flip-in-next",
-        );
+      // ---------- Page turn ----------
+      const reduceMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
+      const TURN_MS = 800;
+      let turning = false;
+
+      // A box (in container coords) painted with the book's own paper image,
+      // aligned so it looks exactly like the page underneath it.
+      function paperBox(cls, shell, container, left, width, rectLeftPx) {
+        const el = document.createElement("div");
+        el.className = cls;
+        const s = shell.getBoundingClientRect();
+        const c = container.getBoundingClientRect();
+        el.style.backgroundImage = getComputedStyle(shell).backgroundImage;
+        // The book art is semi-transparent; put the page colour behind it so turning
+        // pages are opaque and match the paper exactly.
+        el.style.backgroundColor = getComputedStyle(document.body).backgroundColor;
+        el.style.backgroundSize = `${s.width}px ${s.height}px`;
+        el.style.backgroundPosition = `${s.left - (c.left + rectLeftPx)}px ${s.top - c.top}px`;
+        el.style.left = left;
+        el.style.width = width;
+        return el;
       }
 
+      function face(cls, shell, container, rectLeftPx, content) {
+        const f = paperBox(cls, shell, container, "0", "100%", rectLeftPx);
+        if (content) f.appendChild(content.cloneNode(true));
+        const shade = document.createElement("div");
+        shade.className = "turn-shade";
+        f.appendChild(shade);
+        return f;
+      }
+
+      /**
+       * oldEl/newEl: spread <article>s. Two-page spreads turn one half-page over the
+       * spine; single (mobile) pages flip over from the left edge like a notepad.
+       */
+      function turnPage({ container, shell, oldEl, newEl, direction, single }) {
+        if (reduceMotion || !oldEl || !newEl) return;
+        const W = container.clientWidth;
+        const half = W / 2;
+        const layer = document.createElement("div");
+        layer.className = "turn-layer";
+        const pages = (el) => el.querySelectorAll(single ? ".paper-mobile" : ".paper-page");
+        const [oldL, oldR] = pages(oldEl);
+        const [newL, newR] = pages(newEl);
+        const next = direction !== "prev";
+
+        const leaf = document.createElement("div");
+        leaf.className = "turn-leaf";
+        let front, back, from, to;
+
+        if (single) {
+          // Old page stays visible underneath while the new one flips back in (prev),
+          // or the old page itself flips away revealing the new one (next).
+          leaf.style.left = "0";
+          leaf.style.width = "100%";
+          leaf.style.transformOrigin = "left center";
+          if (next) {
+            front = face("turn-face", shell, container, 0, oldL);
+            back = face("turn-face turn-back", shell, container, 0, null);
+            from = 0;
+            to = -180;
+          } else {
+            const under = paperBox("turn-static", shell, container, "0", "100%", 0);
+            under.appendChild(oldL.cloneNode(true));
+            layer.appendChild(under);
+            front = face("turn-face", shell, container, 0, newL);
+            back = face("turn-face turn-back", shell, container, 0, null);
+            from = -180;
+            to = 0;
+          }
+        } else if (next) {
+          // Keep the old left page in place; the old right page turns over to the left,
+          // carrying the new left page on its back.
+          const stay = paperBox("turn-static", shell, container, "0", "50%", 0);
+          stay.appendChild(oldL.cloneNode(true));
+          layer.appendChild(stay);
+          leaf.style.left = "50%";
+          leaf.style.width = "50%";
+          leaf.style.transformOrigin = "left center";
+          front = face("turn-face", shell, container, half, oldR);
+          back = face("turn-face turn-back", shell, container, 0, newL);
+          from = 0;
+          to = -180;
+        } else {
+          // Mirror image: the old left page turns over to the right.
+          const stay = paperBox("turn-static", shell, container, "50%", "50%", half);
+          stay.appendChild(oldR.cloneNode(true));
+          layer.appendChild(stay);
+          leaf.style.left = "0";
+          leaf.style.width = "50%";
+          leaf.style.transformOrigin = "right center";
+          front = face("turn-face", shell, container, 0, oldL);
+          back = face("turn-face turn-back", shell, container, half, newR);
+          from = 0;
+          to = 180;
+        }
+
+        leaf.append(front, back);
+        layer.appendChild(leaf);
+        container.appendChild(layer);
+        turning = true;
+
+        const timing = { duration: TURN_MS, easing: "cubic-bezier(0.45, 0.05, 0.3, 1)", fill: "forwards" };
+        const anim = leaf.animate(
+          [
+            { transform: `rotateY(${from}deg)` },
+            { transform: `rotateY(${(from + to) / 2}deg) translateZ(30px)`, offset: 0.5 },
+            { transform: `rotateY(${to}deg)` },
+          ],
+          timing,
+        );
+        // Pages get darker as they lift off and lighter as they land.
+        const shadeDir = single ? "90deg" : next ? "90deg" : "270deg";
+        [front, back].forEach((f, i) => {
+          const sh = f.querySelector(".turn-shade");
+          sh.style.background = `linear-gradient(${shadeDir}, rgba(0,0,0,0.28), rgba(0,0,0,0.04) 60%, rgba(0,0,0,0))`;
+          const lifting = (i === 0) === (from === 0);
+          sh.animate(
+            lifting ? [{ opacity: 0 }, { opacity: 1 }] : [{ opacity: 1 }, { opacity: 0 }],
+            timing,
+          );
+        });
+        anim.finished.then(() => {
+          layer.remove();
+          turning = false;
+        });
+      }
+
+      const desktopShell = document.querySelector(".book-shell");
+      const spreadsBox = document.getElementById("spreads");
+
       function renderSpread(nextIndex, direction = "next") {
+        if (turning) return false;
         const prevIndex = spreadIndex;
         spreadIndex = Math.max(0, Math.min(nextIndex, spreadEls.length - 1));
         spreadEls.forEach((el, idx) =>
@@ -933,7 +1067,14 @@ for (let i = 0; i < projects.length; i += mobileSpreadSize) {
           nextBtn.disabled = spreadIndex === spreadEls.length - 1;
         }
         if (spreadIndex !== prevIndex) {
-          animateSpreadEntry(spreadEls, spreadIndex, direction);
+          turnPage({
+            container: spreadsBox,
+            shell: desktopShell,
+            oldEl: spreadEls[prevIndex],
+            newEl: spreadEls[spreadIndex],
+            direction,
+            single: false,
+          });
         }
         return spreadIndex !== prevIndex;
       }
@@ -954,7 +1095,10 @@ for (let i = 0; i < projects.length; i += mobileSpreadSize) {
       const mobileShell = document.querySelector(".book-shell-mobile");
       let spreadIndexMobile = 0;
 
+      const spreadsMobileBox = document.getElementById("spreadsMobile");
+
       function renderSpreadMobile(nextIndex, direction = "next") {
+        if (turning) return false;
         const prevIndex = spreadIndexMobile;
         spreadIndexMobile = Math.max(
           0,
@@ -973,7 +1117,14 @@ for (let i = 0; i < projects.length; i += mobileSpreadSize) {
             spreadIndexMobile === spreadElsMobile.length - 1;
         }
         if (spreadIndexMobile !== prevIndex) {
-          animateSpreadEntry(spreadElsMobile, spreadIndexMobile, direction);
+          turnPage({
+            container: spreadsMobileBox,
+            shell: mobileShell,
+            oldEl: spreadElsMobile[prevIndex],
+            newEl: spreadElsMobile[spreadIndexMobile],
+            direction,
+            single: true,
+          });
         }
         return spreadIndexMobile !== prevIndex;
       }
