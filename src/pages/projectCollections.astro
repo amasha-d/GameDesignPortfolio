@@ -25,12 +25,28 @@ const projects: ProjectItem[] = [
     tags: ["Unity3D", "Level Design", "Puzzle Design"],
   },
   {
+    title: "UFO_Game",
+    description:
+      "Papers, Please and FNAF meets X-Files. Minimum-wage night shift bureaucracy horror. Battle the ebb and flow of reality as you must classify reports of unknown objects and beings. ",
+    image: `${base}img/projects/UFO_Game.png`,
+    link: "https://bperry-atx.itch.io/ufo-game",
+    tags: ["Simulation","Development", "Unity3D", "FPP"],
+  },
+  {
     title: "Fiore",
     description:
       "Game concept of a cozy strategy game about regrowing a lost world.",
     image: `${base}img/projects/Fiore.png`,
     link: "https://www.behance.net/gallery/238373595/Fiore-2D-Game-Design-Hexagonal-Puzzle",
     tags: ["Unity2D", "Worldbuilding", "Gameplay Systems", "Prototyping"],
+  },
+  {
+    title: "LinkedFin",
+    description:
+      "A networking sim narrative game made as submission for GameDev.tv Game Jam 2026.",
+    image: `${base}img/projects/linkedfin.png`,
+    link: "https://tashawych.itch.io/linkedfin",
+    tags: ["Development","Art", "Unity2D", "Point & Click"],
   },
   {
     title: "Suit Up",
@@ -111,13 +127,13 @@ const projects: ProjectItem[] = [
     link: "https://www.behance.net/gallery/244742279/Farmville2-Country-Escape-Desconstruct",
     tags: ["Game Analysis", "Design Deconstruction", "Documentation"],
   },
-  {
-    title: "Marvel Snap - Decounstruct",
-    description: "Replace with your real project text and visuals.",
-    image: `${base}img/obj/GameDissect.png`,
-    link: "https://www.behance.net/gallery/244807879/Marvel-Snap-Deconstruction",
-    tags: ["Tool 1", "Tool 2", "Skill 1"],
-  },
+  // {
+  //   title: "Marvel Snap - Decounstruct",
+  //   description: "Replace with your real project text and visuals.",
+  //   image: `${base}img/obj/GameDissect.png`,
+  //   link: "https://www.behance.net/gallery/244807879/Marvel-Snap-Deconstruction",
+  //   tags: ["Tool 1", "Tool 2", "Skill 1"],
+  // },
   {
     title: "The Drowned Sorrow",
     description: "Replace with your real project text and visuals.",
@@ -360,7 +376,7 @@ for (let i = 0; i < projects.length; i += mobileSpreadSize) {
 
       .content h2 {
         margin: 0 0 8px;
-        font-size: clamp(0.5rem, 1vw, 2.6rem);
+        font-size: clamp(0.5rem, 1.3vw, 2.6rem);
         font-family: "Schoolbell", cursive;
         line-height: 1;
       }

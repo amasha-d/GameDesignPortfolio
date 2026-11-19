@@ -1,0 +1,903 @@
+---
+// New horizontal "zig-zag" experience timeline.
+// The original wheel timeline is kept untouched at /timeline as a fallback.
+const base = import.meta.env.BASE_URL;
+const bodyBgStyle =
+  "background-color:#f6f4ee;" +
+  `background-image:url('${base}img/obj/floral-bg.png');` +
+  "background-repeat:repeat;" +
+  "background-size:1000px auto;" +
+  "background-position:center;";
+const workImg = (name: string) => `${base}img/work/${name}`;
+
+type Entry = {
+  year: string;
+  title: string;
+  org?: string;
+  text: string;
+  tags?: string[];
+  image?: string;
+  note?: string; // small handwritten note above the card
+  link?: { href: string; label: string }; // optional link shown under the text
+};
+type Card = Entry & {
+  type: "card";
+  lane: "up" | "mid" | "down"; // vertical position on desktop
+  // Optional side card hanging off this card.
+  // join "next" = its line joins the next milestone dot / card,
+  // join "parent" = its line connects back to this card.
+  branch?: Entry & { join: "next" | "parent" };
+};
+type Milestone = { type: "milestone"; label: string };
+
+// Newest first – reads left → right going back in time.
+const items: (Card | Milestone)[] = [
+  {
+    type: "card",
+    lane: "up",
+    year: "2025 – Present",
+    title: "Lead Level Designer",
+    org: "LostSoulsInteractive",
+    text: "Working on creating levels for a 3D horror game called Hotel Espir. Designing levels, puzzles, strategies and more.",
+    tags: ["Level Design", "Puzzle Design", "Gameplay Systems", "Worldbuilding"],
+    note: "Looking up more…",
+    branch: {
+      join: "next",
+      year: "Freelance",
+      title: "Freelance Game Designer",
+      org: "itch.io",
+      text: "Worked on 3 indie games released on itch.io.",
+      link: { href: "https://amasha-d.itch.io/", label: "Play my games on itch.io" },
+      tags: ["Game Design", "Indie Games", "Rapid Prototyping"],
+    },
+  },
+  { type: "milestone", label: "Moved to the US" },
+  {
+    type: "card",
+    lane: "mid",
+    year: "2024 – 2025",
+    title: "Associate Game Designer",
+    org: "Zynga",
+    text: "Designed and balanced live-ops systems for FarmVille 2: Country Escape and FarmVille 3, including streak features, progressions, and 20+ recurring/seasonal events using data-driven tuning and probability modeling. Prototyped in Unity, authored technical design documentation.",
+    tags: ["Feature Design", "Prototyping", "Live Ops", "Team Collaboration"],
+  },
+  {
+    type: "card",
+    lane: "down",
+    year: "2022 – 2024",
+    title: "Master's of Design",
+    org: "NID",
+    text: "Specialized in Digital Game Design, with a focus on player experience, level & system design. Developed multiple prototypes and case studies using Unity and Unreal Engine, and conducted extensive game research and analysis on various game genres.",
+    tags: ["Game Research", "Player Experience", "System Design", "Level Design", "Visual Design"],
+    branch: {
+      join: "parent",
+      // TODO: replace placeholder with the real project list
+      year: "During my Master's",
+      title: "Worked on numerous projects",
+      text: "Prototypes, game jams and case studies. (Placeholder – add the projects here.)",
+      tags: ["Prototyping", "Game Jams"],
+    },
+  },
+  { type: "milestone", label: "Major burnout" },
+  {
+    type: "card",
+    lane: "up",
+    year: "2019 – 2022",
+    title: "Applications Developer",
+    org: "DBS Bank",
+    text: "Designed and implemented internal applications and tools to streamline operations and enhance productivity. Collaborated with cross-functional teams to gather requirements, develop solutions, and ensure seamless integration with existing systems.",
+    tags: ["Backend Development", "Problem Solving", "Strategy Building", "Application Design"],
+  },
+  {
+    type: "card",
+    lane: "down",
+    year: "2018 – 2019",
+    title: "Developer",
+    org: "Capgemini",
+    text: "Worked as a software developer for clients in the finance sector using Guidewire and Microsoft SharePoint, contributing to the development and maintenance of web applications.",
+    tags: ["Software Development", "Client Collaboration", "Web Applications"],
+  },
+  {
+    type: "card",
+    lane: "up",
+    year: "2014 – 2018",
+    title: "Bachelors in Engineering",
+    org: "BITS Pilani",
+    text: "Studied core engineering concepts and built multiple projects in engineering disciplines. Gained foundational knowledge in software development and project management.",
+    tags: ["Core Engineering", "Project Building", "Software Development", "Engineering Principles"],
+  },
+];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Experience</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Schoolbell&family=Nunito:wght@500;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style is:global>
+      :root {
+        --ink: #1f1f1f;
+        --muted: #5b5b5b;
+        --accent: #11701e;
+        --hand-blue: #3e5ba9;
+        --paper: #fffefb;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        font-family: "Nunito", system-ui, sans-serif;
+        color: var(--ink);
+      }
+
+      body {
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        overscroll-behavior: none;
+      }
+
+      .back-btn {
+        position: fixed;
+        left: 12px;
+        top: 12px;
+        z-index: 1200;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(255, 255, 255, 0.92);
+        color: #1a1a1a;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        padding: 8px 12px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-size: 16px;
+        font-family: "Schoolbell", cursive;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .page-title {
+        margin: 72px 0 0;
+        text-align: center;
+        font-family: "Schoolbell", cursive;
+        font-size: clamp(2rem, 5vw, 3.5rem);
+        flex: none;
+      }
+
+      /* ---------- Stage + horizontal track ---------- */
+      .stage {
+        position: relative;
+        flex: 1;
+        min-height: 0;
+        overflow: hidden;
+        touch-action: none;
+      }
+
+      .track {
+        position: absolute;
+        top: 44px;
+        bottom: 64px;
+        left: 0;
+        will-change: transform;
+      }
+
+      .line-layer {
+        position: absolute;
+        top: 0;
+        left: 0;
+        overflow: visible;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      .line-layer path {
+        fill: none;
+        stroke: #262626;
+        stroke-width: 4;
+        stroke-linecap: round;
+      }
+
+      .line-layer .branch-path {
+        opacity: 0;
+        transition: opacity 0.6s ease;
+      }
+
+      .line-layer .branch-path.in {
+        opacity: 1;
+      }
+
+      .dot-layer {
+        z-index: 3;
+      }
+
+      .line-layer circle {
+        fill: #262626;
+        opacity: 0;
+        transition: opacity 0.4s ease;
+      }
+
+      .line-layer circle.in {
+        opacity: 1;
+      }
+
+      /* ---------- Cards ---------- */
+      .node {
+        position: absolute;
+        z-index: 2;
+      }
+
+      .card,
+      .branch {
+        width: clamp(260px, 23vw, 340px);
+        background: var(--paper);
+        border: 2px solid #222;
+        border-radius: 18px 6px 20px 8px / 8px 20px 6px 18px;
+        padding: 14px 18px 14px;
+        box-shadow: 5px 6px 0 rgba(31, 31, 31, 0.12);
+        opacity: 0;
+        translate: 0 18px;
+        transition:
+          opacity 0.55s ease,
+          translate 0.55s ease,
+          rotate 0.25s ease;
+      }
+
+      .branch {
+        width: clamp(220px, 18vw, 270px);
+        background: #fffdf6;
+        border-radius: 8px 18px 6px 20px / 20px 6px 18px 8px;
+      }
+
+      .card.in,
+      .branch.in {
+        opacity: 1;
+        translate: 0 0;
+      }
+
+      .card:hover,
+      .branch:hover {
+        rotate: -0.6deg;
+      }
+
+      .year {
+        margin: 0;
+        font-family: "Schoolbell", cursive;
+        color: var(--accent);
+        font-size: 1.05rem;
+      }
+
+      .card h2,
+      .branch h2 {
+        margin: 2px 0 0;
+        font-size: 1.12rem;
+        font-weight: 800;
+        line-height: 1.25;
+      }
+
+      .branch h2 {
+        font-size: 1rem;
+      }
+
+      .org {
+        margin: 0;
+        color: var(--muted);
+        font-weight: 700;
+        font-size: 0.9rem;
+      }
+
+      .card-link {
+        display: inline-block;
+        margin-top: 8px;
+        color: var(--hand-blue);
+        font-weight: 700;
+        font-size: 0.86rem;
+        text-decoration: underline;
+        text-decoration-thickness: 1.5px;
+        text-underline-offset: 3px;
+      }
+
+      .card-link:hover {
+        color: #2b3f94;
+      }
+
+      .card img {
+        display: block;
+        width: 100%;
+        max-height: min(110px, 13vh);
+        object-fit: contain;
+        margin: 8px 0 4px;
+      }
+
+      .text {
+        margin: 8px 0 0;
+        color: var(--muted);
+        font-size: 0.86rem;
+        line-height: 1.5;
+      }
+
+      .tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin: 10px 0 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .tags li {
+        background: #f3efe3;
+        border: 1px solid rgba(0, 0, 0, 0.12);
+        border-radius: 999px;
+        padding: 3px 10px;
+        font-size: 0.74rem;
+        white-space: nowrap;
+      }
+
+      .note {
+        position: absolute;
+        top: -30px;
+        left: 6px;
+        margin: 0;
+        font-family: "Schoolbell", cursive;
+        color: var(--hand-blue);
+        font-size: 1.05rem;
+        rotate: -5deg;
+        white-space: nowrap;
+      }
+
+      /* ---------- Milestones (dot is drawn in the SVG) ---------- */
+      .milestone {
+        width: 0;
+        height: 0;
+        opacity: 0;
+        transition: opacity 0.5s ease;
+      }
+
+      .milestone.in {
+        opacity: 1;
+      }
+
+      .milestone .label {
+        position: absolute;
+        left: 0;
+        top: 0;
+        translate: -50% calc(-100% - 30px);
+        rotate: -6deg;
+        font-family: "Schoolbell", cursive;
+        font-size: 1.15rem;
+        white-space: nowrap;
+      }
+
+      .milestone.label-below .label {
+        translate: -50% 26px;
+      }
+
+      .hint {
+        position: fixed;
+        left: 50%;
+        bottom: 14px;
+        transform: translateX(-50%);
+        margin: 0;
+        color: #454545;
+        font-size: 0.92rem;
+        background: rgba(255, 255, 255, 0.78);
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        border-radius: 999px;
+        padding: 6px 12px;
+        z-index: 900;
+        white-space: nowrap;
+      }
+
+      .hint-narrow {
+        display: none;
+      }
+
+      /* ---------- Phones: same horizontal timeline, just smaller cards ---------- */
+      @media (max-width: 760px) {
+        body {
+          background-size: 750px auto !important;
+        }
+
+        .track {
+          top: 40px;
+          bottom: 60px;
+        }
+
+        .card {
+          width: min(78vw, 320px);
+          padding: 12px 15px;
+        }
+
+        .branch {
+          width: min(66vw, 260px);
+          padding: 12px 15px;
+        }
+
+        .text {
+          font-size: 0.82rem;
+        }
+
+        .card img {
+          max-height: 90px;
+        }
+
+        .line-layer path {
+          stroke-width: 3.4;
+        }
+
+        .hint-wide {
+          display: none;
+        }
+
+        .hint-narrow {
+          display: inline;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .card,
+        .branch,
+        .milestone,
+        .line-layer circle,
+        .line-layer .branch-path {
+          transition: none;
+        }
+      }
+    </style>
+  </head>
+
+  <body style={bodyBgStyle}>
+    <a
+      href={base}
+      class="back-btn"
+      aria-label="Go back"
+      onclick="if(history.length>1){event.preventDefault();history.back();}"
+    >
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path
+          d="M15 18l-6-6 6-6"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"></path>
+      </svg>
+      Back
+    </a>
+
+    <h1 class="page-title">Experience Timeline</h1>
+
+    <section class="stage" aria-label="Work experience timeline">
+      <div class="track">
+        <svg class="line-layer" aria-hidden="true">
+          <defs>
+            <filter id="sketchy" x="-5%" y="-20%" width="110%" height="140%">
+              <feTurbulence type="fractalNoise" baseFrequency="0.015" numOctaves="2" seed="4"></feTurbulence>
+              <feDisplacementMap in="SourceGraphic" scale="1.6"></feDisplacementMap>
+            </filter>
+          </defs>
+          <g filter="url(#sketchy)">
+            <path id="mainPath"></path>
+            <g id="branchPaths"></g>
+          </g>
+        </svg>
+        <!-- Dots live in their own layer above the cards so they sit on top of card edges -->
+        <svg class="line-layer dot-layer" aria-hidden="true">
+          <g id="dots"></g>
+        </svg>
+
+        {
+          items.map((item) =>
+            item.type === "milestone" ? (
+              <div class="node milestone" data-kind="milestone">
+                <span class="label">{item.label}</span>
+              </div>
+            ) : (
+              <>
+                <article class="node card" data-kind="card" data-lane={item.lane}>
+                  {item.note && <p class="note">{item.note}</p>}
+                  <p class="year">{item.year}</p>
+                  <h2>{item.title}</h2>
+                  {item.org && <p class="org">{item.org}</p>}
+                  {item.image && <img src={item.image} alt="" />}
+                  <p class="text">{item.text}</p>
+                  {item.link && (
+                    <a class="card-link" href={item.link.href} target="_blank" rel="noopener noreferrer">
+                      {item.link.label} ↗
+                    </a>
+                  )}
+                  {item.tags && (
+                    <ul class="tags">
+                      {item.tags.map((t) => (
+                        <li>{t}</li>
+                      ))}
+                    </ul>
+                  )}
+                </article>
+                {item.branch && (
+                  <article class="node branch" data-kind="branch" data-join={item.branch.join}>
+                    <p class="year">{item.branch.year}</p>
+                    <h2>{item.branch.title}</h2>
+                    {item.branch.org && <p class="org">{item.branch.org}</p>}
+                    <p class="text">{item.branch.text}</p>
+                    {item.branch.link && (
+                      <a class="card-link" href={item.branch.link.href} target="_blank" rel="noopener noreferrer">
+                        {item.branch.link.label} ↗
+                      </a>
+                    )}
+                    {item.branch.tags && (
+                      <ul class="tags">
+                        {item.branch.tags.map((t) => (
+                          <li>{t}</li>
+                        ))}
+                      </ul>
+                    )}
+                  </article>
+                )}
+              </>
+            ),
+          )
+        }
+      </div>
+    </section>
+
+    <p class="hint">
+      <span class="hint-wide">Scroll to explore →</span>
+      <span class="hint-narrow">Swipe to explore →</span>
+    </p>
+
+    <script>
+      // @ts-nocheck – plain DOM script; skip strict editor type checks
+      const SVG_NS = "http://www.w3.org/2000/svg";
+      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const stage = document.querySelector(".stage");
+      const track = document.querySelector(".track");
+      const svg = track.querySelector(".line-layer");
+      const mainPath = svg.querySelector("#mainPath");
+      const branchG = svg.querySelector("#branchPaths");
+      const dotSvg = track.querySelector(".dot-layer");
+      const dotsG = dotSvg.querySelector("#dots");
+      const nodes = Array.from(track.querySelectorAll(".node"));
+
+      let target = 0;
+      let current = 0;
+      let maxScroll = 0;
+      let trackWidth = 0; // computed track length (not scrollWidth, which includes stale SVG sizes)
+      let mainLength = 0;
+      let lookup = []; // [{len, x}] samples along the main line
+      let revealables = []; // {x, el}
+      let lastReveal = -1;
+
+      const clamp = (v, a, b) => Math.min(Math.max(v, a), b);
+      const box = (n) => ({ x: n.offsetLeft, y: n.offsetTop, w: n.offsetWidth, h: n.offsetHeight });
+      const narrow = () => window.innerWidth <= 760;
+
+      // ---------- Place nodes along the horizontal track ----------
+      function placeNodes() {
+        const A = track.clientHeight;
+        const vw = window.innerWidth;
+        const G = narrow() ? clamp(vw * 0.22, 70, 110) : clamp(vw * 0.11, 130, 220); // gap between cards
+        const laneFrac = { up: 0.28, mid: 0.5, down: 0.72 };
+        let p = narrow() ? 22 : Math.max(48, vw * 0.06);
+        let lastCard = null;
+        let lastEnd = p;
+
+        for (const n of nodes) {
+          const kind = n.dataset.kind;
+          if (kind === "card") {
+            const { w, h } = box(n);
+            const c = laneFrac[n.dataset.lane] ?? 0.5;
+            n.style.left = p + "px";
+            n.style.top = clamp(c * A - h / 2, 0, Math.max(0, A - h)) + "px";
+            p += w + G;
+            lastCard = n;
+            lastEnd = p - G;
+          } else if (kind === "branch") {
+            const { w, h } = box(n);
+            const below = lastCard?.dataset.lane !== "down";
+            n.dataset.side = below ? "below" : "above";
+            const x = p - G * 0.55;
+            n.style.left = x + "px";
+            n.style.top = (below ? Math.max(0, A - h) : 0) + "px";
+            p = x + w + G * 0.7;
+          } else {
+            n.style.left = p - G / 2 + 50 + "px";
+            p += 100;
+          }
+        }
+        // End the track just after the last card so the scroll stops there
+        trackWidth = Math.max(lastEnd, p - G) + (narrow() ? 22 : Math.max(48, vw * 0.06));
+        track.style.width = trackWidth + "px";
+        return A;
+      }
+
+      // ---------- Build the wavy line from node positions ----------
+      function curve(a, b, c1, c2) {
+        return `M${a.x},${a.y} C${c1.x},${c1.y} ${c2.x},${c2.y} ${b.x},${b.y}`;
+      }
+
+      function buildLines(A) {
+        branchG.replaceChildren();
+        dotsG.replaceChildren();
+        revealables = [];
+        const segs = [];
+        const dots = [];
+        const dotR = narrow() ? 6 : 7;
+        const milestoneR = narrow() ? 8 : 10;
+
+        // Main sequence: cards + milestones (branches hang off it)
+        const main = [];
+        let pendingBranch = null;
+        nodes.forEach((n) => {
+          const kind = n.dataset.kind;
+          if (kind === "card") {
+            const b = box(n);
+            const ay = b.y + b.h * 0.38;
+            main.push({ n, in: { x: b.x, y: ay }, out: { x: b.x + b.w, y: ay } });
+            pendingBranch = null;
+          } else if (kind === "branch") {
+            pendingBranch = n;
+          } else {
+            main.push({ n, milestone: true, branchBefore: pendingBranch });
+          }
+        });
+
+        // Milestone dot heights: midway between neighbours, kept clear of branches
+        main.forEach((m, i) => {
+          if (!m.milestone) return;
+          const prev = main[i - 1]?.out ?? { y: A / 2 };
+          const next = main[i + 1]?.in ?? { y: A / 2 };
+          let y = (prev.y + next.y) / 2;
+          m.n.classList.remove("label-below");
+          if (m.branchBefore) {
+            const b = box(m.branchBefore);
+            if (m.branchBefore.dataset.side === "below") {
+              y = Math.min(y, b.y - 50);
+            } else {
+              // Branch sits above: drop the dot into the lower part of the stage, label underneath
+              y = Math.max(y, b.y + b.h + 50, A * 0.74);
+              m.n.classList.add("label-below");
+            }
+          }
+          y = clamp(y, 40, A - 40);
+          m.n.style.top = y + "px";
+          const pt = { x: m.n.offsetLeft, y };
+          m.in = pt;
+          m.out = pt;
+          dots.push({ ...pt, r: milestoneR });
+        });
+
+        for (let i = 0; i < main.length - 1; i++) {
+          const a = main[i].out;
+          const b = main[i + 1].in;
+          const dx = b.x - a.x;
+          const amp = (i % 2 ? -1 : 1) * Math.min(A * 0.22, 110);
+          // Arrive at / leave milestone dots flat, so the line never runs over their labels
+          const ampA = main[i].milestone ? 0 : amp;
+          const ampB = main[i + 1].milestone ? 0 : amp;
+          segs.push(
+            curve(
+              a,
+              b,
+              { x: a.x + dx * 0.45, y: clamp(a.y + ampA, 8, A - 8) },
+              { x: b.x - dx * 0.45, y: clamp(b.y - ampB, 8, A - 8) },
+            ),
+          );
+          if (!main[i].milestone) dots.push({ ...a, r: dotR });
+          if (!main[i + 1].milestone) dots.push({ ...b, r: dotR });
+        }
+
+        // Branch connectors
+        nodes.forEach((n, idx) => {
+          if (n.dataset.kind !== "branch") return;
+          const b = box(n);
+          const below = n.dataset.side === "below";
+          let from, to;
+          if (n.dataset.join === "next") {
+            const next = main.find((m) => (m.in?.x ?? 0) > b.x + b.w);
+            if (!next) return;
+            from = { x: b.x + b.w, y: b.y + (below ? b.h * 0.3 : b.h * 0.7) };
+            to = next.in;
+          } else {
+            const parent = box(nodes[idx - 1]);
+            from = { x: parent.x + parent.w * 0.75, y: below ? parent.y + parent.h : parent.y };
+            to = { x: b.x, y: b.y + b.h * 0.5 };
+          }
+          const dx = to.x - from.x;
+          const dy = to.y - from.y;
+          const path = document.createElementNS(SVG_NS, "path");
+          const c =
+            n.dataset.join === "next"
+              ? [{ x: from.x + dx * 0.6, y: from.y + dy * 0.1 }, { x: to.x - dx * 0.1, y: to.y - dy * 0.5 }]
+              : // rise straight out of the parent card's edge, then curve into the branch's side
+                [{ x: from.x, y: from.y + dy * 0.8 }, { x: to.x - Math.max(40, dx * 0.5), y: to.y }];
+          path.setAttribute("d", curve(from, to, c[0], c[1]));
+          path.classList.add("branch-path");
+          branchG.appendChild(path);
+          dots.push({ ...from, r: dotR }, { ...to, r: dotR });
+          revealables.push({ x: Math.min(from.x, to.x), el: path });
+        });
+
+        mainPath.setAttribute("d", segs.join(" "));
+        const tw = trackWidth;
+        for (const layer of [svg, dotSvg]) {
+          layer.setAttribute("width", tw);
+          layer.setAttribute("height", A);
+          layer.setAttribute("viewBox", `0 0 ${tw} ${A}`);
+        }
+
+        dots.forEach((d) => {
+          const c = document.createElementNS(SVG_NS, "circle");
+          c.setAttribute("cx", d.x);
+          c.setAttribute("cy", d.y);
+          c.setAttribute("r", d.r);
+          dotsG.appendChild(c);
+          revealables.push({ x: d.x, el: c });
+        });
+
+        nodes.forEach((n) => revealables.push({ x: n.offsetLeft, el: n }));
+
+        // Sample the main line so we can "draw" it up to the scroll position
+        mainLength = mainPath.getTotalLength();
+        lookup = [];
+        for (let len = 0; len <= mainLength; len += 6) {
+          lookup.push({ len, x: mainPath.getPointAtLength(len).x });
+        }
+        mainPath.style.strokeDasharray = `${mainLength} ${mainLength}`;
+        lastReveal = -1;
+      }
+
+      function layout() {
+        const frac = maxScroll ? current / maxScroll : 0;
+        const A = placeNodes();
+        maxScroll = Math.max(0, trackWidth - window.innerWidth);
+        target = current = frac * maxScroll;
+        buildLines(A);
+        render(true);
+      }
+
+      // ---------- Reveal + scroll ----------
+      function reveal(force) {
+        const edge = current + window.innerWidth * 0.9;
+        if (!force && Math.abs(edge - lastReveal) < 1) return;
+        lastReveal = edge;
+
+        let len = 0;
+        for (const s of lookup) {
+          if (s.x <= edge) len = s.len;
+          else break;
+        }
+        if (reduceMotion || lookup.length === 0 || edge >= lookup[lookup.length - 1].x) len = mainLength;
+        mainPath.style.strokeDashoffset = String(mainLength - len);
+
+        for (const r of revealables) {
+          if (r.x <= edge || reduceMotion) r.el.classList.add("in");
+        }
+      }
+
+      function render(force) {
+        track.style.transform = `translate3d(${-current}px,0,0)`;
+        reveal(force);
+      }
+
+      let velocity = 0; // touch fling momentum
+      function tick() {
+        if (velocity) {
+          nudge(velocity);
+          velocity *= 0.92;
+          if (Math.abs(velocity) < 0.5) velocity = 0;
+        }
+        if (current !== target) {
+          current += (target - current) * (reduceMotion ? 1 : 0.14);
+          if (Math.abs(target - current) < 0.4) current = target;
+          render(false);
+        }
+        requestAnimationFrame(tick);
+      }
+
+      function nudge(delta) {
+        target = clamp(target + delta, 0, maxScroll);
+      }
+
+      window.addEventListener(
+        "wheel",
+        (e) => {
+          e.preventDefault();
+          let d = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+          if (e.deltaMode === 1) d *= 32;
+          nudge(d);
+        },
+        { passive: false },
+      );
+
+      // Touch: swiping left/right OR up/down moves the timeline sideways
+      let touch = null;
+      let lastMove = 0;
+      window.addEventListener(
+        "touchstart",
+        (e) => {
+          if (!e.touches.length) return;
+          touch = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+          velocity = 0;
+          lastMove = 0;
+        },
+        { passive: true },
+      );
+      window.addEventListener(
+        "touchmove",
+        (e) => {
+          if (!touch || !e.touches.length) return;
+          e.preventDefault();
+          const t = e.touches[0];
+          const dx = touch.x - t.clientX;
+          const dy = touch.y - t.clientY;
+          lastMove = (Math.abs(dx) > Math.abs(dy) ? dx : dy) * 1.2;
+          nudge(lastMove);
+          touch = { x: t.clientX, y: t.clientY };
+        },
+        { passive: false },
+      );
+      window.addEventListener("touchend", () => {
+        touch = null;
+        if (!narrow()) {
+          if (!reduceMotion) velocity = lastMove;
+          return;
+        }
+        // Phones: settle on the nearest card so it is never left half off-screen
+        const vw = window.innerWidth;
+        const projected = target + lastMove * 12;
+        let best = target;
+        let bestDist = Infinity;
+        nodes.forEach((n) => {
+          if (n.dataset.kind === "milestone") return;
+          const stop = clamp(n.offsetLeft + n.offsetWidth / 2 - vw / 2, 0, maxScroll);
+          const d = Math.abs(stop - projected);
+          if (d < bestDist) {
+            bestDist = d;
+            best = stop;
+          }
+        });
+        velocity = 0;
+        target = best;
+      });
+
+      window.addEventListener("keydown", (e) => {
+        const page = window.innerWidth * 0.5;
+        const map = {
+          ArrowRight: page, ArrowDown: page, PageDown: page, " ": page,
+          ArrowLeft: -page, ArrowUp: -page, PageUp: -page,
+          Home: -Infinity, End: Infinity,
+        };
+        if (e.key in map) {
+          e.preventDefault();
+          nudge(map[e.key]);
+        }
+      });
+
+      let resizeTimer;
+      window.addEventListener("resize", () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(layout, 120);
+      });
+
+      // Re-layout once fonts/images settle (they change card heights)
+      layout();
+      document.fonts?.ready.then(layout);
+      track.querySelectorAll("img").forEach((img) => {
+        if (!img.complete) img.addEventListener("load", layout, { once: true });
+      });
+      requestAnimationFrame(tick);
+    </script>
+  </body>
+</html>

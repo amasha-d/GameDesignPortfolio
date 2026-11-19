@@ -80,6 +80,19 @@
 			position: relative;
 			width: min(80%, 1600px);
 			height: 100%;
+			/* lets objects size themselves relative to the stage (cqw units) */
+			container-type: inline-size;
+		}
+
+		/* Desktop: stage fills the window. Objects are sized by whichever is
+		   smaller – stage width (cqw) or stage height (cqh) – so they spread out
+		   on wide screens but never grow tall enough to collide on short ones */
+		@media (min-width: 1025px) {
+			.stage {
+				width: min(92%, 1800px);
+				height: 100%;
+				container-type: size;
+			}
 		}
 
 
@@ -353,8 +366,8 @@
 			position: fixed;
 			right: 18px;
 			bottom: 18px;
-			width: min(480px, 42vw);
-			/* responsive size */
+			width: min(480px, 42vw, 46vh);
+			/* responsive size (also limited by height for short/wide screens) */
 			z-index: 5;
 			/* above video + objects */
 			display: block;
@@ -444,8 +457,8 @@
 		}
 
 		.resume {
-			left: 70%;
-			top: 36%;
+			left: 74%;
+			top: 38%;
 		}
 
 		.coffee {
@@ -473,70 +486,40 @@
 			top: 8%;
 		}
 
+		/* Desktop sizes: the smaller of stage width (cqw) / stage height (cqh).
+		   Smaller screens override these in the media queries below */
 		.projects .normal {
-			width: 500px;
+			width: min(37cqw, 63cqh);
 		}
 
 		.resume .normal {
-			width: 220px;
+			width: min(16cqw, 28cqh);
 		}
 
 		.work .normal {
-			width: 300px;
+			width: min(22.5cqw, 38cqh);
 		}
 
 		.coffee .normal {
-			width: 180px;
+			width: min(13.5cqw, 23.5cqh);
 		}
 
 		.wip .normal {
-			width: 160px;
+			width: min(12cqw, 20cqh);
 		}
 
 		.art .normal {
-			width: 240px;
+			width: min(18cqw, 30cqh);
 		}
 
 		.connect .normal {
-			width: 160px;
+			width: min(12cqw, 20cqh);
 		}
 
 		/* Ultrawide scaling (bigger than 1920px wide) */
 		@media (min-width: 1921px) {
-			.stage {
-				width: min(80%, 1900px);
-			}
-
-			.projects .normal {
-				width: 600px;
-			}
-
-			.resume .normal {
-				width: 260px;
-			}
-
-			.work .normal {
-				width: 360px;
-			}
-
-			.coffee .normal {
-				width: 210px;
-			}
-
-			.wip .normal {
-				width: 190px;
-			}
-
-			.art .normal {
-				width: 280px;
-			}
-
-			.connect .normal {
-				width: 190px;
-			}
-
 			.fixed-you {
-				width: min(560px, 38vw);
+				width: min(560px, 38vw, 46vh);
 				right: 18px;
 				bottom: 18px;
 			}
